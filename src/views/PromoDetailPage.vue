@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useSeo } from '@/composables/useSeo'
 import PageHero from '@/components/PageHero.vue'
 import { usePromos } from '@/composables/usePromos'
+import { useBranchModal } from '@/composables/useBranchModal'
 
-gsap.registerPlugin(ScrollTrigger)
+const { open: openBranchModal } = useBranchModal()
 
 const route = useRoute()
 
@@ -36,10 +35,11 @@ onMounted(async () => {
   <div>
     <!-- HERO -->
     <PageHero
-      variant="conversion"
+      variant="full-image"
+      eyebrow="Special Offer"
       :title="promo?.title || 'Detail Promo'"
       :subtitle="promo?.short_description"
-      bg-image="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1920&q=80"
+      bg-image="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=1920&q=80"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
         { label: 'Promo', to: '/promos' },
@@ -98,7 +98,7 @@ onMounted(async () => {
                     <span>Berlaku s/d {{ new Date(promo.end_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) }}</span>
                   </div>
                 </div>
-                <a href="https://booking.seadentalaesthetics.id/booking/register" target="_blank"
+                <a @click.prevent="openBranchModal()"
                   class="mt-4 w-full py-2.5 rounded-xl bg-primary text-white font-display text-[13px] font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
                   <span class="material-symbols-outlined text-[14px]">event</span>
                   Klaim Promo

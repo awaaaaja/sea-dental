@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { articles, articleCategories } from '@/data/articles'
+import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import { useArticles } from '@/composables/useArticles'
 import PageHero from '@/components/PageHero.vue'
 import { useSeo } from '@/composables/useSeo'
+import { useBranchModal } from '@/composables/useBranchModal'
+
+const { open: openBranchModal } = useBranchModal()
 
 useSeo({
   title: 'Artikel',
@@ -12,16 +13,21 @@ useSeo({
   url: '/articles',
 })
 
-gsap.registerPlugin(ScrollTrigger)
-
 const gridRef = ref<HTMLElement>()
 const activeCategory = ref('all')
 const showCount = ref(6)
 
+const { articles, categories, loadArticles, getCategoryName } = useArticles()
+
+const articleCategories = computed(() => [
+  { key: 'all', label: 'Semua' },
+  ...categories.value.map(c => ({ key: c.id, label: c.name })),
+])
+
 const filteredArticles = computed(() =>
   activeCategory.value === 'all'
-    ? articles
-    : articles.filter(a => a.category === activeCategory.value)
+    ? articles.value
+    : articles.value.filter(a => a.category_id === activeCategory.value)
 )
 
 const displayedArticles = computed(() =>
@@ -36,9 +42,19 @@ function loadMore() {
   showCount.value += 3
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await loadArticles()
+})
+
+watch(displayedArticles, async () => {
+  await nextTick()
   if (gridRef.value) {
-    gsap.fromTo(gridRef.value.querySelectorAll('.article-card'),
+    const { gsap } = await import('gsap')
+    const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+    gsap.registerPlugin(ScrollTrigger)
+    const cards = gridRef.value.querySelectorAll('.article-card')
+    if (cards.length === 0) return
+    gsap.fromTo(cards,
       { y: 40, opacity: 0 },
       {
         scrollTrigger: { trigger: gridRef.value, start: 'top 85%' },
@@ -46,19 +62,20 @@ onMounted(() => {
       }
     )
   }
-})
+}, { once: true })
 </script>
 
 <template>
   <div>
     <!-- HERO -->
     <PageHero
-      variant="editorial"
-      title="Artikel Kesehatan Gigi"
-      subtitle="Tips dan informasi seputar kesehatan gigi dan mulut dari dokter ahli kami."
-      :image="'/references/image_from_https_seadentalaesthetics.id_assets_img_gallery_galeri_3.jpeg/screen.png'"
+      variant="split"
+      eyebrow="03 / Knowledge Hub"
+      title="Dental Knowledge"
+      subtitle="Informasi terpercaya untuk membantu Anda memahami dan menjaga kesehatan gigi."
+      :image="'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=800&q=80'"
       :imageAlt="'Artikel kesehatan gigi'"
-      :badge="'Dental Knowledge Hub'"
+      :badge="'Know Your Smile Better'"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
         { label: 'Artikel' },
@@ -92,16 +109,16 @@ onMounted(() => {
             :to="`/articles/${article.slug}`"
             class="article-card glass-panel rounded-2xl overflow-hidden glass-card-hover border-cyan-tech/10 block group">
             <div class="aspect-[16/10] bg-surface-container overflow-hidden">
-              <img :src="article.image" :alt="article.title"
+              <img :src="article.cover_image" :alt="article.title"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 loading="lazy">
             </div>
             <div class="p-4">
               <div class="flex items-center gap-3 mb-3">
                 <span class="px-3 py-1 rounded-full bg-cyan-tech/10 text-primary text-xs font-display font-semibold">
-                  {{ article.category }}
+                  {{ getCategoryName(article.category_id) }}
                 </span>
-                <span class="text-on-surface-variant text-xs font-body">{{ article.readTime }}</span>
+                <span class="text-on-surface-variant text-xs font-body">{{ article.read_time }}</span>
               </div>
               <h3 class="font-display text-[16px] md:text-[18px] leading-[1.4] font-semibold text-primary mb-2 group-hover:text-cyan-tech transition-colors">
                 {{ article.title }}
@@ -110,7 +127,7 @@ onMounted(() => {
                 {{ article.excerpt }}
               </p>
               <div class="flex items-center justify-between">
-                <span class="text-on-surface-variant text-xs font-body">{{ article.date }}</span>
+                <span class="text-on-surface-variant text-xs font-body">{{ new Date(article.created_at).toLocaleDateString('id-ID') }}</span>
                 <span class="text-primary text-sm font-display font-semibold flex items-center gap-1 group-hover:text-cyan-tech transition-colors">
                   Baca Selengkapnya
                   <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
@@ -140,7 +157,7 @@ onMounted(() => {
           Konsultasi gratis dengan dokter kami untuk mengetahui lebih lanjut tentang Digital Smile Design dan perawatan estetik lainnya.
         </p>
         <div class="flex flex-wrap justify-center gap-3 md:gap-4">
-          <a href="https://booking.seadentalaesthetics.id/booking/register" target="_blank"
+          <a @click.prevent="openBranchModal()"
             class="bg-primary text-white font-display font-semibold text-[14px] md:text-[16px] px-6 py-3 md:px-8 md:py-4 rounded-full hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all duration-300 active:scale-95 flex items-center gap-2">
             <span class="material-symbols-outlined text-lg">event</span>
             Konsultasi Gratis

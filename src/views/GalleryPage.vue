@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { galleryImages, galleryCategories } from '@/data/gallery'
+import { ref, computed, onMounted, nextTick } from 'vue'
+import { useGallery } from '@/composables/useGallery'
 import GalleryLightbox from '@/components/GalleryLightbox.vue'
 import PageHero from '@/components/PageHero.vue'
 import { useSeo } from '@/composables/useSeo'
+import { useBranchModal } from '@/composables/useBranchModal'
+
+const { open: openBranchModal } = useBranchModal()
 
 useSeo({
   title: 'Galeri',
@@ -13,17 +14,22 @@ useSeo({
   url: '/gallery',
 })
 
-gsap.registerPlugin(ScrollTrigger)
-
 const gridRef = ref<HTMLElement>()
 const lightboxOpen = ref(false)
 const lightboxIndex = ref(0)
 const activeCategory = ref('all')
 
+const { items: galleryImages, loadGallery } = useGallery()
+
+const galleryCategories = computed(() => {
+  const cats = new Set(galleryImages.value.map(img => img.category).filter(Boolean) as string[])
+  return [{ key: 'all', label: 'Semua' }, ...Array.from(cats).map(c => ({ key: c, label: c }))]
+})
+
 const filteredImages = computed(() =>
   activeCategory.value === 'all'
-    ? galleryImages
-    : galleryImages.filter(img => img.category === activeCategory.value || !img.category)
+    ? galleryImages.value
+    : galleryImages.value.filter(img => img.category === activeCategory.value || !img.category)
 )
 
 function openLightbox(index: number) {
@@ -31,7 +37,12 @@ function openLightbox(index: number) {
   lightboxOpen.value = true
 }
 
-onMounted(() => {
+onMounted(async () => {
+  const { gsap } = await import('gsap')
+  const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+  gsap.registerPlugin(ScrollTrigger)
+  await loadGallery()
+  await nextTick()
   if (gridRef.value) {
     gsap.fromTo(gridRef.value.querySelectorAll('.gallery-item'),
       { y: 40, opacity: 0, scale: 0.95 },
@@ -48,14 +59,35 @@ onMounted(() => {
   <div>
     <!-- HERO -->
     <PageHero
-      variant="minimal"
-      title="Galeri"
-      subtitle="Dokumentasi hasil perawatan dan fasilitas SEA Dental Aesthetics."
+      variant="mosaic"
+      eyebrow="Hasil & Dokumentasi"
+      title="Galeri Kami"
+      subtitle="Dokumentasi perawatan dan hasil klinis SEA Dental Aesthetics."
+      :image="'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80'"
+      :imageAlt="'Galeri klinik gigi'"
+      :badge="'Precision You Can See'"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
         { label: 'Galeri' },
       ]"
-    />
+    >
+      <template #mosaic-1>
+        <img
+          src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400&q=80"
+          alt="Perawatan gigi"
+          class="w-full h-full object-cover"
+          loading="lazy"
+        >
+      </template>
+      <template #mosaic-2>
+        <img
+          src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=400&q=80"
+          alt="Klinik gigi"
+          class="w-full h-full object-cover"
+          loading="lazy"
+        >
+      </template>
+    </PageHero>
 
     <!-- GRID -->
     <section ref="gridRef" class="pt-10 md:pt-14 pb-12 md:pb-20 bg-white">
@@ -84,13 +116,13 @@ onMounted(() => {
             @click="openLightbox(i)"
             class="gallery-item group relative aspect-[4/3] rounded-xl md:rounded-2xl overflow-hidden bg-surface-container cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-tech">
             <img
-              :src="img.src"
-              :alt="img.alt"
+              :src="img.image_url"
+              :alt="img.title"
               loading="lazy"
               class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
             <div class="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div class="absolute bottom-0 left-0 right-0 p-3 md:p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-              <p class="text-white font-display text-xs md:text-sm font-semibold">{{ img.alt }}</p>
+              <p class="text-white font-display text-xs md:text-sm font-semibold">{{ img.title }}</p>
             </div>
           </button>
         </div>
@@ -107,7 +139,7 @@ onMounted(() => {
           Kunjungi klinik kami untuk melihat fasilitas dan teknologi terbaik yang kami gunakan.
         </p>
         <div class="flex flex-wrap justify-center gap-3 md:gap-4">
-          <a href="https://booking.seadentalaesthetics.id/booking/register" target="_blank"
+          <a @click.prevent="openBranchModal()"
             class="bg-primary text-white font-display font-semibold text-[14px] md:text-[16px] px-6 py-3 md:px-8 md:py-4 rounded-full hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all duration-300 active:scale-95 flex items-center gap-2">
             <span class="material-symbols-outlined text-lg">event</span>
             Buat Janji

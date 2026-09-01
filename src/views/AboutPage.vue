@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useSeo, localBusinessSchema } from '@/composables/useSeo'
 import PageHero from '@/components/PageHero.vue'
+import { useBranchModal } from '@/composables/useBranchModal'
 
-gsap.registerPlugin(ScrollTrigger)
+const { open: openBranchModal } = useBranchModal()
 
 useSeo({
   title: 'Tentang Kami',
@@ -25,7 +24,10 @@ const values = [
   { icon: 'groups', title: 'Teamwork', desc: 'Tim dokter spesialis yang bekerja sama untuk hasil terbaik.' },
 ]
 
-onMounted(() => {
+onMounted(async () => {
+  const { gsap } = await import('gsap')
+  const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+  gsap.registerPlugin(ScrollTrigger)
   if (missionRef.value) {
     gsap.fromTo(missionRef.value,
       { y: 30, opacity: 0 },
@@ -51,10 +53,11 @@ onMounted(() => {
   <div>
     <!-- HERO -->
     <PageHero
-      variant="editorial"
+      variant="split"
+      eyebrow="About Us"
       title="Tentang Kami"
       subtitle="Mengenal lebih dekat SEA Dental Aesthetics dan komitmen kami terhadap kesehatan gigi Anda."
-      :image="'/references/image_from_https_seadentalaesthetics.id_assets_img_gallery_galeri_7.jpeg/screen.png'"
+      :image="'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80'"
       :imageAlt="'Interior klinik SEA Dental Aesthetics'"
       :badge="'Modern Dental Aesthetics'"
       :breadcrumbs="[
@@ -84,7 +87,7 @@ onMounted(() => {
           </div>
           <div class="relative">
             <div class="aspect-[4/3] rounded-3xl bg-gradient-to-br from-primary/10 to-cyan-tech/10 overflow-hidden">
-              <img src="/references/logo_circular.png"
+              <img src="/references/logo_footer.png"
                 alt="SEA Dental Aesthetics" class="w-full h-full object-contain p-8">
             </div>
             <div class="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
@@ -150,7 +153,7 @@ onMounted(() => {
             Konsultasikan kebutuhan gigi Anda dengan tim dokter kami hari ini.
           </p>
           <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="https://booking.seadentalaesthetics.id/booking/register" target="_blank"
+            <a @click.prevent="openBranchModal()"
               class="px-8 py-3.5 rounded-xl bg-cyan-tech text-primary font-display font-semibold text-sm hover:bg-cyan-tech/90 transition-colors">
               Buat Janji Temu
             </a>

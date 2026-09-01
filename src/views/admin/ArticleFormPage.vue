@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, defineAsyncComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { supabase } from '@/utils/supabase'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
+const QuillEditor = defineAsyncComponent(() => import('@vueup/vue-quill').then(m => m.QuillEditor))
 
 const route = useRoute()
 const router = useRouter()
@@ -17,6 +19,7 @@ const form = reactive({
   excerpt: '',
   content: '',
   cover_image: '',
+  author_name: 'SEA Dental',
   category_id: '',
   status: 'draft' as 'draft' | 'published' | 'archived',
   seo_title: '',
@@ -85,6 +88,47 @@ async function handleSave() {
 onMounted(() => { loadCategories(); loadArticle() })
 </script>
 
+<style>
+.ql-toolbar.ql-snow {
+  border: none !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  background: #f9fafb;
+}
+.ql-container.ql-snow {
+  border: none !important;
+}
+.ql-editor {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #374151;
+  padding: 16px;
+}
+.ql-editor.ql-blank::before {
+  color: #9ca3af;
+  font-style: normal;
+}
+.ql-snow .ql-stroke {
+  stroke: #6b7280;
+}
+.ql-snow .ql-fill {
+  fill: #6b7280;
+}
+.ql-snow .ql-picker-label {
+  color: #6b7280;
+}
+.ql-editor h1 { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+.ql-editor h2 { font-size: 20px; font-weight: 600; margin-bottom: 10px; }
+.ql-editor h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+.ql-editor p { margin-bottom: 12px; }
+.ql-editor blockquote {
+  border-left: 3px solid #19377D;
+  padding-left: 12px;
+  color: #64748B;
+  margin: 12px 0;
+}
+</style>
+
 <template>
   <div>
     <div class="flex items-center justify-between mb-6">
@@ -131,10 +175,28 @@ onMounted(() => { loadCategories(); loadArticle() })
                   placeholder="Ringkasan singkat artikel"></textarea>
               </div>
               <div>
-                <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">Konten (HTML)</label>
-                <textarea v-model="form.content" rows="15"
-                  class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm font-body font-mono focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors resize-y"
-                  placeholder="<p>Tulis konten artikel di sini...</p>"></textarea>
+                <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">Penulis</label>
+                <input v-model="form.author_name"
+                  class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
+                  placeholder="Nama penulis">
+              </div>
+              <div>
+                <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">Konten Artikel</label>
+                <div class="rounded-xl border border-gray-200 overflow-hidden focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20 transition-colors">
+                  <QuillEditor
+                    v-model:content="form.content"
+                    content-type="html"
+                    :style="{ minHeight: '300px' }"
+                    :toolbar="[
+                      [{ header: [1, 2, 3, false] }],
+                      ['bold', 'italic', 'underline', 'strike'],
+                      [{ list: 'ordered' }, { list: 'bullet' }],
+                      ['blockquote', 'link', 'image'],
+                      [{ align: [] }],
+                      ['clean'],
+                    ]"
+                  />
+                </div>
               </div>
             </div>
           </div>

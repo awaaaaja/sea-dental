@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { doctors } from '@/data/doctors'
+import { onMounted, ref, nextTick } from 'vue'
+import { useDoctors } from '@/composables/useDoctors'
 import PageHero from '@/components/PageHero.vue'
 import { useSeo } from '@/composables/useSeo'
+import { useBranchModal } from '@/composables/useBranchModal'
+
+const { open: openBranchModal } = useBranchModal()
 
 useSeo({
   title: 'Dokter',
@@ -12,11 +13,15 @@ useSeo({
   url: '/doctors',
 })
 
-gsap.registerPlugin(ScrollTrigger)
-
 const gridRef = ref<HTMLElement>()
+const { doctors, loadDoctors } = useDoctors()
 
-onMounted(() => {
+onMounted(async () => {
+  const { gsap } = await import('gsap')
+  const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+  gsap.registerPlugin(ScrollTrigger)
+  await loadDoctors()
+  await nextTick()
   if (gridRef.value) {
     gsap.fromTo(gridRef.value.querySelectorAll('.doctor-card'),
       { y: 40, opacity: 0 },
@@ -33,11 +38,12 @@ onMounted(() => {
   <div>
     <!-- HERO -->
     <PageHero
-      variant="editorial"
-      title="Dokter Kami"
-      subtitle="Tim dokter berpengalaman yang siap memberikan perawatan terbaik untuk senyum Anda."
-      :image="'/references/image_from_https_seadentalaesthetics.id_assets_img_doctors_andre_1.png/screen.png'"
-      :imageAlt="'drg. Andre Anggara'"
+      variant="split"
+      eyebrow="02 / Expert Team"
+      title="Tim Dokter"
+      subtitle="Didukung tenaga profesional yang mengutamakan ketelitian dan kenyamanan pasien."
+      :image="'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&q=80'"
+      :imageAlt="'Dokter gigi profesional'"
       :badge="'Expert Dental Team'"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
@@ -56,20 +62,20 @@ onMounted(() => {
             class="doctor-card glass-panel rounded-2xl md:rounded-3xl p-6 md:p-10 glass-card-hover block group text-center"
           >
             <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-primary/10 mx-auto mb-5 md:mb-7 overflow-hidden ring-2 ring-outline-variant/20 transition-all">
-              <img :src="doc.photo" :alt="doc.name" class="w-full h-full object-cover" loading="lazy">
+              <img :src="doc.photo_url" :alt="doc.name" class="w-full h-full object-cover" loading="lazy">
             </div>
             <h2 class="font-display text-[22px] md:text-[28px] leading-[1.3] font-semibold text-primary mb-1">{{ doc.name }}</h2>
-            <p class="font-body text-[13px] md:text-sm text-cyan-tech font-medium mb-4">{{ doc.title }}</p>
+            <p class="font-body text-[13px] md:text-sm text-cyan-tech font-medium mb-4">{{ doc.professional_title }}</p>
             <p class="font-body text-[14px] md:text-[15px] leading-[1.6] text-on-surface-variant mb-5">{{ doc.bio }}</p>
             <div class="flex flex-wrap justify-center gap-2 mb-4">
-              <span v-for="s in doc.specialties.slice(0, 3)" :key="s"
+              <span v-for="s in (doc.specialization || '').split(',').slice(0, 3)" :key="s"
                 class="px-3 py-1 rounded-full bg-cyan-tech/10 text-primary text-xs font-display font-semibold">
-                {{ s }}
+                {{ s.trim() }}
               </span>
             </div>
             <div class="flex items-center justify-center gap-2 text-primary group-hover:text-cyan-tech transition-colors">
               <span class="material-symbols-outlined text-base">camera</span>
-              <span class="font-body text-sm font-medium">{{ doc.instagram }}</span>
+              <span class="font-body text-sm font-medium">Instagram</span>
             </div>
           </router-link>
         </div>
@@ -86,7 +92,7 @@ onMounted(() => {
           Buat janji temu sekarang untuk konsultasi langsung dengan dokter-dokter berpengalaman kami.
         </p>
         <div class="flex flex-wrap justify-center gap-3 md:gap-4">
-          <a href="https://booking.seadentalaesthetics.id/booking/register" target="_blank"
+          <a @click.prevent="openBranchModal()"
             class="bg-primary text-white font-display font-semibold text-[14px] md:text-[16px] px-6 py-3 md:px-8 md:py-4 rounded-full hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all duration-300 active:scale-95 flex items-center gap-2">
             <span class="material-symbols-outlined text-lg">event</span>
             Buat Janji Temu

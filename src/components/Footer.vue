@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useBranchModal } from '@/composables/useBranchModal'
+
+const { open: openBranchModal } = useBranchModal()
+
 const currentYear = new Date().getFullYear()
 
 const quickLinks = [
@@ -34,7 +38,7 @@ const socials = [
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 pb-8 border-b border-white/10">
         <!-- Brand -->
         <div class="col-span-2 md:col-span-1">
-          <img src="/references/logo_circular.png" alt="SEA Dental" class="h-12 mb-3">
+          <img src="/references/logo_footer.png" alt="SEA Dental" class="h-14 mb-3">
           <p class="font-body text-[12px] text-white/45 leading-relaxed">Klinik Gigi Estetik Padang</p>
         </div>
 
@@ -108,7 +112,7 @@ const socials = [
           <div>
             <h4 class="font-display text-[11px] font-semibold text-white uppercase tracking-wider mb-3">Hubungi Kami</h4>
             <p class="font-body text-[12px] text-white/45 mb-3">Butuh konsultasi? Kami siap membantu Anda.</p>
-            <a href="https://booking.seadentalaesthetics.id/booking/register" target="_blank"
+            <a @click.prevent="openBranchModal()"
               class="inline-flex items-center gap-2 bg-cyan-tech text-primary font-display text-[12px] font-semibold px-4 py-2 rounded-full hover:bg-cyan-tech/90 transition-colors">
               <span class="material-symbols-outlined text-[14px]">event</span>
               Reservasi Sekarang

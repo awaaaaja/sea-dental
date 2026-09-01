@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { onMounted, ref, nextTick } from 'vue'
 import { useSeo } from '@/composables/useSeo'
 import { usePromos } from '@/composables/usePromos'
 import PageHero from '@/components/PageHero.vue'
+import { useBranchModal } from '@/composables/useBranchModal'
 
-gsap.registerPlugin(ScrollTrigger)
+const { open: openBranchModal } = useBranchModal()
 
 useSeo({
   title: 'Promo',
@@ -17,9 +16,12 @@ useSeo({
 const gridRef = ref<HTMLElement>()
 const { promos, loading, loadPromos } = usePromos()
 
-onMounted(() => {
-  loadPromos()
-
+onMounted(async () => {
+  const { gsap } = await import('gsap')
+  const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+  gsap.registerPlugin(ScrollTrigger)
+  await loadPromos()
+  await nextTick()
   if (gridRef.value) {
     gsap.fromTo(gridRef.value?.querySelectorAll('.animate-item') || [],
       { y: 30, opacity: 0 },
@@ -31,12 +33,13 @@ onMounted(() => {
 
 <template>
   <div>
-    <!-- HERO — Conversion -->
+    <!-- HERO — Full Image -->
     <PageHero
-      variant="conversion"
+      variant="full-image"
+      eyebrow="Special Offer"
       title="Promo Spesial"
       subtitle="Dapatkan perawatan terbaik dengan penawaran khusus dari SEA Dental Aesthetics."
-      bg-image="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1920&q=80"
+      bg-image="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=1920&q=80"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
         { label: 'Promo' },
@@ -92,7 +95,7 @@ onMounted(() => {
             <h3 class="font-display text-[18px] md:text-[22px] font-semibold text-primary mb-2">Tertarik dengan Promo Kami?</h3>
             <p class="font-body text-[13px] text-on-surface-variant mb-5 max-w-md mx-auto">Hubungi kami untuk informasi lebih lanjut atau langsung buat janji temu.</p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <a href="https://booking.seadentalaesthetics.id/booking/register" target="_blank"
+              <a @click.prevent="openBranchModal()"
                 class="px-5 py-2.5 rounded-full bg-primary text-white font-display text-[13px] font-semibold hover:bg-primary/90 hover:shadow-lg transition-all duration-300">
                 Buat Janji Temu
               </a>

@@ -95,14 +95,14 @@ onMounted(loadBookings)
                   @click="selectedBooking = b"
                   :class="['hover:bg-gray-50/50 transition-colors cursor-pointer', selectedBooking?.id === b.id && 'bg-primary/5']">
                   <td class="px-5 py-4">
-                    <p class="text-sm font-display font-medium text-gray-900">{{ b.patient_name || b.name }}</p>
-                    <p class="text-[11px] text-gray-400 font-body md:hidden">{{ b.service || '-' }}</p>
+                    <p class="text-sm font-display font-medium text-gray-900">{{ b.name }}</p>
+                    <p class="text-[11px] text-gray-400 font-body md:hidden">{{ b.preferred_service || '-' }}</p>
                   </td>
                   <td class="px-5 py-4 hidden md:table-cell">
-                    <span class="text-xs text-gray-600 font-body">{{ b.service || '-' }}</span>
+                    <span class="text-xs text-gray-600 font-body">{{ b.preferred_service || '-' }}</span>
                   </td>
                   <td class="px-5 py-4 hidden lg:table-cell">
-                    <span class="text-xs text-gray-500 font-body">{{ formatDate(b.appointment_date || b.created_at) }}</span>
+                    <span class="text-xs text-gray-500 font-body">{{ formatDate(b.preferred_date || b.created_at) }}</span>
                   </td>
                   <td class="px-5 py-4 text-center">
                     <span :class="['inline-flex px-2.5 py-1 rounded-full text-[11px] font-display font-semibold', getStatusColor(b.status)]">
@@ -128,7 +128,7 @@ onMounted(loadBookings)
           <div class="space-y-4">
             <div>
               <p class="text-[11px] text-gray-400 font-display uppercase tracking-wider mb-1">Pasien</p>
-              <p class="text-sm font-display font-medium text-gray-900">{{ selectedBooking.patient_name || selectedBooking.name || '-' }}</p>
+              <p class="text-sm font-display font-medium text-gray-900">{{ selectedBooking.name || '-' }}</p>
             </div>
             <div>
               <p class="text-[11px] text-gray-400 font-display uppercase tracking-wider mb-1">Telepon</p>
@@ -136,11 +136,11 @@ onMounted(loadBookings)
             </div>
             <div>
               <p class="text-[11px] text-gray-400 font-display uppercase tracking-wider mb-1">Layanan</p>
-              <p class="text-sm font-body text-gray-700">{{ selectedBooking.service || '-' }}</p>
+              <p class="text-sm font-body text-gray-700">{{ selectedBooking.preferred_service || '-' }}</p>
             </div>
             <div>
               <p class="text-[11px] text-gray-400 font-display uppercase tracking-wider mb-1">Tanggal</p>
-              <p class="text-sm font-body text-gray-700">{{ formatDate(selectedBooking.appointment_date || selectedBooking.created_at) }}</p>
+              <p class="text-sm font-body text-gray-700">{{ formatDate(selectedBooking.preferred_date || selectedBooking.created_at) }}</p>
             </div>
             <div v-if="selectedBooking.notes">
               <p class="text-[11px] text-gray-400 font-display uppercase tracking-wider mb-1">Catatan</p>

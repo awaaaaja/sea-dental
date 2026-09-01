@@ -1,8 +1,6 @@
 // ImageKit URL builder for optimized images
 // Endpoint: https://ik.imagekit.io/sea_dental
 
-const IMAGEKIT_ENDPOINT = 'https://ik.imagekit.io'
-
 /**
  * Build an ImageKit URL with transformations
  * @param url - Original image URL or path

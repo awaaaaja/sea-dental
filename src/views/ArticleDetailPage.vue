@@ -1,44 +1,58 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { gsap } from 'gsap'
-import { getArticleBySlug, getRelatedArticles } from '@/data/articles'
+import { supabase } from '@/utils/supabase'
+import type { Article } from '@/composables/useArticles'
 import PageHero from '@/components/PageHero.vue'
 import { useSeo } from '@/composables/useSeo'
+import { useBranchModal } from '@/composables/useBranchModal'
+
+const { open: openBranchModal } = useBranchModal()
 
 const route = useRoute()
 const router = useRouter()
+const contentRef = ref<HTMLElement>()
+const article = ref<Article | null>(null)
+const relatedArticles = ref<Article[]>([])
 
-
-const article = computed(() => {
+onMounted(async () => {
+  const { gsap } = await import('gsap')
+  const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+  gsap.registerPlugin(ScrollTrigger)
   const slug = route.params.slug as string
-  return getArticleBySlug(slug)
-})
+  const { data } = await supabase.from('articles').select('*').eq('slug', slug).single()
+  article.value = data
 
-if (article.value) {
+  if (!article.value) {
+    router.replace('/articles')
+    return
+  }
+
   useSeo({
     title: article.value.title,
     description: article.value.excerpt || article.value.content?.replace(/<[^>]*>/g, '').substring(0, 160),
     url: `/articles/${article.value.slug}`,
     type: 'article',
   })
-}
 
-const relatedArticles = computed(() => {
-  if (!article.value) return []
-  return getRelatedArticles(article.value.slug, 3)
-})
+  const { data: rels } = await supabase
+    .from('articles')
+    .select('*')
+    .eq('status', 'published')
+    .neq('id', article.value.id)
+    .order('created_at', { ascending: false })
+    .limit(3)
+  relatedArticles.value = rels || []
 
-onMounted(() => {
-  if (!article.value) {
-    router.replace('/articles')
-    return
+  if (contentRef.value) {
+    gsap.fromTo(contentRef.value.querySelectorAll('.animate-item'),
+      { y: 30, opacity: 0 },
+      {
+        scrollTrigger: { trigger: contentRef.value, start: 'top 85%' },
+        y: 0, opacity: 1, duration: 0.7, stagger: 0.1, ease: 'power2.out',
+      }
+    )
   }
-
-})
-
-watch(() => route.params.slug, () => {
-  if (!article.value) router.replace('/articles')
 })
 </script>
 
@@ -46,12 +60,12 @@ watch(() => route.params.slug, () => {
   <div v-if="article">
     <!-- HERO -->
     <PageHero
-      variant="minimal"
-      :title="article?.title || 'Detail Artikel'"
+      eyebrow="03 / Knowledge Hub"
+      :title="article.title"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
         { label: 'Artikel', to: '/articles' },
-        { label: article?.title || 'Detail' },
+        { label: article.title },
       ]"
     />
 
@@ -63,11 +77,8 @@ watch(() => route.params.slug, () => {
           <article class="lg:col-span-8">
             <div class="mb-6">
               <div class="flex flex-wrap items-center gap-3 mb-4">
-                <span class="px-3 py-1 rounded-full bg-cyan-tech/10 text-primary text-xs font-display font-semibold">
-                  {{ article.category }}
-                </span>
-                <span class="text-on-surface-variant text-sm font-body">{{ article.date }}</span>
-                <span class="text-on-surface-variant text-sm font-body">{{ article.readTime }}</span>
+                <span class="text-on-surface-variant text-sm font-body">{{ new Date(article.created_at).toLocaleDateString('id-ID') }}</span>
+                <span class="text-on-surface-variant text-sm font-body">{{ article.read_time }}</span>
               </div>
               <h1 class="font-display text-[24px] md:text-[32px] lg:text-[40px] leading-[1.2] font-bold text-primary mb-4">
                 {{ article.title }}
@@ -79,7 +90,7 @@ watch(() => route.params.slug, () => {
 
             <!-- Featured image -->
             <div class="rounded-2xl overflow-hidden mb-8 bg-surface-container">
-              <img :src="article.image" :alt="article.title" class="w-full aspect-[16/9] object-cover" loading="lazy">
+              <img :src="article.cover_image" :alt="article.title" class="w-full aspect-[16/9] object-cover" loading="lazy">
             </div>
 
             <!-- Article body -->
@@ -89,7 +100,7 @@ watch(() => route.params.slug, () => {
             <!-- Author -->
             <div class="mt-8 pt-6 border-t border-surface-container">
               <p class="font-body text-sm text-on-surface-variant">
-                Ditulis oleh <span class="text-primary font-semibold">{{ article.author }}</span>
+                Ditulis oleh <span class="text-primary font-semibold">{{ article.author_name }}</span>
               </p>
             </div>
 
@@ -102,7 +113,7 @@ watch(() => route.params.slug, () => {
                 Konsultasi gratis dengan dokter kami untuk mengetahui lebih lanjut.
               </p>
               <div class="flex flex-wrap justify-center gap-3">
-                <a href="https://booking.seadentalaesthetics.id/booking/register" target="_blank"
+                <a @click.prevent="openBranchModal()"
                   class="bg-primary text-white font-display font-semibold text-sm px-6 py-3 rounded-full hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all duration-300 active:scale-95 flex items-center gap-2">
                   <span class="material-symbols-outlined text-base">event</span>
                   Konsultasi Gratis
@@ -128,15 +139,14 @@ watch(() => route.params.slug, () => {
                   class="glass-panel rounded-xl p-4 glass-card-hover block group">
                   <div class="flex gap-3">
                     <div class="w-20 h-20 rounded-lg bg-surface-container overflow-hidden flex-shrink-0">
-                      <img :src="rel.image" :alt="rel.title"
+                      <img :src="rel.cover_image" :alt="rel.title"
                         class="w-full h-full object-cover" loading="lazy">
                     </div>
                     <div class="flex-1 min-w-0">
-                      <span class="text-xs text-primary font-display font-semibold">{{ rel.category }}</span>
                       <h4 class="font-display text-sm font-semibold text-primary mt-1 line-clamp-2 group-hover:text-cyan-tech transition-colors">
                         {{ rel.title }}
                       </h4>
-                      <span class="text-xs text-on-surface-variant font-body mt-2 block">{{ rel.date }}</span>
+                      <span class="text-xs text-on-surface-variant font-body mt-2 block">{{ new Date(rel.created_at).toLocaleDateString('id-ID') }}</span>
                     </div>
                   </div>
                 </router-link>

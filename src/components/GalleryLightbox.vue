@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue'
-import type { GalleryImage } from '@/data/gallery'
+import { watch, onMounted, onUnmounted } from 'vue'
+import type { GalleryItem } from '@/composables/useGallery'
 
 const props = defineProps<{
-  images: GalleryImage[]
+  images: GalleryItem[]
   currentIndex: number
   open: boolean
 }>()
@@ -57,7 +57,7 @@ watch(() => props.open, (v) => {
 
         <!-- Image -->
         <div class="max-w-5xl max-h-[85vh] w-full flex items-center justify-center">
-          <img :src="images[currentIndex]?.src" :alt="images[currentIndex]?.alt"
+          <img :src="images[currentIndex]?.image_url" :alt="images[currentIndex]?.title"
             class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl" />
         </div>
 

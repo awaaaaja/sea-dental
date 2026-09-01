@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { faqs } from '@/data/faqs'
+import { ref, computed, onMounted, nextTick } from 'vue'
+import { useFaqs } from '@/composables/useFaqs'
 import PageHero from '@/components/PageHero.vue'
 import { useSeo } from '@/composables/useSeo'
 
@@ -12,23 +10,28 @@ useSeo({
   url: '/faq',
 })
 
-gsap.registerPlugin(ScrollTrigger)
-
 const listRef = ref<HTMLElement>()
 const activeCategory = ref('all')
 
+const { faqs, loadFaqs } = useFaqs()
+
 const categories = computed(() => {
-  const cats = new Set(faqs.map(f => f.category).filter(Boolean) as string[])
+  const cats = new Set(faqs.value.map(f => f.category).filter(Boolean) as string[])
   return ['all', ...Array.from(cats)]
 })
 
 const filteredFaqs = computed(() =>
   activeCategory.value === 'all'
-    ? faqs
-    : faqs.filter(f => f.category === activeCategory.value)
+    ? faqs.value
+    : faqs.value.filter(f => f.category === activeCategory.value)
 )
 
-onMounted(() => {
+onMounted(async () => {
+  const { gsap } = await import('gsap')
+  const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+  gsap.registerPlugin(ScrollTrigger)
+  await loadFaqs()
+  await nextTick()
   if (listRef.value) {
     gsap.fromTo(listRef.value.querySelectorAll('.faq-item'),
       { y: 30, opacity: 0 },
@@ -45,8 +48,8 @@ onMounted(() => {
   <div>
     <!-- HERO -->
     <PageHero
-      variant="minimal"
-      title="FAQ"
+      eyebrow="FAQ"
+      title="Pertanyaan Umum"
       subtitle="Jawaban cepat untuk pertanyaan yang sering diajukan seputar layanan kami."
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },

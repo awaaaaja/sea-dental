@@ -15,7 +15,7 @@ const selectedCategory = ref('')
 
 async function loadImages() {
   loading.value = true
-  let query = supabase.from('gallery_images').select('*').order('sort_order')
+  let query = supabase.from('gallery_items').select('*').order('sort_order')
   if (selectedCategory.value) query = query.eq('category', selectedCategory.value)
   const { data } = await query
   images.value = data || []
@@ -28,10 +28,10 @@ async function handleUpload(files: FileList | null) {
   const fileArr = Array.from(files)
   for (const file of fileArr) {
     const fileName = `gallery/${Date.now()}_${file.name}`
-    const { data } = await supabase.storage.from('gallery-images').upload(fileName, file)
+    const { data } = await supabase.storage.from('gallery').upload(fileName, file)
     if (data) {
-      const { data: urlData } = supabase.storage.from('gallery-images').getPublicUrl(fileName)
-      await supabase.from('gallery_images').insert({
+      const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(fileName)
+      await supabase.from('gallery_items').insert({
         title: file.name.replace(/\.[^.]+$/, ''),
         image_url: urlData.publicUrl,
         category: selectedCategory.value || null,
@@ -54,9 +54,9 @@ async function handleDelete() {
   const img = images.value.find(i => i.id === deleteId.value)
   if (img?.image_url) {
     const path = img.image_url.split('/').slice(-2).join('/')
-    await supabase.storage.from('gallery-images').remove([path])
+    await supabase.storage.from('gallery').remove([path])
   }
-  await supabase.from('gallery_images').delete().eq('id', deleteId.value)
+  await supabase.from('gallery_items').delete().eq('id', deleteId.value)
   deleteId.value = null
   deleting.value = false
   await loadImages()

@@ -15,7 +15,6 @@ const form = reactive({
   address: '',
   phone: '',
   whatsapp: '',
-  email: '',
   operating_hours: '',
   google_maps_url: '',
   latitude: '',
@@ -135,7 +134,7 @@ onMounted(loadLocation)
         <div class="bg-white rounded-2xl border border-gray-100 p-4">
           <h2 class="font-display text-[13px] font-semibold text-gray-900 mb-5">Kontak & Jam Operasional</h2>
           <div class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">Telepon</label>
                 <input v-model="form.phone"
@@ -147,11 +146,6 @@ onMounted(loadLocation)
                 <input v-model="form.whatsapp"
                   class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
                   placeholder="+62812 6697 1089">
-              </div>
-              <div>
-                <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">Email</label>
-                <input v-model="form.email" type="email"
-                  class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors">
               </div>
             </div>
             <div>

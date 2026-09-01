@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useBranchModal } from '@/composables/useBranchModal'
+
+const { open: openBranchModal } = useBranchModal()
 
 const scrolled = ref(false)
 const mobileOpen = ref(false)
@@ -51,7 +54,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
         <img
           class="h-8 md:h-9 w-auto object-contain"
           alt="SEA Dental Aesthetics Logo"
-          src="/references/logo_circular.png"
+          src="/references/logo_navbar.png"
         >
         <span class="hidden md:block font-display font-bold text-primary text-[15px] leading-tight tracking-tight">SEA Dental</span>
       </router-link>
@@ -68,9 +71,8 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
           {{ link.label }}
         </router-link>
         <a
-          href="https://booking.seadentalaesthetics.id/booking/register"
-          target="_blank"
-          class="ml-2 bg-primary text-white font-display text-[12px] leading-none font-semibold px-4 py-2 rounded-full hover:bg-primary/90 hover:shadow-lg transition-all duration-300 active:scale-95 flex items-center gap-1.5"
+          @click.prevent="openBranchModal()"
+          class="ml-2 bg-primary text-white font-display text-[12px] leading-none font-semibold px-4 py-2 rounded-full hover:bg-primary/90 hover:shadow-lg transition-all duration-300 active:scale-95 flex items-center gap-1.5 cursor-pointer"
         >
           <span class="material-symbols-outlined text-[14px]">event</span>
           RESERVASI
@@ -91,29 +93,29 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
     <Transition name="slide">
       <div
         v-if="mobileOpen"
-        class="fixed inset-0 top-[52px] z-40 bg-white/95 backdrop-blur-[18px] md:hidden"
+        class="fixed inset-0 top-[52px] z-40 md:hidden"
         @click.self="closeMobile"
       >
-        <div class="flex flex-col p-4 gap-1">
-          <router-link
-            v-for="link in navLinks"
-            :key="link.to"
-            :to="link.to"
-            class="font-display text-[15px] font-medium text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-all duration-200 px-3 py-2.5 rounded-lg"
-            active-class="!text-primary"
-            @click="closeMobile"
-          >
-            {{ link.label }}
-          </router-link>
-          <a
-            href="https://booking.seadentalaesthetics.id/booking/register"
-            target="_blank"
-            class="mt-3 bg-primary text-white font-display font-semibold text-[13px] text-center px-5 py-2.5 rounded-full hover:bg-primary/90 transition-all duration-300 flex items-center justify-center gap-2"
-            @click="closeMobile"
-          >
-            <span class="material-symbols-outlined text-sm">event</span>
-            RESERVASI
-          </a>
+        <div class="absolute inset-0 bg-white border-t border-gray-100 shadow-[0_8px_30px_rgba(16,36,92,0.12)]">
+          <div class="flex flex-col p-5 gap-1">
+            <router-link
+              v-for="link in navLinks"
+              :key="link.to"
+              :to="link.to"
+              class="font-display text-[15px] font-medium text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-all duration-200 px-3 py-2.5 rounded-lg"
+              active-class="!text-primary"
+              @click="closeMobile"
+            >
+              {{ link.label }}
+            </router-link>
+            <a
+              @click.prevent="openBranchModal(); closeMobile()"
+              class="mt-3 bg-primary text-white font-display font-semibold text-[13px] text-center px-5 py-2.5 rounded-full hover:bg-primary/90 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span class="material-symbols-outlined text-sm">event</span>
+              RESERVASI
+            </a>
+          </div>
         </div>
       </div>
     </Transition>

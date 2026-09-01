@@ -14,11 +14,14 @@ const form = reactive({
   name: '',
   slug: '',
   photo_url: '',
+  content_image: '',
   professional_title: '',
   specialization: '',
   bio: '',
-  full_bio: '',
   instagram_url: '',
+  education: [] as Array<{ degree: string; institution: string; year: string }>,
+  experience: [] as Array<{ role: string; institution: string; period: string }>,
+  awards: [] as Array<{ title: string; year: string }>,
   is_featured: false,
   sort_order: 0,
   status: 'draft' as 'draft' | 'published' | 'archived',
@@ -36,11 +39,29 @@ function onNameChange() {
   if (!isEdit.value) form.slug = generateSlug(form.name)
 }
 
+function addEducation() {
+  form.education.push({ degree: '', institution: '', year: '' })
+}
+function removeEducation(i: number) { form.education.splice(i, 1) }
+function addExperience() {
+  form.experience.push({ role: '', institution: '', period: '' })
+}
+function removeExperience(i: number) { form.experience.splice(i, 1) }
+function addAward() {
+  form.awards.push({ title: '', year: '' })
+}
+function removeAward(i: number) { form.awards.splice(i, 1) }
+
 async function loadDoctor() {
   if (!isEdit.value) return
   loading.value = true
   const { data } = await supabase.from('doctors').select('*').eq('id', route.params.id).single()
-  if (data) Object.assign(form, data)
+  if (data) {
+    Object.assign(form, data)
+    if (!form.education) form.education = []
+    if (!form.experience) form.experience = []
+    if (!form.awards) form.awards = []
+  }
   loading.value = false
 }
 
@@ -72,6 +93,9 @@ async function handleSave() {
   saving.value = true
 
   const payload = { ...form }
+  delete (payload as any).id
+  delete (payload as any).created_at
+  delete (payload as any).updated_at
 
   if (isEdit.value) {
     await supabase.from('doctors').update(payload).eq('id', route.params.id)
@@ -170,15 +194,79 @@ onMounted(loadDoctor)
                 class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors resize-none"></textarea>
             </div>
             <div>
-              <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">Bio Lengkap</label>
-              <textarea v-model="form.full_bio" rows="4"
-                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors resize-none"></textarea>
+              <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">Content Image URL</label>
+              <input v-model="form.content_image"
+                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
+                placeholder="https://images.unsplash.com/...">
             </div>
             <div>
               <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">Instagram URL</label>
               <input v-model="form.instagram_url"
                 class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
                 placeholder="https://www.instagram.com/username/">
+            </div>
+          </div>
+        </div>
+
+        <!-- Education -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-4">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="font-display text-[13px] font-semibold text-gray-900">Pendidikan</h2>
+            <button type="button" @click="addEducation" class="text-xs text-primary font-semibold hover:underline">+ Tambah</button>
+          </div>
+          <div v-if="form.education.length === 0" class="text-xs text-gray-400 italic">Belum ada data pendidikan</div>
+          <div v-for="(e, i) in form.education" :key="i" class="flex gap-3 mb-3 items-start">
+            <input v-model="e.degree" placeholder="Gelar (e.g. drg., Sp.Pros)" class="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-xs">
+            <input v-model="e.institution" placeholder="Institusi" class="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-xs">
+            <input v-model="e.year" placeholder="Tahun" class="w-20 px-3 py-2 rounded-lg border border-gray-200 text-xs">
+            <button type="button" @click="removeEducation(i)" class="text-red-400 hover:text-red-600 text-xs">Hapus</button>
+          </div>
+        </div>
+
+        <!-- Experience -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-4">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="font-display text-[13px] font-semibold text-gray-900">Pengalaman</h2>
+            <button type="button" @click="addExperience" class="text-xs text-primary font-semibold hover:underline">+ Tambah</button>
+          </div>
+          <div v-if="form.experience.length === 0" class="text-xs text-gray-400 italic">Belum ada data pengalaman</div>
+          <div v-for="(e, i) in form.experience" :key="i" class="flex gap-3 mb-3 items-start">
+            <input v-model="e.role" placeholder="Posisi" class="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-xs">
+            <input v-model="e.institution" placeholder="Institusi" class="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-xs">
+            <input v-model="e.period" placeholder="Periode (e.g. 2018-Sekarang)" class="w-36 px-3 py-2 rounded-lg border border-gray-200 text-xs">
+            <button type="button" @click="removeExperience(i)" class="text-red-400 hover:text-red-600 text-xs">Hapus</button>
+          </div>
+        </div>
+
+        <!-- Awards -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-4">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="font-display text-[13px] font-semibold text-gray-900">Penghargaan</h2>
+            <button type="button" @click="addAward" class="text-xs text-primary font-semibold hover:underline">+ Tambah</button>
+          </div>
+          <div v-if="form.awards.length === 0" class="text-xs text-gray-400 italic">Belum ada penghargaan</div>
+          <div v-for="(a, i) in form.awards" :key="i" class="flex gap-3 mb-3 items-start">
+            <input v-model="a.title" placeholder="Judul penghargaan" class="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-xs">
+            <input v-model="a.year" placeholder="Tahun" class="w-20 px-3 py-2 rounded-lg border border-gray-200 text-xs">
+            <button type="button" @click="removeAward(i)" class="text-red-400 hover:text-red-600 text-xs">Hapus</button>
+          </div>
+        </div>
+
+        <!-- SEO -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-4">
+          <h2 class="font-display text-[13px] font-semibold text-gray-900 mb-5">SEO</h2>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">SEO Title</label>
+              <input v-model="form.seo_title"
+                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
+                placeholder="Judul untuk SEO">
+            </div>
+            <div>
+              <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">SEO Description</label>
+              <textarea v-model="form.seo_description" rows="2"
+                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors resize-none"
+                placeholder="Deskripsi untuk SEO"></textarea>
             </div>
           </div>
         </div>

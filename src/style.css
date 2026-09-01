@@ -111,14 +111,13 @@
   }
 
   .glass-nav {
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(18px);
-    border-bottom: 1px solid rgba(16, 36, 92, 0.06);
+    background: #ffffff;
+    border-bottom: 1px solid #E5E7EB;
   }
 
   .glass-nav.scrolled {
-    background: rgba(255, 255, 255, 0.96);
-    box-shadow: 0 8px 30px rgba(16, 36, 92, 0.08);
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(16, 36, 92, 0.08);
   }
 
   .glass-panel {

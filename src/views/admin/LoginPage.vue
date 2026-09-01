@@ -45,7 +45,7 @@ async function handleReset() {
       <!-- Logo -->
       <div class="text-center mb-5">
         <router-link to="/" class="inline-block">
-          <img src="/references/logo_circular.png"
+          <img src="/references/logo_footer.png"
             alt="SEA Dental Aesthetics" class="h-16 mx-auto mb-4">
         </router-link>
         <h1 class="font-display text-[20px] md:text-[24px] font-bold text-primary">Admin Panel</h1>

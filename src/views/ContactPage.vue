@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { supabase } from '@/utils/supabase'
 import PageHero from '@/components/PageHero.vue'
 import { useSeo } from '@/composables/useSeo'
@@ -11,8 +9,6 @@ useSeo({
   description: 'Hubungi SEA Dental Aesthetics. Kirim pesan, telepon, atau WhatsApp untuk informasi dan janji temu.',
   url: '/contact',
 })
-
-gsap.registerPlugin(ScrollTrigger)
 
 const formRef = ref<HTMLElement>()
 const infoRef = ref<HTMLElement>()
@@ -79,7 +75,10 @@ async function handleSubmit() {
   submitted.value = true
 }
 
-onMounted(() => {
+onMounted(async () => {
+  const { gsap } = await import('gsap')
+  const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+  gsap.registerPlugin(ScrollTrigger)
   if (formRef.value) {
     gsap.fromTo(formRef.value,
       { y: 30, opacity: 0 },
@@ -99,9 +98,13 @@ onMounted(() => {
   <div>
     <!-- HERO -->
     <PageHero
-      variant="minimal"
-      title="Kontak Kami"
-      subtitle="Hubungi kami untuk informasi lebih lanjut atau membuat janji temu."
+      variant="split"
+      eyebrow="05 / Get in Touch"
+      title="Hubungi Kami"
+      subtitle="Konsultasikan kebutuhan perawatan gigi Anda bersama tim SEA Dental."
+      :image="'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80'"
+      :imageAlt="'Klinik SEA Dental Aesthetics'"
+      :badge="'Your Smile Starts Here'"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
         { label: 'Kontak' },

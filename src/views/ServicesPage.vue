@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { services } from '@/data/services'
+import { onMounted, ref, nextTick } from 'vue'
+import { useServices } from '@/composables/useServices'
 import { useSeo } from '@/composables/useSeo'
 import PageHero from '@/components/PageHero.vue'
+import { useBranchModal } from '@/composables/useBranchModal'
+
+const { open: openBranchModal } = useBranchModal()
 
 useSeo({
   title: 'Layanan',
@@ -12,11 +13,15 @@ useSeo({
   url: '/services',
 })
 
-gsap.registerPlugin(ScrollTrigger)
-
 const gridRef = ref<HTMLElement>()
+const { services, loadServices } = useServices()
 
-onMounted(() => {
+onMounted(async () => {
+  const { gsap } = await import('gsap')
+  const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+  gsap.registerPlugin(ScrollTrigger)
+  await loadServices()
+  await nextTick()
   gsap.fromTo(gridRef.value?.querySelectorAll('.service-card') || [],
     { y: 30, opacity: 0 },
     {
@@ -31,11 +36,12 @@ onMounted(() => {
   <div>
     <!-- HERO — Editorial -->
     <PageHero
-      variant="editorial"
+      variant="split"
+      eyebrow="01 / Dental Care"
       title="Layanan Kami"
-      subtitle="Perawatan gigi komprehensif untuk kesehatan dan senyum Anda. Didukung dokter terlatih dan teknologi terkini."
-      :image="'/references/image_from_https_seadentalaesthetics.id_assets_img_gallery_galeri_1.jpeg/screen.png'"
-      :imageAlt="'Perawatan gigi di SEA Dental Aesthetics'"
+      subtitle="Perawatan gigi yang dirancang untuk menjaga kesehatan, fungsi, dan kepercayaan diri Anda."
+      :image="'https://images.unsplash.com/photo-1629909615184-74f495363b67?w=800&q=80'"
+      :imageAlt="'Dokter gigi sedang melakukan pemeriksaan'"
       :badge="'High-Precision Dental Care'"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
@@ -57,7 +63,7 @@ onMounted(() => {
               <span class="material-symbols-outlined text-[22px]">{{ svc.icon }}</span>
             </div>
             <h3 class="font-display text-[17px] md:text-[20px] leading-[1.3] font-semibold text-primary mb-2">{{ svc.name }}</h3>
-            <p class="font-body text-[13px] md:text-[14px] leading-[1.7] text-on-surface-variant">{{ svc.shortDesc }}</p>
+            <p class="font-body text-[13px] md:text-[14px] leading-[1.7] text-on-surface-variant">{{ svc.short_description }}</p>
             <div class="mt-4 flex items-center gap-1 text-primary font-display text-[13px] font-semibold group-hover:text-cyan-tech transition-colors">
               Selengkapnya
               <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
@@ -77,7 +83,7 @@ onMounted(() => {
           Hubungi kami untuk membuat janji temu atau konsultasi gratis mengenai perawatan gigi Anda.
         </p>
         <div class="flex flex-wrap justify-center gap-3">
-          <a href="https://booking.seadentalaesthetics.id/booking/register" target="_blank"
+          <a @click.prevent="openBranchModal()"
             class="bg-primary text-white font-display font-semibold text-[13px] px-6 py-2.5 rounded-full hover:bg-primary/90 hover:shadow-lg transition-all duration-300 active:scale-95 flex items-center gap-2">
             <span class="material-symbols-outlined text-[16px]">calendar_month</span>
             Buat Janji Temu
