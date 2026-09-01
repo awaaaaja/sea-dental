@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SEA Dental Aesthetics - Klinik Gigi Estetik Padang</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#fbf8ff",
+                        "tertiary": "#4d2300",
+                        "primary": "#112675",
+                        "glass-surface": "rgba(255, 255, 255, 0.7)",
+                        "surface-tint": "#4759a8",
+                        "secondary-container": "#74cafe",
+                        "on-background": "#1b1b20",
+                        "surface": "#fbf8ff",
+                        "on-tertiary-fixed-variant": "#713701",
+                        "inverse-surface": "#303036",
+                        "medical-bg": "#F8FAFC",
+                        "outline": "#757682",
+                        "on-secondary-fixed-variant": "#004c6c",
+                        "secondary-fixed": "#c7e7ff",
+                        "on-primary-fixed": "#001356",
+                        "inverse-primary": "#b9c3ff",
+                        "glass-border": "rgba(255, 255, 255, 0.3)",
+                        "on-tertiary": "#ffffff",
+                        "cyan-tech": "#00F2FF",
+                        "on-tertiary-container": "#f39f64",
+                        "primary-fixed": "#dde1ff",
+                        "secondary": "#00658e",
+                        "deep-navy": "#1A265E",
+                        "surface-container-high": "#e9e7ef",
+                        "inverse-on-surface": "#f2f0f7",
+                        "surface-variant": "#e3e1e9",
+                        "surface-dim": "#dbd9e0",
+                        "surface-bright": "#fbf8ff",
+                        "primary-container": "#2c3e8c",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#454651",
+                        "on-surface": "#1b1b20",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-tertiary-fixed": "#311400",
+                        "on-primary-container": "#9daeff",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#e3e1e9",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "tertiary-container": "#6f3500",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f5f2fa",
+                        "on-secondary-fixed": "#001e2e",
+                        "surface-container": "#efedf4",
+                        "primary-fixed-dim": "#b9c3ff",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#c5c5d3",
+                        "on-secondary-container": "#005477",
+                        "secondary-fixed-dim": "#83cfff",
+                        "on-primary-fixed-variant": "#2e408e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "element-gap": "16px",
+                        "section-padding": "120px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "button-text": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "display-lg": ["56px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["28px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "button-text": ["16px", { "lineHeight": "1.0", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["40px", { "lineHeight": "1.2", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.medical-bg');
+            color: theme('colors.on-background');
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .glass-card-hover {
+            transition: all 0.3s ease;
+        }
+        .glass-card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(26, 38, 94, 0.08);
+            border-color: theme('colors.cyan-tech');
+        }
+
+        /* Tech Gradient */
+        .tech-gradient {
+            background: linear-gradient(135deg, theme('colors.primary') 0%, theme('colors.deep-navy') 100%);
+        }
+        
+        /* Smooth Scrolling */
+        html { scroll-behavior: smooth; }
+
+        /* Hide scrollbar for slider container */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden selection:bg-cyan-tech selection:text-primary">
+<!-- TopNavBar from JSON -->
+<nav class="fixed top-0 left-0 w-full z-50 bg-glass-surface/70 backdrop-blur-3xl border-b border-glass-border shadow-[0_40px_40px_rgba(26,38,94,0.04)]">
+<div class="flex justify-between items-center px-gutter py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-4">
+<img class="h-8 md:h-10 w-auto object-contain" data-alt="SEA Dental Aesthetics Logo, a futuristic and modern dental clinic logo in deep navy and cyan." src="https://lh3.googleusercontent.com/aida/AP1WRLsuBel_H1I0LLi5E5L9pcYI33fOxWCO4dzgadDOPZQLFbB-DClSgc1SqEbSvPuAuGILpj0QyDowQzmO5sE8T5U58iYPr3Ew4jlESsPCkk4E4EOS5zWHYM4IZFJsXQBhxUxKDTUEenn7koW8-yLw0n_7XYthWWUSQRhG_9cIPE7Deg1QjmR54_i04xfwVztY3E7lMXDgxyTj5yWUnsMC2zoKf36szpv9i10WyMor-PaO7shMOQddAIFUaw"/>
+<span class="hidden md:block font-headline-md text-headline-md font-bold text-primary dark:text-cyan-tech">SEA Dental Aesthetics</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-button-text text-button-text text-on-surface-variant hover:text-primary transition-colors hover:bg-white/20 transition-all duration-300 px-3 py-2 rounded-lg" href="#layanan">Layanan</a>
+<a class="font-button-text text-button-text text-on-surface-variant hover:text-primary transition-colors hover:bg-white/20 transition-all duration-300 px-3 py-2 rounded-lg" href="#teknologi">Teknologi</a>
+<a class="font-button-text text-button-text text-on-surface-variant hover:text-primary transition-colors hover:bg-white/20 transition-all duration-300 px-3 py-2 rounded-lg" href="#dokter">Dokter</a>
+<a class="font-button-text text-button-text text-on-surface-variant hover:text-primary transition-colors hover:bg-white/20 transition-all duration-300 px-3 py-2 rounded-lg" href="#artikel">Artikel</a>
+<a class="font-button-text text-button-text text-on-surface-variant hover:text-primary transition-colors hover:bg-white/20 transition-all duration-300 px-3 py-2 rounded-lg" href="#kontak">Kontak</a>
+</div>
+<button class="font-button-text text-button-text bg-primary text-white px-6 py-3 rounded-full hover:shadow-[0_0_15px_rgba(0,242,255,0.5)] transition-all duration-300 active:scale-95 flex items-center gap-2">
+<span>Reservasi</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</nav>
+<!-- 1. Hero Section -->
+<header class="relative pt-32 pb-24 md:pt-48 md:pb-32 overflow-hidden flex items-center min-h-[90vh]">
+<!-- Background Elements -->
+<div class="absolute inset-0 z-0">
+<div class="absolute top-[-10%] right-[-5%] w-[60%] h-[60%] rounded-full bg-cyan-tech/10 blur-[120px]"></div>
+<div class="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[100px]"></div>
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMTcsIDM4LCAxMTcsIDAuMDUpIi8+PC9zdmc+')] opacity-50"></div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter relative z-10 w-full">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+<div class="flex flex-col gap-6">
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel w-fit border-cyan-tech/30">
+<span class="material-symbols-outlined text-cyan-tech text-sm icon-fill">verified</span>
+<span class="font-label-caps text-label-caps text-primary uppercase">Klinik Gigi Estetik Padang</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-display-lg md:text-display-lg text-primary">
+                        Selamat Datang di <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-tech">SEA Dental Aesthetics</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+                        Klinik Gigi yang berorientasi pada tindakan estetik kedokteran gigi. Mengutamakan pelayanan interaktif dengan teknologi terkini untuk senyum sempurna Anda.
+                    </p>
+<div class="flex flex-wrap gap-4 mt-4">
+<button class="bg-primary text-white font-button-text text-button-text px-8 py-4 rounded-full hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all duration-300 flex items-center gap-2">
+                            Buat Janji Temu
+                            <span class="material-symbols-outlined">calendar_month</span>
+</button>
+<button class="glass-panel text-primary font-button-text text-button-text px-8 py-4 rounded-full hover:bg-white/50 transition-all duration-300 flex items-center gap-2">
+                            Promo Kami
+                            <span class="material-symbols-outlined">local_offer</span>
+</button>
+</div>
+</div>
+<div class="relative hidden md:block h-[500px] w-full rounded-3xl overflow-hidden glass-panel p-2">
+<div class="w-full h-full rounded-2xl bg-cover bg-center" data-alt="A futuristic, high-tech dental chair in a pristine, bright clinic room. The lighting is soft white with subtle cyan accents illuminating advanced medical equipment. The overall aesthetic is clean, modern, and trustworthy, embodying clinical precision." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDBBgg3jsTpnz6jK6k4Q7wm3KqHsLHxXDG-hmck5qdvvr2WVLt4SAw1Z8sNfl19uvkDHayvav1D7jWhlSdHnF7d627o-jkK-iT6hw_hbzC8UILVXvN8JIpVHpLC185jpQGFrQoK6qye-gADlqOmEKGpih_rJh9O4UMZEk3Ol3WJy0xyH0CdzJbSZI0_QqJQHnQSf73_P_6avYpoAgynuO7tnic4kyZtHkhz2Ld5BaczzKyoWV5jww8F')"></div>
+<!-- Floating Stat Card -->
+<div class="absolute bottom-10 -left-6 glass-panel p-4 rounded-xl flex items-center gap-4 animate-bounce" style="animation-duration: 3s;">
+<div class="w-12 h-12 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">mood</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Pasien Puas</p>
+<p class="font-button-text text-button-text text-primary">10,000+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- 2. Promo Slider -->
+<section class="py-12 bg-medical-bg relative overflow-hidden border-y border-glass-border">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter mb-8">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined icon-fill text-cyan-tech">local_offer</span>
+<h2 class="font-headline-md text-headline-md">Promo Spesial Bulan Ini</h2>
+</div>
+</div>
+<div class="flex overflow-x-auto snap-x snap-mandatory gap-6 px-4 pb-4 hide-scrollbar w-full">
+<!-- Slide 1 -->
+<div class="w-[250px] flex-shrink-0 snap-center glass-panel rounded-2xl p-6 glass-card-hover border-cyan-tech/20 bg-gradient-to-br from-white/80 to-medical-bg">
+<div class="w-10 h-10 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-xl">auto_awesome</span>
+</div>
+<h3 class="font-headline-md text-xl text-primary mb-2">Promo Scaling</h3>
+<p class="font-body-md text-sm text-on-surface-variant mb-4">Mulai dari Rp 199.000, gigi bersih maksimal.</p>
+<button class="text-sm font-button-text text-cyan-tech flex items-center gap-1 hover:text-primary transition-colors">
+                    Klaim Promo <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Slide 2 -->
+<div class="w-[250px] flex-shrink-0 snap-center glass-panel rounded-2xl p-6 glass-card-hover border-cyan-tech/20 bg-gradient-to-br from-white/80 to-medical-bg">
+<div class="w-10 h-10 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-xl">palette</span>
+</div>
+<h3 class="font-headline-md text-xl text-primary mb-2">Promo Veneer</h3>
+<p class="font-body-md text-sm text-on-surface-variant mb-4">Diskon 20% untuk senyum Hollywood Anda.</p>
+<button class="text-sm font-button-text text-cyan-tech flex items-center gap-1 hover:text-primary transition-colors">
+                    Klaim Promo <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Slide 3 -->
+<div class="w-[250px] flex-shrink-0 snap-center glass-panel rounded-2xl p-6 glass-card-hover border-cyan-tech/20 bg-gradient-to-br from-white/80 to-medical-bg">
+<div class="w-10 h-10 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-xl">medical_information</span>
+</div>
+<h3 class="font-headline-md text-xl text-primary mb-2">Free Konsultasi</h3>
+<p class="font-body-md text-sm text-on-surface-variant mb-4">Konsultasi implan gigi gratis bulan ini.</p>
+<button class="text-sm font-button-text text-cyan-tech flex items-center gap-1 hover:text-primary transition-colors">
+                    Klaim Promo <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Slide 4 -->
+<div class="w-[250px] flex-shrink-0 snap-center glass-panel rounded-2xl p-6 glass-card-hover border-cyan-tech/20 bg-gradient-to-br from-white/80 to-medical-bg">
+<div class="w-10 h-10 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-xl">sentiment_satisfied</span>
+</div>
+<h3 class="font-headline-md text-xl text-primary mb-2">Paket Behel</h3>
+<p class="font-body-md text-sm text-on-surface-variant mb-4">Cicilan 0% untuk perawatan ortodonti.</p>
+<button class="text-sm font-button-text text-cyan-tech flex items-center gap-1 hover:text-primary transition-colors">
+                    Klaim Promo <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Slide 5 -->
+<div class="w-[250px] flex-shrink-0 snap-center glass-panel rounded-2xl p-6 glass-card-hover border-cyan-tech/20 bg-gradient-to-br from-white/80 to-medical-bg">
+<div class="w-10 h-10 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-xl">auto_awesome</span>
+</div>
+<h3 class="font-headline-md text-xl text-primary mb-2">Promo Scaling</h3>
+<p class="font-body-md text-sm text-on-surface-variant mb-4">Mulai dari Rp 199.000, gigi bersih maksimal.</p>
+<button class="text-sm font-button-text text-cyan-tech flex items-center gap-1 hover:text-primary transition-colors">
+                    Klaim Promo <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 3. Why Choose SEA -->
+<section class="py-section-padding bg-white relative">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary mb-4">Kenapa Memilih SEA?</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">Klinik Gigi yang berada di kota padang yang berorientasi pada tindakan estetik kedokteran gigi, didukung tenaga kesehatan berkompeten.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-element-gap">
+<!-- Card 1 -->
+<div class="glass-panel rounded-2xl p-8 glass-card-hover group bg-medical-bg relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-cyan-tech/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+<div class="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center mb-6 text-primary group-hover:text-cyan-tech transition-colors">
+<span class="material-symbols-outlined text-3xl">auto_awesome</span>
+</div>
+<h3 class="font-headline-md text-button-text md:text-headline-md text-primary mb-3">Penambalan Estetik</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Menggunakan teknik penambalan dengan hasil menyerupai bentuk gigi asli, dari segi warna dan transparansi.</p>
+</div>
+<!-- Card 2 -->
+<div class="glass-panel rounded-2xl p-8 glass-card-hover group bg-medical-bg relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-cyan-tech/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+<div class="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center mb-6 text-primary group-hover:text-cyan-tech transition-colors">
+<span class="material-symbols-outlined text-3xl">dentistry</span>
+</div>
+<h3 class="font-headline-md text-button-text md:text-headline-md text-primary mb-3">Perawatan Kawat Gigi</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Teknik merapikan susunan gigi untuk memperbaiki penampilan dan fungsi pengunyahan Anda.</p>
+</div>
+<!-- Card 3 -->
+<div class="glass-panel rounded-2xl p-8 glass-card-hover group bg-medical-bg relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-cyan-tech/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+<div class="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center mb-6 text-primary group-hover:text-cyan-tech transition-colors">
+<span class="material-symbols-outlined text-3xl">settings_accessibility</span>
+</div>
+<h3 class="font-headline-md text-button-text md:text-headline-md text-primary mb-3">Pembuatan Gigi Tiruan</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Alat prostetik canggih yang dirancang presisi untuk menggantikan gigi yang hilang didukung jaringan mulut.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. Services (Layanan) -->
+<section class="py-section-padding bg-medical-bg" id="layanan">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary mb-4">Layanan Unggulan Kami</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">Menghadirkan teknologi kedokteran gigi mutakhir untuk perawatan komprehensif.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="glass-panel p-6 rounded-2xl text-center hover:bg-white transition-colors duration-300">
+<span class="material-symbols-outlined text-4xl text-cyan-tech mb-4">medical_services</span>
+<h3 class="font-button-text text-primary mb-2">Implan Gigi</h3>
+<p class="text-sm text-on-surface-variant">Solusi permanen gigi hilang</p>
+</div>
+<div class="glass-panel p-6 rounded-2xl text-center hover:bg-white transition-colors duration-300">
+<span class="material-symbols-outlined text-4xl text-cyan-tech mb-4">face</span>
+<h3 class="font-button-text text-primary mb-2">Veneer Estetik</h3>
+<p class="text-sm text-on-surface-variant">Senyum sempurna alami</p>
+</div>
+<div class="glass-panel p-6 rounded-2xl text-center hover:bg-white transition-colors duration-300">
+<span class="material-symbols-outlined text-4xl text-cyan-tech mb-4">clean_hands</span>
+<h3 class="font-button-text text-primary mb-2">Bleaching</h3>
+<p class="text-sm text-on-surface-variant">Pemutihan gigi profesional</p>
+</div>
+<div class="glass-panel p-6 rounded-2xl text-center hover:bg-white transition-colors duration-300">
+<span class="material-symbols-outlined text-4xl text-cyan-tech mb-4">healing</span>
+<h3 class="font-button-text text-primary mb-2">Perawatan Akar</h3>
+<p class="text-sm text-on-surface-variant">Presisi tinggi tanpa nyeri</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. Gallery Slider -->
+<section class="py-section-padding bg-white overflow-hidden" id="galeri">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter mb-12">
+<div class="text-center">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary mb-4">Galeri Hasil Perawatan</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">Transformasi senyum nyata dari pasien kami menggunakan teknologi terkini.</p>
+</div>
+</div>
+<div class="flex overflow-x-auto snap-x snap-mandatory gap-6 px-4 pb-4 hide-scrollbar w-full">
+<div class="w-[300px] flex-shrink-0 snap-center rounded-2xl overflow-hidden glass-panel p-2 group">
+<div class="aspect-square rounded-xl overflow-hidden">
+<img alt="Hasil Perawatan 1" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AP1WRLtf5-9C7hhSxI8sblCiAddsjM20UPXM9sdVpNVIWnb3HVW0mUkp9NhkJex5VVMWyiR3aZ5vzLZ68Tg4gdvKYt0lC9T2Lm1zecJxrmfrLTvgqYQb-IVKSOtZ-QYwHjGLypJ2kXeY1juhg9840w0PJDGcLqbojrnCr3YZRJ4ta-lNOG4LFhqZ-9ZofeeUltZFBK-Npzrjteipb1fj5DuTDA4FHbQF6XQyQhBzZt5b1wx0326pd1qporeJAzw"/>
+</div>
+</div>
+<div class="w-[300px] flex-shrink-0 snap-center rounded-2xl overflow-hidden glass-panel p-2 group">
+<div class="aspect-square rounded-xl overflow-hidden">
+<img alt="Hasil Perawatan 2" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AP1WRLu0KGOH6mzwNIL86qlKnHDJFh2p0ArZzVNJDKIsn4QspyjpHSiEZ6SaZv8GdXp51uwGA3JbBRMIT-irRvq4CQxDogLKFP4qD_fw4_LcBYt4VenAWW9ezMu2FM7q_XEICRLSBO87ZnGPb36LAzPiFQilVSYVch7RT9dS26YMTdD4DutB879Bsj4Rz7YXczM4PpVtZM7dQDR1UKu7woFA62B9jJJ0LBySC_q_3hQ1NTCmHIVXlW5NA9HpvDU"/>
+</div>
+</div>
+<div class="w-[300px] flex-shrink-0 snap-center rounded-2xl overflow-hidden glass-panel p-2 group">
+<div class="aspect-square rounded-xl overflow-hidden">
+<img alt="Hasil Perawatan 3" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AP1WRLs9DSXwb_KKn6z5CIDpDvzIQySpP9F8X4fuxu7VaaD8z9p5qNltQLS1feier38vApD7OXAbglQQX5AO8TuXW-NInJSbulpe-zUlDudIskK62j2IPPo-g1fo9DdL3IMcL0OyjZZdiX46xm7P83eGDYv0fg2ZS0s3xVXOauGh0GHuQdaWAwfato6OGeeAHUv5HvK2IQcYXxUxzzJTqK1zR7bvCiIbUHr2c8B_qlu1i-fJ25QLgehY98r3iMQ"/>
+</div>
+</div>
+<div class="w-[300px] flex-shrink-0 snap-center rounded-2xl overflow-hidden glass-panel p-2 group">
+<div class="aspect-square rounded-xl overflow-hidden">
+<img alt="Hasil Perawatan 4" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AP1WRLt1kQefL79kXlGWWQSUQbCqUGw-leZ3qrYs6siHCVaU-8DSwdPZMEKHdGpgv33UWmkB3sLnZlCeRU8NBY5Rg6ZfIaTd6RakpcdUfkMkaTAtU_ytFyfKK7lgLZDnt1ivJZu6BeuQ3Tp8LQolfKX-8hCipuAoJmWsvpm9dVzdqyMMs9t1PrhGL68qO2p3SADdAamLvYRZXhtkkM0AfKTxwqi29x2Mdm96bIBSQ6dlepsZ4oUIIglmf2xvFQc"/>
+</div>
+</div>
+</div>
+</section>
+<!-- 6. Testimonials Slider -->
+<section class="py-section-padding bg-medical-bg overflow-hidden relative">
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMTcsIDM4LCAxMTcsIDAuMDUpIi8+PC9zdmc+')] opacity-5"></div>
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter mb-12 relative z-10">
+<div class="text-center">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary mb-4">Apa Kata Pasien Kami</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">Pengalaman nyata dari mereka yang telah mempercayakan senyumnya kepada kami.</p>
+</div>
+</div>
+<div class="flex overflow-x-auto snap-x snap-mandatory gap-6 px-4 pb-4 hide-scrollbar w-full relative z-10">
+<!-- Slide 1 -->
+<div class="w-[350px] flex-shrink-0 snap-center glass-panel rounded-3xl p-8 bg-white/80">
+<div class="flex items-center gap-2 text-cyan-tech mb-4">
+<span class="material-symbols-outlined icon-fill">star</span>
+<span class="material-symbols-outlined icon-fill">star</span>
+<span class="material-symbols-outlined icon-fill">star</span>
+<span class="material-symbols-outlined icon-fill">star</span>
+<span class="material-symbols-outlined icon-fill">star</span>
+</div>
+<p class="font-body-md text-on-surface-variant italic mb-6">"Tempatnya nyaman bgt, dokter dan perawatnya ramah bgt.. Pokoknya the best dehhh..."</p>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">ST</div>
+<div>
+<h4 class="font-button-text text-primary">Silvi Triana Helmi</h4>
+<p class="text-sm text-on-surface-variant">Pasien Ortodonti</p>
+</div>
+</div>
+</div>
+<!-- Slide 2 -->
+<div class="w-[350px] flex-shrink-0 snap-center glass-panel rounded-3xl p-8 bg-white/80">
+<div class="flex items-center gap-2 text-cyan-tech mb-4">
+<span class="material-symbols-outlined icon-fill">star</span>
+<span class="material-symbols-outlined icon-fill">star</span>
+<span class="material-symbols-outlined icon-fill">star</span>
+<span class="material-symbols-outlined icon-fill">star</span>
+<span class="material-symbols-outlined icon-fill">star</span>
+</div>
+<p class="font-body-md text-on-surface-variant italic mb-6">"Pelayanan memuaskan, tempat juga bersih dan wangi pokoknya terbaik."</p>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">SM</div>
+<div>
+<h4 class="font-button-text text-primary">Sri Mutmainah</h4>
+<p class="text-sm text-on-surface-variant">Pasien Estetik</p>
+</div>
+</div>
+</div>
+<!-- Slide 3 -->
+<div class="w-[350px] flex-shrink-0 snap-center glass-panel rounded-3xl p-8 bg-white/80">
+<div class="flex items-center gap-2 text-cyan-tech mb-4">
+<span class="material-symbols-outlined icon-fill">star</span>
+<span class="material-symbols-outlined icon-fill">star</span>
+<span class="material-symbols-outlined icon-fill">star</span>
+<span class="material-symbols-outlined icon-fill">star</span>
+<span class="material-symbols-outlined icon-fill">star</span>
+</div>
+<p class="font-body-md text-on-surface-variant italic mb-6">"Seneng banget perawatan disinii, dokter nya the best dan ramah-ramah juga, pelayanannya superr best bangett."</p>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">L</div>
+<div>
+<h4 class="font-button-text text-primary">Lala</h4>
+<p class="text-sm text-on-surface-variant">Pasien Scaling</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 7. Partner Brands Slider -->
+<section class="py-12 bg-white overflow-hidden border-b border-glass-border">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter mb-8 text-center">
+<p class="font-label-caps text-on-surface-variant uppercase tracking-widest">Dipercaya oleh Brand Medis Global</p>
+</div>
+<div class="flex overflow-x-auto snap-x snap-mandatory gap-12 px-4 pb-4 hide-scrollbar w-full opacity-50 hover:opacity-100 grayscale hover:grayscale-0 transition-all duration-500">
+<!-- Brand Logos (Text representations for tech aesthetic) -->
+<div class="w-[150px] flex-shrink-0 snap-center text-center font-display-lg text-2xl font-bold text-primary">3M</div>
+<div class="w-[150px] flex-shrink-0 snap-center text-center font-display-lg text-2xl font-bold text-primary">Straumann</div>
+<div class="w-[150px] flex-shrink-0 snap-center text-center font-display-lg text-2xl font-bold text-primary">Invisalign</div>
+<div class="w-[150px] flex-shrink-0 snap-center text-center font-display-lg text-2xl font-bold text-primary">Dentsply</div>
+<div class="w-[150px] flex-shrink-0 snap-center text-center font-display-lg text-2xl font-bold text-primary">GC</div>
+<div class="w-[150px] flex-shrink-0 snap-center text-center font-display-lg text-2xl font-bold text-primary">Ivoclar</div>
+</div>
+</section>
+<!-- 8. News & Education -->
+<section class="py-section-padding bg-medical-bg" id="artikel">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary mb-4">Artikel &amp; Edukasi</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Informasi terbaru seputar kesehatan gigi dan teknologi estetik.</p>
+</div>
+<a class="hidden md:flex items-center gap-2 text-primary font-button-text hover:text-cyan-tech transition-colors" href="#">
+        Lihat Semua
+        <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<article class="flex flex-col gap-4 group">
+<div class="h-48 rounded-2xl bg-surface-container overflow-hidden">
+<div class="w-full h-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-4xl">article</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-label-caps text-label-caps text-cyan-tech uppercase">Teknologi</span>
+<h3 class="font-headline-md text-headline-md text-primary group-hover:text-cyan-tech transition-colors">Pentingnya Digital Smile Design</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Bagaimana teknologi digital membantu merancang senyum impian Anda dengan presisi tinggi.</p>
+<div class="flex items-center justify-between mt-2">
+<span class="text-sm text-on-surface-variant">12 Okt 2024</span>
+<a class="text-primary font-button-text flex items-center gap-1 hover:underline" href="#">Baca Selengkapnya <span class="material-symbols-outlined text-sm">chevron_right</span></a>
+</div>
+</div>
+</article>
+<article class="flex flex-col gap-4 group">
+<div class="h-48 rounded-2xl bg-surface-container overflow-hidden">
+<div class="w-full h-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-4xl">article</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-label-caps text-label-caps text-cyan-tech uppercase">Perawatan</span>
+<h3 class="font-headline-md text-headline-md text-primary group-hover:text-cyan-tech transition-colors">Tips Merawat Veneer Gigi</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Panduan lengkap menjaga ketahanan dan kilau veneer gigi Anda agar tetap sempurna.</p>
+<div class="flex items-center justify-between mt-2">
+<span class="text-sm text-on-surface-variant">08 Okt 2024</span>
+<a class="text-primary font-button-text flex items-center gap-1 hover:underline" href="#">Baca Selengkapnya <span class="material-symbols-outlined text-sm">chevron_right</span></a>
+</div>
+</div>
+</article>
+<article class="flex flex-col gap-4 group">
+<div class="h-48 rounded-2xl bg-surface-container overflow-hidden">
+<div class="w-full h-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-4xl">article</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-label-caps text-label-caps text-cyan-tech uppercase">Kesehatan</span>
+<h3 class="font-headline-md text-headline-md text-primary group-hover:text-cyan-tech transition-colors">Gigi Sensitif: Penyebab &amp; Solusi</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Memahami akar masalah gigi sensitif dan bagaimana penanganan estetik dapat membantu.</p>
+<div class="flex items-center justify-between mt-2">
+<span class="text-sm text-on-surface-variant">05 Okt 2024</span>
+<a class="text-primary font-button-text flex items-center gap-1 hover:underline" href="#">Baca Selengkapnya <span class="material-symbols-outlined text-sm">chevron_right</span></a>
+</div>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- 9. FAQ Section -->
+<section class="py-section-padding bg-white relative">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary mb-4">FAQ (Pertanyaan Umum)</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">Jawaban cepat untuk pertanyaan yang sering diajukan seputar layanan kami.</p>
+</div>
+<div class="max-w-3xl mx-auto flex flex-col gap-4">
+<!-- FAQ 1 -->
+<details class="glass-panel rounded-2xl p-6 group cursor-pointer bg-medical-bg">
+<summary class="flex justify-between items-center font-headline-md text-xl text-primary list-none">
+            Apakah bisa menggunakan BPJS?
+            <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<p class="font-body-md text-on-surface-variant mt-4 pt-4 border-t border-glass-border">
+            Saat ini klinik kami tidak melayani pasien BPJS karena kami berfokus pada tindakan estetik kedokteran gigi, sedangkan pelayanan BPJS terpusat pada pelayanan medis dasar.
+        </p>
+</details>
+<!-- FAQ 2 -->
+<details class="glass-panel rounded-2xl p-6 group cursor-pointer bg-medical-bg">
+<summary class="flex justify-between items-center font-headline-md text-xl text-primary list-none">
+            Apa beda Penambalan Estetik dengan penambalan biasa?
+            <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<p class="font-body-md text-on-surface-variant mt-4 pt-4 border-t border-glass-border">
+            Penambalan estetik menggunakan bahan komposit resin berkualitas tinggi dan teknik layer-by-layer untuk meniru gradasi warna, bentuk anatomi, dan translusensi gigi asli sedekat mungkin.
+        </p>
+</details>
+<!-- FAQ 3 -->
+<details class="glass-panel rounded-2xl p-6 group cursor-pointer bg-medical-bg">
+<summary class="flex justify-between items-center font-headline-md text-xl text-primary list-none">
+            Berapa lama proses pemasangan veneer?
+            <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<p class="font-body-md text-on-surface-variant mt-4 pt-4 border-t border-glass-border">
+            Untuk direct veneer (komposit) bisa selesai dalam 1 kali kunjungan. Untuk indirect veneer (porcelain) biasanya membutuhkan 2-3 kali kunjungan karena melibatkan proses pembuatan di laboratorium.
+        </p>
+</details>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-deep-navy text-white mt-auto">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-gutter py-section-padding max-w-container-max mx-auto">
+<div class="col-span-1 md:col-span-1">
+<span class="font-headline-md text-headline-md font-bold text-cyan-tech block mb-4">SEA Dental</span>
+<p class="font-body-md text-body-md text-white/70">© 2024 SEA Dental Aesthetics. High-Precision Care.</p>
+</div>
+<div class="col-span-1 md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
+<div class="flex flex-col gap-3">
+<a class="font-body-md text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#">Layanan Estetik</a>
+<a class="font-body-md text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#">Implan Gigi</a>
+</div>
+<div class="flex flex-col gap-3">
+<a class="font-body-md text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#">Ortodonti</a>
+<a class="font-body-md text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#">Teknologi Kami</a>
+</div>
+<div class="flex flex-col gap-3">
+<a class="font-body-md text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#">Karir</a>
+<a class="font-body-md text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#">Kebijakan Privasi</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

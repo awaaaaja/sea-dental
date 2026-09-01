@@ -1,0 +1,284 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS — SEA Dental Aesthetics
+   ============================================================ */
+
+@theme {
+  /* Brand Colors */
+  --color-primary: #18327A;
+  --color-primary-foreground: #ffffff;
+  --color-primary-container: #2c3e8c;
+  --color-primary-container-foreground: #9daeff;
+  --color-deep-navy: #10245C;
+  --color-cyan-tech: #19C9D3;
+  --color-cyan-soft: #E8FAFC;
+  --color-secondary: #00658e;
+  --color-secondary-foreground: #ffffff;
+  --color-secondary-container: #74cafe;
+  --color-secondary-container-foreground: #005477;
+  --color-tertiary: #4d2300;
+  --color-tertiary-foreground: #ffffff;
+  --color-tertiary-container: #6f3500;
+  --color-tertiary-container-foreground: #f39f64;
+  --color-error: #ba1a1a;
+  --color-error-foreground: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-error-container-foreground: #93000a;
+
+  /* Surface / Background */
+  --color-background: #FFFFFF;
+  --color-foreground: #172033;
+  --color-surface: #FFFFFF;
+  --color-surface-foreground: #172033;
+  --color-surface-dim: #F7F9FC;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #F7F9FC;
+  --color-surface-container: #F0F3F8;
+  --color-surface-container-high: #E8ECF2;
+  --color-surface-container-highest: #DDE2EA;
+  --color-surface-variant: #E7EBF1;
+  --color-on-surface: #172033;
+  --color-on-surface-variant: #667085;
+  --color-inverse-surface: #172033;
+  --color-inverse-on-surface: #F7F9FC;
+  --color-outline: #98A2B3;
+  --color-outline-variant: #E7EBF1;
+  --color-medical-bg: #F7F9FC;
+  --color-glass-surface: rgba(255, 255, 255, 0.88);
+  --color-glass-border: rgba(16, 36, 92, 0.06);
+
+  /* Typography */
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  /* Spacing */
+  --spacing-section: 80px;
+  --spacing-gutter: 20px;
+  --spacing-mobile-margin: 16px;
+  --spacing-element-gap: 12px;
+
+  /* Container */
+  --container-max: 1200px;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-default: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-foreground);
+    background: var(--color-background);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    color: var(--color-foreground);
+  }
+}
+
+/* ============================================================
+   GLASSMORPHISM
+   ============================================================ */
+
+@layer components {
+  .glass {
+    background: var(--color-glass-surface);
+    backdrop-filter: blur(18px);
+    border: 1px solid var(--color-glass-border);
+  }
+
+  .glass-nav {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(16, 36, 92, 0.06);
+  }
+
+  .glass-nav.scrolled {
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 8px 30px rgba(16, 36, 92, 0.08);
+  }
+
+  .glass-panel {
+    background: #ffffff;
+    border: 1px solid #E7EBF1;
+    box-shadow: 0 12px 35px rgba(16, 36, 92, 0.07);
+  }
+
+  .glass-card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .glass-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(16, 36, 92, 0.10);
+    border-color: rgba(25, 201, 211, 0.35);
+  }
+
+  .icon-fill {
+    font-variation-settings: 'FILL' 1;
+  }
+
+  /* Service Icon */
+  .service-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #E8FAFC;
+    color: #18327A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .glass-card-hover:hover .service-icon {
+    background: #19C9D3;
+    color: white;
+  }
+
+  /* Container */
+  .container-sea {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--spacing-gutter);
+    padding-right: var(--spacing-gutter);
+  }
+
+  /* Section padding */
+  .section-padding {
+    padding-top: var(--spacing-section);
+    padding-bottom: var(--spacing-section);
+  }
+
+  @media (max-width: 768px) {
+    .section-padding {
+      padding-top: 48px;
+      padding-bottom: 48px;
+    }
+  }
+}
+
+/* ============================================================
+   TYPOGRAPHY UTILITIES
+   ============================================================ */
+
+@layer utilities {
+  .display-lg {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 650;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    color: #10245C;
+  }
+
+  .headline-lg {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    color: #10245C;
+  }
+
+  .headline-md {
+    font-family: var(--font-display);
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: #10245C;
+  }
+
+  .body-lg {
+    font-family: var(--font-body);
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: #667085;
+  }
+
+  .label-caps {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.0;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    .display-lg {
+      font-size: 32px;
+    }
+    .headline-lg {
+      font-size: 24px;
+    }
+  }
+}
+
+/* ============================================================
+   ACCESSIBILITY
+   ============================================================ */
+
+/* Focus styles for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid var(--color-cyan-tech);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip to main content link */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 9999;
+  padding: 12px 24px;
+  background: var(--color-primary);
+  color: white;
+  font-family: var(--font-display);
+  font-weight: 600;
+  border-radius: 0 0 8px 8px;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .glass-card-hover:hover {
+    transform: none;
+  }
+}

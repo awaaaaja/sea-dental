@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEA Dental Aesthetics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary': '#112675',
+            'deep-navy': '#1A265E',
+            'cyan-tech': '#00F2FF',
+            'secondary': '#00658e',
+            'medical-bg': '#F8FAFC',
+            'glass-surface': 'rgba(255, 255, 255, 0.7)',
+            'glass-border': 'rgba(255, 255, 255, 0.3)',
+            'surface-container': '#efedf4',
+            'on-surface-variant': '#454651',
+          },
+          fontFamily: {
+            'display': ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            'body': ['Inter', 'system-ui', 'sans-serif'],
+          },
+          maxWidth: {
+            'container-max': '1280px',
+          },
+          spacing: {
+            'section-padding': '120px',
+            'gutter': '24px',
+            'margin-mobile': '20px',
+          },
+          fontSize: {
+            'display-lg': ['56px', { lineHeight: '1.1', fontWeight: '700', letterSpacing: '-0.02em' }],
+            'headline-lg': ['40px', { lineHeight: '1.2', fontWeight: '600' }],
+            'headline-lg-mobile': ['32px', { lineHeight: '1.2', fontWeight: '600' }],
+            'headline-md': ['28px', { lineHeight: '1.3', fontWeight: '600' }],
+            'body-lg': ['18px', { lineHeight: '1.6' }],
+            'body-md': ['16px', { lineHeight: '1.6' }],
+            'label-caps': ['12px', { lineHeight: '1.0', fontWeight: '600', letterSpacing: '0.1em' }],
+            'button-text': ['16px', { lineHeight: '1.0', fontWeight: '600' }],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .glass-card-hover {
+      transition: all 0.3s ease;
+    }
+    .glass-card-hover:hover {
+      transform: translateY(-4px);
+      border-color: #00F2FF;
+      box-shadow: 0 8px 32px rgba(0, 242, 255, 0.1);
+    }
+    .icon-fill {
+      font-variation-settings: 'FILL' 1;
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="antialiased overflow-x-hidden selection:bg-cyan-tech selection:text-primary font-body">
+
+  <!-- NAVBAR -->
+  <nav class="fixed top-0 left-0 w-full z-50 bg-glass-surface/70 backdrop-blur-3xl border-b border-glass-border shadow-[0_40px_40px_rgba(26,38,94,0.04)]">
+    <div class="flex justify-between items-center px-gutter py-4 max-w-container-max mx-auto">
+      <div class="flex items-center gap-4">
+        <img class="h-8 md:h-10 w-auto object-contain" alt="SEA Dental Logo" src="../references/image_from_https_seadentalaesthetics.id_assets_img_logooo.png/screen.png">
+        <span class="hidden md:block font-display font-bold text-primary text-headline-md">SEA Dental Aesthetics</span>
+      </div>
+      <div class="hidden md:flex items-center gap-8">
+        <a class="font-display text-button-text text-on-surface-variant hover:text-primary hover:bg-white/20 transition-all duration-300 px-3 py-2 rounded-lg" href="#beranda">Beranda</a>
+        <a class="font-display text-button-text text-on-surface-variant hover:text-primary hover:bg-white/20 transition-all duration-300 px-3 py-2 rounded-lg" href="#tentang">Tentang Kami</a>
+        <a class="font-display text-button-text text-on-surface-variant hover:text-primary hover:bg-white/20 transition-all duration-300 px-3 py-2 rounded-lg" href="#layanan">Layanan</a>
+        <a class="font-display text-button-text text-on-surface-variant hover:text-primary hover:bg-white/20 transition-all duration-300 px-3 py-2 rounded-lg" href="#dokter">Dokter</a>
+        <a class="font-display text-button-text text-on-surface-variant hover:text-primary hover:bg-white/20 transition-all duration-300 px-3 py-2 rounded-lg" href="#galeri">Galeri</a>
+        <a class="font-display text-button-text text-on-surface-variant hover:text-primary hover:bg-white/20 transition-all duration-300 px-3 py-2 rounded-lg" href="#artikel">Artikel</a>
+        <a class="font-display text-button-text text-on-surface-variant hover:text-primary hover:bg-white/20 transition-all duration-300 px-3 py-2 rounded-lg" href="#kontak">Kontak</a>
+        <a href="https://booking.seadentalaesthetics.id/booking/register" target="_blank" class="bg-primary text-white font-display text-button-text px-6 py-3 rounded-full hover:shadow-[0_0_15px_rgba(0,242,255,0.5)] transition-all duration-300 active:scale-95 flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          RESERVASI
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="relative pt-32 pb-24 md:pt-48 md:pb-32 overflow-hidden flex items-center min-h-[90vh]" id="beranda">
+    <div class="absolute inset-0 z-0">
+      <div class="absolute top-[-10%] right-[-5%] w-[60%] h-[60%] rounded-full bg-cyan-tech/10 blur-[120px]"></div>
+      <div class="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[100px]"></div>
+    </div>
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter relative z-10 w-full">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div class="flex flex-col gap-6">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel w-fit border-cyan-tech/30">
+            <span class="material-symbols-outlined text-cyan-tech text-sm icon-fill">verified</span>
+            <span class="font-display text-label-caps text-primary uppercase tracking-widest">Klinik Gigi Estetik Padang</span>
+          </div>
+          <h1 class="font-display text-headline-lg-mobile md:text-display-lg text-primary">
+            Selamat Datang di<br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-tech">SEA Dental Aesthetics</span>
+          </h1>
+          <p class="font-body text-body-lg text-on-surface-variant max-w-lg">
+            Klinik gigi estetik di kota Padang yang berorientasi pada tindakan estetik kedokteran gigi. Mengutamakan pelayanan interaktif dan komunikatif antara dokter dan pasien.
+          </p>
+          <div class="flex flex-wrap gap-4 mt-4">
+            <a href="https://booking.seadentalaesthetics.id/booking/register" target="_blank" class="bg-primary text-white font-display text-button-text px-8 py-4 rounded-full hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all duration-300 flex items-center gap-2">
+              <span class="material-symbols-outlined">calendar_month</span>
+              Buat Janji Temu
+            </a>
+            <a href="https://www.instagram.com/stories/highlights/17978707913891105/" target="_blank" class="glass-panel text-primary font-display text-button-text px-8 py-4 rounded-full hover:bg-white/50 transition-all duration-300 flex items-center gap-2">
+              <span class="material-symbols-outlined">local_offer</span>
+              Promo Kami
+            </a>
+          </div>
+        </div>
+        <div class="relative hidden md:block h-[500px] w-full rounded-3xl overflow-hidden glass-panel p-2">
+          <div class="w-full h-full rounded-2xl bg-cover bg-center" style="background-image: url('../references/image_from_https_seadentalaesthetics.id_assets_img_logooo.png/screen.png')"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- STATS -->
+  <section class="py-12 bg-medical-bg border-y border-glass-border">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div><p class="font-display text-headline-lg text-primary">2</p><p class="font-body text-body-md text-on-surface-variant">Dokter</p></div>
+        <div><p class="font-display text-headline-lg text-primary">12</p><p class="font-body text-body-md text-on-surface-variant">Layanan</p></div>
+        <div><p class="font-display text-headline-lg text-primary">6</p><p class="font-body text-body-md text-on-surface-variant">Departemen</p></div>
+        <div><p class="font-display text-headline-lg text-primary">10</p><p class="font-body text-body-md text-on-surface-variant">Dental Labs</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE -->
+  <section class="py-section-padding bg-white" id="tentang">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
+      <div class="text-center mb-16">
+        <span class="font-display text-label-caps text-cyan-tech uppercase tracking-widest">Kenapa Memilih Kami</span>
+        <h2 class="font-display text-headline-lg-mobile md:text-headline-lg text-primary mt-4">Kenapa Memilih SEA?</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="glass-panel rounded-2xl p-8 glass-card-hover border-cyan-tech/20 text-center">
+          <div class="w-16 h-16 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mx-auto mb-6">
+            <span class="material-symbols-outlined text-3xl">healing</span>
+          </div>
+          <h3 class="font-display text-headline-md text-primary mb-4">Penambalan Estetik</h3>
+          <p class="font-body text-body-md text-on-surface-variant">Teknik penambalan gigi dengan hasil menyerupai bentuk gigi asli, baik dari segi warna, transparansi dan detail fisik lainnya.</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-8 glass-card-hover border-cyan-tech/20 text-center">
+          <div class="w-16 h-16 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mx-auto mb-6">
+            <span class="material-symbols-outlined text-3xl">straighten</span>
+          </div>
+          <h3 class="font-display text-headline-md text-primary mb-4">Perawatan Kawat Gigi</h3>
+          <p class="font-body text-body-md text-on-surface-variant">Teknik menggerakan gigi dan merapikan susunan gigi dalam lengkung rahang untuk memperbaiki penampilan dan fungsi gigi.</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-8 glass-card-hover border-cyan-tech/20 text-center">
+          <div class="w-16 h-16 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mx-auto mb-6">
+            <span class="material-symbols-outlined text-3xl">dentistry</span>
+          </div>
+          <h3 class="font-display text-headline-md text-primary mb-4">Pembuatan Gigi Tiruan</h3>
+          <p class="font-body text-body-md text-on-surface-variant">Alat prostetik yang dirancang untuk menggantikan gigi yang hilang yang didukung oleh jaringan keras dan lunak didalam rongga mulut.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="py-section-padding bg-medical-bg" id="layanan">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
+      <div class="text-center mb-16">
+        <span class="font-display text-label-caps text-cyan-tech uppercase tracking-widest">Layanan Kami</span>
+        <h2 class="font-display text-headline-lg-mobile md:text-headline-lg text-primary mt-4">Layanan Kami didukung oleh dokter yang terlatih</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="glass-panel rounded-2xl p-8 glass-card-hover border-cyan-tech/20">
+          <div class="w-12 h-12 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mb-4">
+            <span class="material-symbols-outlined text-xl">healing</span>
+          </div>
+          <h3 class="font-display text-xl text-primary mb-2">Konservasi</h3>
+          <p class="font-body text-sm text-on-surface-variant">Mempertahankan dan menjaga gigi baik secara fungsi maupun estetika.</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-8 glass-card-hover border-cyan-tech/20">
+          <div class="w-12 h-12 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mb-4">
+            <span class="material-symbols-outlined text-xl">dentistry</span>
+          </div>
+          <h3 class="font-display text-xl text-primary mb-2">Prosthodonti</h3>
+          <p class="font-body text-sm text-on-surface-variant">Penggantian gigi yang hilang atau patah.</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-8 glass-card-hover border-cyan-tech/20">
+          <div class="w-12 h-12 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mb-4">
+            <span class="material-symbols-outlined text-xl">straighten</span>
+          </div>
+          <h3 class="font-display text-xl text-primary mb-2">Orthodonti</h3>
+          <p class="font-body text-sm text-on-surface-variant">Perawatan susunan gigi dalam lengkung rahang.</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-8 glass-card-hover border-cyan-tech/20">
+          <div class="w-12 h-12 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mb-4">
+            <span class="material-symbols-outlined text-xl">gum</span>
+          </div>
+          <h3 class="font-display text-xl text-primary mb-2">Periodonti</h3>
+          <p class="font-body text-sm text-on-surface-variant">Perawatan jaringan pendukung gigi.</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-8 glass-card-hover border-cyan-tech/20">
+          <div class="w-12 h-12 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mb-4">
+            <span class="material-symbols-outlined text-xl">child_care</span>
+          </div>
+          <h3 class="font-display text-xl text-primary mb-2">Paedodonti</h3>
+          <p class="font-body text-sm text-on-surface-variant">Perawatan gigi dan mulut anak.</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-8 glass-card-hover border-cyan-tech/20">
+          <div class="w-12 h-12 rounded-full bg-cyan-tech/20 flex items-center justify-center text-primary mb-4">
+            <span class="material-symbols-outlined text-xl">surgery</span>
+          </div>
+          <h3 class="font-display text-xl text-primary mb-2">Oral Surgery</h3>
+          <p class="font-body text-sm text-on-surface-variant">Bedah untuk memperbaiki kondisi kesehatan gigi dan mulut.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOCTORS -->
+  <section class="py-section-padding bg-white" id="dokter">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
+      <div class="text-center mb-16">
+        <span class="font-display text-label-caps text-cyan-tech uppercase tracking-widest">Tim Dokter Kami</span>
+        <h2 class="font-display text-headline-lg-mobile md:text-headline-lg text-primary mt-4">Dokter Berpengalaman Terbaik</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div class="glass-panel rounded-2xl p-8 glass-card-hover border-cyan-tech/20 text-center">
+          <div class="w-32 h-32 rounded-full bg-primary/10 mx-auto mb-6 flex items-center justify-center overflow-hidden">
+            <img src="../references/image_from_https_seadentalaesthetics.id_assets_img_doctors_andre_1.png/screen.png" alt="drg. Andre Anggara" class="w-full h-full object-cover">
+          </div>
+          <h3 class="font-display text-headline-md text-primary mb-1">drg. Andre Anggara</h3>
+          <p class="font-body text-sm text-cyan-tech mb-4">Aesthetic Dentist & Implantologist</p>
+          <p class="font-body text-body-md text-on-surface-variant">Kesehatan gigi dan mulut merupakan hal yang sangat penting. Oleh karena itu, menjaga dan merawat gigi sejak dini perlu dilakukan.</p>
+          <a href="https://www.instagram.com/dakumiss/" target="_blank" class="inline-flex items-center gap-2 mt-4 text-primary hover:text-cyan-tech transition-colors">
+            <span class="material-symbols-outlined">photo_camera</span> @dakumiss
+          </a>
+        </div>
+        <div class="glass-panel rounded-2xl p-8 glass-card-hover border-cyan-tech/20 text-center">
+          <div class="w-32 h-32 rounded-full bg-primary/10 mx-auto mb-6 flex items-center justify-center overflow-hidden">
+            <img src="../references/image_from_https_seadentalaesthetics.id_assets_img_doctors_citra_2.png/screen.png" alt="drg. Citra Annesha Pratiwi" class="w-full h-full object-cover">
+          </div>
+          <h3 class="font-display text-headline-md text-primary mb-1">drg. Citra Annesha Pratiwi</h3>
+          <p class="font-body text-sm text-cyan-tech mb-4">Dentist</p>
+          <p class="font-body text-body-md text-on-surface-variant">Dalam menghadapi berbagai permasalahan gigi dan mulut dibutuhkan pengalaman, keterampilan dan rasa ingin selalu belajar.</p>
+          <a href="https://www.instagram.com/chitraannesha/" target="_blank" class="inline-flex items-center gap-2 mt-4 text-primary hover:text-cyan-tech transition-colors">
+            <span class="material-symbols-outlined">photo_camera</span> @chitraannesha
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-deep-navy text-white mt-auto">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-gutter py-section-padding max-w-container-max mx-auto">
+      <div class="col-span-1">
+        <span class="font-display text-headline-md font-bold text-cyan-tech block mb-4">SEA Dental Aesthetics</span>
+        <p class="font-body text-body-md text-white/70 mb-4">Klinik Gigi Estetik Padang</p>
+        <p class="font-body text-sm text-white/50">© 2024 SEA Dental Aesthetics. High-Precision Care.</p>
+      </div>
+      <div class="col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
+        <div class="flex flex-col gap-3">
+          <a class="font-body text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#beranda">Beranda</a>
+          <a class="font-body text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#tentang">Tentang Kami</a>
+          <a class="font-body text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#layanan">Layanan</a>
+          <a class="font-body text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#dokter">Dokter</a>
+        </div>
+        <div class="flex flex-col gap-3">
+          <a class="font-body text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#layanan">Konservasi</a>
+          <a class="font-body text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#layanan">Prosthodonti</a>
+          <a class="font-body text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#layanan">Orthodonti</a>
+          <a class="font-body text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#layanan">Periodonti</a>
+          <a class="font-body text-body-md text-white/70 hover:text-cyan-tech hover:translate-x-1 transition-all duration-200" href="#layanan">Paedodonti</a>
+        </div>
+        <div class="flex flex-col gap-3">
+          <p class="font-body text-sm text-white/50">Jam Kerja: Senin-Sabtu 11.00-21.00 WIB</p>
+          <a class="font-body text-body-md text-white/70 hover:text-cyan-tech transition-all duration-200" href="mailto:seadentalaesthetics@gmail.com">seadentalaesthetics@gmail.com</a>
+          <a class="font-body text-body-md text-white/70 hover:text-cyan-tech transition-all duration-200" href="tel:+6281366329279">+62813 6632 9279</a>
+          <a class="font-body text-body-md text-white/70 hover:text-cyan-tech transition-all duration-200" href="https://api.whatsapp.com/send/?phone=6281266971089" target="_blank">WhatsApp: +62812 6697 1089</a>
+          <a class="font-body text-body-md text-white/70 hover:text-cyan-tech transition-all duration-200" href="https://www.instagram.com/seadentalaesthetics_/" target="_blank">Instagram: @seadentalaesthetics_</a>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-white/10 py-6 text-center">
+      <p class="font-body text-sm text-white/50">Made with ❤ by <a href="https://ciphersinformatika.com/" target="_blank" class="text-cyan-tech hover:underline">Ciphers Informatika</a> for SEA Dental Aesthetics</p>
+    </div>
+  </footer>
+
+</body>
+</html>

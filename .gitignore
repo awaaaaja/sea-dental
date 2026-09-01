@@ -1,6 +1,30 @@
-# Ignore everything
-*
+# Dependencies
+node_modules/
 
-# Except these files
-!.gitignore
-!README.md
+# Build output
+dist/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Supabase
+supabase/.temp/
+
+# Old files
+logo_baru.png
