@@ -191,8 +191,16 @@ onMounted(async () => {
               <div class="glass-panel rounded-xl p-5 flex items-start gap-4">
                 <span class="material-symbols-outlined text-2xl text-cyan-tech mt-0.5">location_on</span>
                 <div>
-                  <p class="font-display text-sm font-semibold text-primary mb-1">Alamat</p>
-                  <p class="font-body text-[14px] text-on-surface-variant">Jl. DR. Sutomo No. 4, Simpang Haru, Padang, Sumatera Barat</p>
+                  <p class="font-display text-sm font-semibold text-primary mb-1">Padang</p>
+                  <p class="font-body text-[14px] text-on-surface-variant">Jl. Dr. Sutomo No.4, Simpang Haru, Kota Padang, Sumatera Barat 25123</p>
+                </div>
+              </div>
+
+              <div class="glass-panel rounded-xl p-5 flex items-start gap-4">
+                <span class="material-symbols-outlined text-2xl text-cyan-tech mt-0.5">location_on</span>
+                <div>
+                  <p class="font-display text-sm font-semibold text-primary mb-1">Pekanbaru</p>
+                  <p class="font-body text-[14px] text-on-surface-variant">Jl. Tuanku Tambusai Jl. Nangka No.124, Labuh Baru Tim., Kota Pekanbaru, Riau 28123</p>
                 </div>
               </div>
 
