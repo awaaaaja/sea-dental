@@ -360,8 +360,6 @@ onUnmounted(() => {
           />
         </div>
       </div>
-      <!-- HERO → STATS subtle transition -->
-      <div class="absolute bottom-0 left-0 right-0 h-[60px] md:h-[80px] bg-gradient-to-t from-white via-white/60 to-transparent pointer-events-none z-[5]"></div>
     </header>
 
     <!-- STATS -->
