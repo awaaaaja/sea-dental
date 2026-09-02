@@ -143,7 +143,7 @@ watch(() => route.path, () => {
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 ml-auto">
             <!-- Notifications -->
             <button class="relative p-2 rounded-xl text-gray-500 hover:text-primary hover:bg-gray-100 transition-colors">
               <span class="material-symbols-outlined text-xl">notifications</span>

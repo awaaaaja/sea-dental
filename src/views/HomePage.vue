@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, nextTick } from 'vue'
+import { onMounted, onUnmounted, ref, computed, nextTick } from 'vue'
 import GalleryLightbox from '@/components/GalleryLightbox.vue'
 import { useSeo, localBusinessSchema } from '@/composables/useSeo'
 import { usePromos } from '@/composables/usePromos'
@@ -27,7 +27,6 @@ useSeo({
 const heroRef = ref<HTMLElement>()
 const statsRef = ref<HTMLElement>()
 const whyRef = ref<HTMLElement>()
-const servicesRef = ref<HTMLElement>()
 const doctorsRef = ref<HTMLElement>()
 const promosRef = ref<HTMLElement>()
 const galleryRef = ref<HTMLElement>()
@@ -78,6 +77,16 @@ const featuredServices = [
   { num: '02', icon: 'straighten', title: 'Perawatan Kawat Gigi', desc: 'Teknik menggerakan gigi dan merapikan susunan gigi dalam lengkung rahang dengan tujuan untuk memperbaiki penampilan dan fungsi gigi.' },
   { num: '03', icon: 'medical_services', title: 'Pembuatan Gigi Tiruan', desc: 'Alat prostetik yang dirancang untuk menggantikan gigi yang hilang yang didukung oleh jaringan keras dan lunak didalam rongga mulut.' },
 ]
+
+const allServices = computed(() => {
+  const dynamicServices = services.value.map((svc, idx) => ({
+    num: String(featuredServices.length + idx + 1).padStart(2, '0'),
+    icon: svc.icon,
+    title: svc.name,
+    desc: svc.short_description,
+  }))
+  return [...featuredServices, ...dynamicServices]
+})
 
 const whyChooseSea = [
   { num: '01', icon: 'emoji_events', title: 'Dokter Berpengalaman', desc: 'Tim dokter berpengalaman dengan keahlian dan sertifikasi profesional.' },
@@ -245,7 +254,7 @@ onMounted(async () => {
   )
 
   // Section reveals
-  const sectionRefs = [statsRef, whyRef, servicesRef, doctorsRef, promosRef, galleryRef, testimonialsRef, partnersRef, articlesRef, faqRef, locationsRef, ctaRef]
+  const sectionRefs = [statsRef, whyRef, doctorsRef, promosRef, galleryRef, testimonialsRef, partnersRef, articlesRef, faqRef, locationsRef, ctaRef]
   sectionRefs.forEach((sectionRef) => {
     if (!sectionRef.value) return
     const items = sectionRef.value.querySelectorAll('.animate-item')
@@ -271,17 +280,6 @@ onMounted(async () => {
         textContent: target, duration: 1.5, snap: { textContent: 1 }, ease: 'power1.inOut',
       })
     })
-  })
-
-  // Services staggered scale-in
-  mm.add('(min-width: 768px)', () => {
-    const serviceCards = servicesRef.value?.querySelectorAll('.service-card')
-    if (serviceCards) {
-      gsap.fromTo(serviceCards,
-        { y: 30, opacity: 0, scale: 0.96 },
-        { scrollTrigger: { trigger: servicesRef.value, start: 'top 80%' }, y: 0, opacity: 1, scale: 1, duration: 0.5, stagger: 0.07, ease: 'power2.out' }
-      )
-    }
   })
 
   // Gallery mosaic stagger
@@ -396,7 +394,7 @@ onUnmounted(() => {
     </header>
 
     <!-- STATS -->
-    <section ref="statsRef" class="py-4 md:py-5 bg-white border-y border-gray-100">
+    <section ref="statsRef" class="py-4 md:py-5 bg-white">
       <div class="max-w-[1200px] mx-auto px-5 md:px-6">
         <div class="grid grid-cols-4 gap-4">
           <div v-for="(stat, idx) in stats" :key="stat.label"
@@ -414,28 +412,26 @@ onUnmounted(() => {
       </div>
     </section>
 
-    <!-- LAYANAN UNGGULAN — Bento Grid -->
-    <section ref="whyRef" class="py-14 md:py-20 bg-white">
+    <!-- LAYANAN KAMI — Bento Grid -->
+    <section ref="whyRef" class="py-14 md:py-20 bg-white" id="layanan">
       <div class="max-w-[1200px] mx-auto px-5 md:px-6">
         <div class="text-center mb-10 md:mb-14">
-          <span class="why-animate font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.15em] text-[#19C9D3] uppercase">Layanan Kami</span>
-          <h2 class="why-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A] mt-3">Perawatan Gigi untuk Senyum yang Lebih Sehat</h2>
+          <h2 class="why-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A]">Perawatan Gigi untuk Senyum yang Lebih Sehat</h2>
         </div>
-        <div class="bento-grid">
-          <!-- Featured — Large card left -->
+        <!-- Top: Featured bento (1 large + 2 small) -->
+        <div class="bento-grid mb-5">
           <router-link to="/services"
             class="bento-card bento-featured group block">
-            <span class="bento-num">01</span>
-            <span class="bento-icon"><span class="material-symbols-outlined">{{ featuredServices[0].icon }}</span></span>
+            <span class="bento-num">{{ allServices[0].num }}</span>
+            <span class="bento-icon"><span class="material-symbols-outlined">{{ allServices[0].icon }}</span></span>
             <div class="bento-content">
-              <h3 class="font-display text-[20px] md:text-[24px] lg:text-[28px] leading-[1.2] font-bold text-[#18327A] mb-3">{{ featuredServices[0].title }}</h3>
-              <p class="font-body text-[14px] md:text-[15px] leading-[1.7] text-[#64748B] mb-6">{{ featuredServices[0].desc }}</p>
+              <h3 class="font-display text-[20px] md:text-[24px] lg:text-[28px] leading-[1.2] font-bold text-[#18327A] mb-3">{{ allServices[0].title }}</h3>
+              <p class="font-body text-[14px] md:text-[15px] leading-[1.7] text-[#64748B] mb-6">{{ allServices[0].desc }}</p>
               <span class="bento-link">Pelajari layanan <span class="bento-arrow">→</span></span>
             </div>
           </router-link>
-          <!-- Stacked — Right column -->
           <div class="bento-stack">
-            <router-link v-for="svc in featuredServices.slice(1)" :key="svc.num" to="/services"
+            <router-link v-for="svc in allServices.slice(1, 3)" :key="svc.num" to="/services"
               class="bento-card bento-small group block">
               <span class="bento-num">{{ svc.num }}</span>
               <span class="bento-icon"><span class="material-symbols-outlined">{{ svc.icon }}</span></span>
@@ -447,15 +443,32 @@ onUnmounted(() => {
             </router-link>
           </div>
         </div>
+        <!-- Bottom: 2 services + Lihat Semua -->
+        <div class="bento-grid-bottom">
+          <router-link v-for="svc in allServices.slice(3, 5)" :key="svc.num" to="/services"
+            class="bento-card bento-bottom group block">
+            <span class="bento-num">{{ svc.num }}</span>
+            <span class="bento-icon"><span class="material-symbols-outlined">{{ svc.icon }}</span></span>
+            <div class="bento-content">
+              <h3 class="font-display text-[15px] md:text-[17px] leading-[1.3] font-semibold text-[#18327A] mb-1.5">{{ svc.title }}</h3>
+              <p class="font-body text-[12px] leading-[1.7] text-[#64748B]">{{ svc.desc }}</p>
+            </div>
+          </router-link>
+          <router-link to="/services"
+            class="bento-card bento-see-all group block">
+            <span class="material-symbols-outlined bento-see-all-icon">arrow_forward</span>
+            <h3 class="font-display text-[15px] md:text-[17px] leading-[1.3] font-semibold text-[#18327A]">Lihat Semua</h3>
+            <p class="font-body text-[12px] leading-[1.7] text-[#64748B]">Layanan Kami</p>
+          </router-link>
+        </div>
       </div>
     </section>
 
     <!-- KENAPA MEMILIH SEA -->
-    <section class="py-14 md:py-20 bg-white">
+    <section class="py-14 md:py-20 bg-white border-b border-gray-100">
       <div class="max-w-[1200px] mx-auto px-5 md:px-6">
         <div class="text-center mb-10 md:mb-14">
-          <span class="why-animate font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.15em] text-[#19C9D3] uppercase">Kenapa Memilih Kami</span>
-          <h2 class="why-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A] mt-3">Perawatan yang Mengutamakan Anda</h2>
+          <h2 class="why-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A]">Perawatan yang Mengutamakan Anda</h2>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
           <div v-for="(item, idx) in whyChooseSea" :key="item.num"
@@ -474,32 +487,11 @@ onUnmounted(() => {
       </div>
     </section>
 
-    <!-- SERVICES -->
-    <section ref="servicesRef" class="py-10 md:py-14 bg-medical-bg" id="layanan">
-      <div class="max-w-[1200px] mx-auto px-4 md:px-6">
-        <div class="text-center mb-8 md:mb-12">
-          <span class="animate-item font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-cyan-tech uppercase">Layanan Kami</span>
-          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary mt-3">Layanan kami didukung oleh dokter yang terlatih</h2>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5">
-          <router-link v-for="svc in services" :key="svc.id" to="/services"
-            class="service-card animate-item glass-panel rounded-2xl p-5 md:p-6 glass-card-hover block">
-            <div class="service-icon mb-3">
-              <span class="material-symbols-outlined text-[20px]">{{ svc.icon }}</span>
-            </div>
-            <h3 class="font-display text-[15px] md:text-[17px] font-semibold text-primary mb-1.5">{{ svc.name }}</h3>
-            <p class="font-body text-[12px] md:text-[13px] text-on-surface-variant leading-[1.7]">{{ svc.short_description }}</p>
-          </router-link>
-        </div>
-      </div>
-    </section>
-
     <!-- TIM DOKTER KAMI -->
-    <section ref="doctorsRef" class="py-14 md:py-20 bg-[#F6F8FB]" id="dokter">
+    <section ref="doctorsRef" class="py-14 md:py-20 bg-medical-bg" id="dokter">
       <div class="max-w-[1200px] mx-auto px-5 md:px-6">
         <div class="text-center mb-10 md:mb-14">
-          <span class="doc-animate font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.15em] text-[#19C9D3] uppercase">Tim Dokter Kami</span>
-          <h2 class="doc-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A] mt-3">Dokter Berpengalaman Terbaik</h2>
+          <h2 class="doc-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A]">Dokter Berpengalaman Terbaik</h2>
         </div>
         <!-- Desktop: 3-col grid -->
         <div class="hidden sm:grid grid-cols-3 gap-5 md:gap-6">
@@ -552,11 +544,7 @@ onUnmounted(() => {
       <div class="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-tech/10 blur-[100px]"></div>
       <div class="max-w-[1200px] mx-auto px-4 md:px-6 relative z-10">
         <div class="text-center mb-8 md:mb-12">
-          <router-link to="/promos" class="inline-flex items-center gap-2">
-            <span class="material-symbols-outlined text-cyan-tech text-lg">local_offer</span>
-            <span class="animate-item font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-cyan-tech uppercase">Promo Spesial</span>
-          </router-link>
-          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-white mt-3">Penawaran Terbaik untuk Senyum Anda</h2>
+          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-white">Penawaran Terbaik untuk Senyum Anda</h2>
           <p class="animate-item font-body text-[13px] md:text-[14px] text-white/60 mt-2 max-w-lg mx-auto">Jangan lewatkan promo menarik dari SEA Dental Aesthetics</p>
         </div>
 
@@ -602,8 +590,7 @@ onUnmounted(() => {
     <section ref="galleryRef" class="py-10 md:py-14 bg-medical-bg" id="galeri">
       <div class="max-w-[1200px] mx-auto px-4 md:px-6">
         <div class="text-center mb-8 md:mb-12">
-          <span class="animate-item font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-cyan-tech uppercase">Galeri Kami</span>
-          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary mt-3">Hasil Perawatan Kami</h2>
+          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary">Hasil Perawatan Kami</h2>
         </div>
         <div class="relative">
           <div ref="galleryCarouselRef" class="flex overflow-x-auto snap-x snap-mandatory gap-3 hide-scrollbar scroll-smooth">
@@ -632,8 +619,7 @@ onUnmounted(() => {
       <div class="absolute top-0 right-0 w-[40%] h-[40%] rounded-full bg-cyan-tech/5 blur-[100px]"></div>
       <div class="max-w-[1200px] mx-auto px-4 md:px-6 relative z-10">
         <div class="text-center mb-8 md:mb-12">
-          <span class="animate-item font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-cyan-tech uppercase">Testimoni Pasien</span>
-          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary mt-3">Apa Kata Mereka?</h2>
+          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary">Apa Kata Mereka?</h2>
         </div>
         <div class="animate-item flex overflow-x-auto snap-x snap-mandatory gap-3 px-2 pb-3 hide-scrollbar w-full relative z-10">
           <div v-for="t in testimonials" :key="t.id"
@@ -651,7 +637,7 @@ onUnmounted(() => {
     </section>
 
     <!-- PARTNERS -->
-    <section ref="partnersRef" class="py-6 md:py-10 bg-medical-bg border-y border-glass-border overflow-hidden">
+    <section ref="partnersRef" class="py-6 md:py-10 bg-medical-bg overflow-hidden">
       <p class="animate-item text-center font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-on-surface-variant uppercase mb-5 md:mb-6">Dipercaya oleh Brand Medis Global</p>
       <div class="partners-marquee">
         <div class="partners-track">
@@ -727,8 +713,7 @@ onUnmounted(() => {
     <section ref="locationsRef" class="py-10 md:py-14 bg-medical-bg" id="kontak">
       <div class="max-w-[1200px] mx-auto px-4 md:px-6">
         <div class="text-center mb-8 md:mb-12">
-          <span class="animate-item font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-cyan-tech uppercase">Lokasi Kami</span>
-          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary mt-3">Kunjungi Kami</h2>
+          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary">Kunjungi Kami</h2>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 max-w-4xl mx-auto">
           <div v-for="loc in locations" :key="loc.id"
@@ -813,6 +798,60 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.bento-grid-bottom {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .bento-grid-bottom {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .bento-grid-bottom {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.bento-bottom {
+  min-height: 160px;
+}
+
+.bento-see-all {
+  border: 2px dashed rgba(25, 196, 212, 0.4);
+  background: linear-gradient(135deg, #F0FBFD 0%, #fff 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  min-height: 160px;
+  transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease, background 300ms ease;
+}
+
+.bento-see-all:hover {
+  transform: translateY(-6px);
+  border-color: #18327A;
+  border-style: solid;
+  background: linear-gradient(135deg, #E6F9FB 0%, #F0FBFD 100%);
+  box-shadow: 0 16px 40px rgba(20, 80, 120, 0.08);
+}
+
+.bento-see-all-icon {
+  font-size: 28px;
+  color: #19C9D3;
+  transition: transform 300ms ease, color 300ms ease;
+}
+
+.bento-see-all:hover .bento-see-all-icon {
+  transform: translateX(5px);
+  color: #18327A;
 }
 
 .bento-card {
