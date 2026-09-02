@@ -9,7 +9,6 @@ const uploadError = ref('')
 const deleteId = ref<string | null>(null)
 const deleting = ref(false)
 const showAddModal = ref(false)
-const fileInput = ref<HTMLInputElement>()
 
 const categories = ['Klinik', 'Perawatan', 'Hasil']
 const categoryMap: Record<string,string> = { Klinik: 'klinik', Perawatan: 'perawatan', Hasil: 'hasil' }
@@ -127,7 +126,7 @@ onMounted(loadImages)
               </div>
               <label class="block w-full py-2.5 rounded-xl border border-gray-200 text-center text-sm font-display font-medium text-gray-600 hover:bg-gray-50 cursor-pointer">
                 Pilih Foto
-                <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="onFileChange">
+                <input type="file" accept="image/*" class="hidden" @change="onFileChange">
               </label>
               <div>
                 <label class="block text-xs font-display font-medium text-gray-700 mb-1">Judul *</label>
