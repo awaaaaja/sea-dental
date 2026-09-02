@@ -30,7 +30,6 @@ const whyRef = ref<HTMLElement>()
 const doctorsRef = ref<HTMLElement>()
 const promosRef = ref<HTMLElement>()
 const galleryRef = ref<HTMLElement>()
-const galleryCarouselRef = ref<HTMLElement>()
 const testimonialsRef = ref<HTMLElement>()
 const testimonialsCarouselRef = ref<HTMLElement>()
 const partnersRef = ref<HTMLElement>()
@@ -47,6 +46,8 @@ const { faqs, loadFaqs } = useFaqs()
 const { testimonials, loadTestimonials } = useTestimonials()
 const { items: galleryImages, loadGallery } = useGallery()
 const { locations, loadLocations } = useLocations()
+
+const showcaseVideoUrl = ref('/showcase-video.mp4')
 
 // Hero slideshow
 const heroSlides = [
@@ -103,17 +104,6 @@ function openLightbox(index: number) {
   lightboxOpen.value = true
 }
 
-function galleryPrev() {
-  const el = galleryCarouselRef.value
-  if (el) el.scrollBy({ left: -240, behavior: 'smooth' })
-}
-
-function galleryNext() {
-  const el = galleryCarouselRef.value
-  if (el) el.scrollBy({ left: 240, behavior: 'smooth' })
-}
-
-let galleryAutoScroll: ReturnType<typeof setInterval> | null = null
 let testimonialAutoScroll: ReturnType<typeof setInterval> | null = null
 
 const partners = [
@@ -138,6 +128,11 @@ async function loadStats() {
   stats.value[3].value = String(gallery.count || 0)
 }
 
+async function loadShowcaseVideo() {
+  const { data } = await supabase.from('site_settings').select('value').eq('key', 'showcase_video_url').single()
+  if (data?.value) showcaseVideoUrl.value = data.value
+}
+
 onMounted(async () => {
   await Promise.all([
     loadStats(),
@@ -149,6 +144,7 @@ onMounted(async () => {
     loadTestimonials(),
     loadGallery(),
     loadLocations(),
+    loadShowcaseVideo(),
   ])
   startHeroSlideshow()
   await nextTick()
@@ -158,33 +154,6 @@ onMounted(async () => {
   const gsap = gsapModule.default || gsapModule.gsap
   const { ScrollTrigger } = await import('gsap/ScrollTrigger')
   gsap.registerPlugin(ScrollTrigger)
-
-  // Gallery auto-scroll (mobile)
-  if (galleryCarouselRef.value) {
-    galleryAutoScroll = setInterval(() => {
-      const el = galleryCarouselRef.value
-      if (!el) return
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' })
-      } else {
-        el.scrollBy({ left: 200, behavior: 'smooth' })
-      }
-    }, 3000)
-    galleryCarouselRef.value.addEventListener('mouseenter', () => {
-      if (galleryAutoScroll) clearInterval(galleryAutoScroll)
-    })
-    galleryCarouselRef.value.addEventListener('mouseleave', () => {
-      galleryAutoScroll = setInterval(() => {
-        const el = galleryCarouselRef.value
-        if (!el) return
-        if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-          el.scrollTo({ left: 0, behavior: 'smooth' })
-        } else {
-          el.scrollBy({ left: 200, behavior: 'smooth' })
-        }
-      }, 3000)
-    })
-  }
 
   // Testimonials auto-scroll (mobile)
   if (testimonialsCarouselRef.value) {
@@ -330,7 +299,6 @@ onMounted(async () => {
 
 onUnmounted(() => {
   clearInterval(heroInterval)
-  if (galleryAutoScroll) clearInterval(galleryAutoScroll)
 })
 </script>
 
@@ -372,7 +340,7 @@ onUnmounted(() => {
               <span class="material-symbols-outlined text-[16px]">calendar_month</span>
               Buat Janji Temu
             </a>
-            <a href="https://www.instagram.com/stories/highlights/17978707913891105/" target="_blank"
+            <a href="/promos"
               class="bg-white/10 backdrop-blur-sm text-white font-display font-semibold text-[13px] px-6 py-3 rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 active:scale-95 flex items-center gap-2">
               <span class="material-symbols-outlined text-[16px]">local_offer</span>
               Promo Kami
@@ -408,6 +376,53 @@ onUnmounted(() => {
               <p class="font-body text-[11px] text-[#64748B]">{{ stat.label }}</p>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROMOS -->
+    <section ref="promosRef" class="py-10 md:py-14 bg-gradient-to-br from-primary to-deep-navy relative overflow-hidden" id="promo">
+      <div class="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-tech/10 blur-[100px]"></div>
+      <div class="max-w-[1200px] mx-auto px-4 md:px-6 relative z-10">
+        <div class="text-center mb-8 md:mb-12">
+          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-white">Penawaran Terbaik untuk Senyum Anda</h2>
+          <p class="animate-item font-body text-[13px] md:text-[14px] text-white/60 mt-2 max-w-lg mx-auto">Jangan lewatkan promo menarik dari SEA Dental Aesthetics</p>
+        </div>
+
+        <div v-if="promosLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div v-for="i in 4" :key="i" class="rounded-2xl bg-white/10 animate-pulse h-[220px]"></div>
+        </div>
+
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <router-link v-for="promo in promos.slice(0, 4)" :key="promo.id" :to="`/promos/${promo.slug}`"
+            class="animate-item group rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 overflow-hidden hover:border-cyan-tech/40 transition-all duration-300 hover:transform hover:-translate-y-1">
+            <div class="aspect-[16/10] overflow-hidden">
+              <img :src="promo.image_url" :alt="promo.title"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                @error="($event.target as HTMLImageElement).src = '/references/image_from_https_seadentalaesthetics.id_assets_img_gallery_galeri_7.jpeg/screen.png'">
+            </div>
+            <div class="p-3">
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="px-2 py-0.5 rounded-full bg-cyan-tech/20 text-cyan-tech text-[10px] font-display font-bold uppercase">{{ promo.discount_text }}</span>
+                <span v-if="promo.is_featured" class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-display font-bold">HOT</span>
+              </div>
+              <h3 class="font-display text-[13px] font-semibold text-white mb-1 line-clamp-1">{{ promo.title }}</h3>
+              <p class="font-body text-[11px] text-white/50 line-clamp-2">{{ promo.short_description }}</p>
+              <div class="flex items-center gap-2 mt-2">
+                <span v-if="promo.original_price" class="font-body text-[10px] text-white/30 line-through">Rp {{ promo.original_price.toLocaleString('id-ID') }}</span>
+                <span v-if="promo.promo_price" class="font-display text-[12px] font-bold text-cyan-tech">Rp {{ promo.promo_price.toLocaleString('id-ID') }}</span>
+                <span v-else class="font-display text-[12px] font-bold text-cyan-tech">GRATIS</span>
+              </div>
+            </div>
+          </router-link>
+        </div>
+
+        <div class="text-center mt-6 md:mt-8">
+          <router-link to="/promos"
+            class="animate-item inline-flex items-center gap-2 px-5 py-2 rounded-xl border border-white/20 text-white font-display text-[12px] font-semibold hover:bg-white/10 transition-colors">
+            Lihat Semua Promo
+            <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+          </router-link>
         </div>
       </div>
     </section>
@@ -470,18 +485,34 @@ onUnmounted(() => {
         <div class="text-center mb-10 md:mb-14">
           <h2 class="why-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A]">Perawatan yang Mengutamakan Anda</h2>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
-          <div v-for="(item, idx) in whyChooseSea" :key="item.num"
-            class="why-animate why-card group"
-            :class="{ 'why-card-accent': idx === 0 }"
-            :data-num="item.num">
-            <div class="flex items-center justify-between mb-4">
-              <span class="why-num">{{ item.num }}</span>
-              <span class="why-card-icon"><span class="material-symbols-outlined">{{ item.icon }}</span></span>
+        <div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-4 md:gap-6 items-start">
+          <!-- Left: Showcase video -->
+          <div class="why-animate flex justify-center lg:justify-start">
+            <div class="w-full max-w-[220px] rounded-2xl overflow-hidden shadow-lg">
+              <video
+                :src="showcaseVideoUrl"
+                autoplay
+                muted
+                loop
+                playsinline
+                class="w-full aspect-[9/16] object-cover"
+              ></video>
             </div>
-            <h3 class="font-display text-[16px] md:text-[18px] leading-[1.3] font-bold text-[#18327A] mb-2">{{ item.title }}</h3>
-            <p class="font-body text-[13px] leading-[1.7] text-[#64748B] mb-5">{{ item.desc }}</p>
-            <span class="why-link">Pelajari <span class="why-arrow">→</span></span>
+          </div>
+          <!-- Right: Why choose cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div v-for="(item, idx) in whyChooseSea" :key="item.num"
+              class="why-animate why-card group"
+              :class="{ 'why-card-accent': idx === 0 }"
+              :data-num="item.num">
+              <div class="flex items-center justify-between mb-3">
+                <span class="why-num">{{ item.num }}</span>
+                <span class="why-card-icon"><span class="material-symbols-outlined">{{ item.icon }}</span></span>
+              </div>
+              <h3 class="font-display text-[15px] md:text-[16px] leading-[1.3] font-bold text-[#18327A] mb-1.5">{{ item.title }}</h3>
+              <p class="font-body text-[12px] leading-[1.6] text-[#64748B] mb-4">{{ item.desc }}</p>
+              <span class="why-link">Pelajari <span class="why-arrow">→</span></span>
+            </div>
           </div>
         </div>
       </div>
@@ -493,32 +524,32 @@ onUnmounted(() => {
         <div class="text-center mb-10 md:mb-14">
           <h2 class="doc-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A]">Dokter Berpengalaman Terbaik</h2>
         </div>
-        <!-- Desktop: 3-col grid -->
-        <div class="hidden sm:grid grid-cols-3 gap-5 md:gap-6">
+        <!-- Desktop: 1 row horizontal cards -->
+        <div class="hidden md:flex gap-4">
           <router-link v-for="(doc, idx) in doctors" :key="doc.id" to="/doctors"
-            class="doc-animate doc-card group block"
+            class="doc-animate doc-card-h group flex overflow-hidden flex-1 min-w-0"
             :style="{ '--i': idx }">
-            <div class="doc-card-photo">
+            <div class="doc-card-h-photo">
               <img :src="doc.photo_url" :alt="doc.name" class="w-full h-full object-cover" loading="lazy">
-              <div class="doc-card-overlay">
+              <div class="doc-card-h-overlay">
                 <a v-if="doc.instagram_url" :href="doc.instagram_url" target="_blank"
-                  class="doc-card-insta" @click.stop>
-                  <span class="material-symbols-outlined text-[18px]">camera</span>
+                  class="doc-card-h-insta" @click.stop>
+                  <span class="material-symbols-outlined text-[16px]">camera</span>
                 </a>
               </div>
             </div>
-            <div class="doc-card-info">
-              <h3 class="font-display text-[17px] md:text-[19px] font-bold text-[#18327A] mb-0.5">{{ doc.name }}</h3>
-              <p class="font-body text-[12px] text-[#19C9D3] font-medium mb-2">{{ doc.professional_title }}</p>
-              <p class="font-body text-[12px] md:text-[13px] leading-[1.6] text-[#64748B] line-clamp-2">{{ doc.bio }}</p>
+            <div class="doc-card-h-info">
+              <h3 class="font-display text-[14px] font-bold text-[#18327A] mb-0.5 truncate">{{ doc.name }}</h3>
+              <p class="font-body text-[10px] text-[#19C9D3] font-medium mb-1 truncate">{{ doc.professional_title }}</p>
+              <p class="font-body text-[11px] leading-[1.5] text-[#64748B] line-clamp-2">{{ doc.bio }}</p>
             </div>
           </router-link>
         </div>
         <!-- Mobile: auto-scroll carousel -->
-        <div class="sm:hidden doc-carousel relative">
-          <div ref="docCarouselRef" class="flex overflow-x-auto snap-x snap-mandatory gap-4 hide-scrollbar">
+        <div class="md:hidden doc-carousel relative">
+          <div ref="docCarouselRef" class="flex overflow-x-auto snap-x snap-mandatory gap-3 hide-scrollbar">
             <router-link v-for="doc in doctors" :key="doc.id" to="/doctors"
-              class="doc-card group block snap-center flex-shrink-0 w-[260px]">
+              class="doc-card group block snap-center flex-shrink-0 w-[200px]">
               <div class="doc-card-photo">
                 <img :src="doc.photo_url" :alt="doc.name" class="w-full h-full object-cover" loading="lazy">
                 <div class="doc-card-overlay">
@@ -529,9 +560,9 @@ onUnmounted(() => {
                 </div>
               </div>
               <div class="doc-card-info">
-                <h3 class="font-display text-[17px] font-bold text-[#18327A] mb-0.5">{{ doc.name }}</h3>
-                <p class="font-body text-[12px] text-[#19C9D3] font-medium mb-2">{{ doc.professional_title }}</p>
-                <p class="font-body text-[12px] leading-[1.6] text-[#64748B] line-clamp-2">{{ doc.bio }}</p>
+                <h3 class="font-display text-[13px] font-bold text-[#18327A] mb-0.5">{{ doc.name }}</h3>
+                <p class="font-body text-[10px] text-[#19C9D3] font-medium mb-1">{{ doc.professional_title }}</p>
+                <p class="font-body text-[10px] leading-[1.5] text-[#64748B] line-clamp-2">{{ doc.bio }}</p>
               </div>
             </router-link>
           </div>
@@ -539,77 +570,23 @@ onUnmounted(() => {
       </div>
     </section>
 
-    <!-- PROMOS -->
-    <section ref="promosRef" class="py-10 md:py-14 bg-gradient-to-br from-primary to-deep-navy relative overflow-hidden" id="promo">
-      <div class="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-tech/10 blur-[100px]"></div>
-      <div class="max-w-[1200px] mx-auto px-4 md:px-6 relative z-10">
-        <div class="text-center mb-8 md:mb-12">
-          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-white">Penawaran Terbaik untuk Senyum Anda</h2>
-          <p class="animate-item font-body text-[13px] md:text-[14px] text-white/60 mt-2 max-w-lg mx-auto">Jangan lewatkan promo menarik dari SEA Dental Aesthetics</p>
-        </div>
-
-        <div v-if="promosLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div v-for="i in 4" :key="i" class="rounded-2xl bg-white/10 animate-pulse h-[220px]"></div>
-        </div>
-
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <router-link v-for="promo in promos.slice(0, 4)" :key="promo.id" :to="`/promos/${promo.slug}`"
-            class="animate-item group rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 overflow-hidden hover:border-cyan-tech/40 transition-all duration-300 hover:transform hover:-translate-y-1">
-            <div class="aspect-[16/10] overflow-hidden">
-              <img :src="promo.image_url" :alt="promo.title"
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                @error="($event.target as HTMLImageElement).src = '/references/image_from_https_seadentalaesthetics.id_assets_img_gallery_galeri_7.jpeg/screen.png'">
-            </div>
-            <div class="p-3">
-              <div class="flex items-center gap-2 mb-1.5">
-                <span class="px-2 py-0.5 rounded-full bg-cyan-tech/20 text-cyan-tech text-[10px] font-display font-bold uppercase">{{ promo.discount_text }}</span>
-                <span v-if="promo.is_featured" class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-display font-bold">HOT</span>
-              </div>
-              <h3 class="font-display text-[13px] font-semibold text-white mb-1 line-clamp-1">{{ promo.title }}</h3>
-              <p class="font-body text-[11px] text-white/50 line-clamp-2">{{ promo.short_description }}</p>
-              <div class="flex items-center gap-2 mt-2">
-                <span v-if="promo.original_price" class="font-body text-[10px] text-white/30 line-through">Rp {{ promo.original_price.toLocaleString('id-ID') }}</span>
-                <span v-if="promo.promo_price" class="font-display text-[12px] font-bold text-cyan-tech">Rp {{ promo.promo_price.toLocaleString('id-ID') }}</span>
-                <span v-else class="font-display text-[12px] font-bold text-cyan-tech">GRATIS</span>
-              </div>
-            </div>
-          </router-link>
-        </div>
-
-        <div class="text-center mt-6 md:mt-8">
-          <router-link to="/promos"
-            class="animate-item inline-flex items-center gap-2 px-5 py-2 rounded-xl border border-white/20 text-white font-display text-[12px] font-semibold hover:bg-white/10 transition-colors">
-            Lihat Semua Promo
-            <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
-          </router-link>
-        </div>
-      </div>
-    </section>
-
     <!-- GALLERY -->
-    <section ref="galleryRef" class="py-10 md:py-14 bg-medical-bg" id="galeri">
+    <section ref="galleryRef" class="py-10 md:py-14 bg-medical-bg overflow-hidden" id="galeri">
       <div class="max-w-[1200px] mx-auto px-4 md:px-6">
         <div class="text-center mb-8 md:mb-12">
           <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary">Hasil Perawatan Kami</h2>
         </div>
-        <div class="relative">
-          <div ref="galleryCarouselRef" class="flex overflow-x-auto snap-x snap-mandatory gap-3 hide-scrollbar scroll-smooth">
-            <button v-for="(img, i) in galleryImages" :key="img.id" @click="openLightbox(i)"
-              class="gallery-item flex-shrink-0 snap-center rounded-2xl overflow-hidden glass-panel p-1 group cursor-pointer">
+      </div>
+      <div class="gallery-marquee">
+        <div class="gallery-track">
+          <template v-for="n in 2" :key="n">
+            <button v-for="(img, i) in galleryImages" :key="`${n}-${img.id}`" @click="openLightbox(i)"
+              class="gallery-item flex-shrink-0 rounded-2xl overflow-hidden glass-panel p-1 group cursor-pointer">
               <img :src="img.image_url" :alt="img.title"
                 class="w-[160px] md:w-[220px] h-[110px] md:h-[160px] object-cover rounded-xl transition-transform duration-300 group-hover:scale-110"
                 loading="lazy">
             </button>
-          </div>
-          <!-- Nav buttons -->
-          <button @click="galleryPrev"
-            class="hidden md:flex absolute left-[-16px] top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-100 items-center justify-center hover:bg-gray-50 transition-colors z-10">
-            <span class="material-symbols-outlined text-[18px] text-[#18327A]">chevron_left</span>
-          </button>
-          <button @click="galleryNext"
-            class="hidden md:flex absolute right-[-16px] top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-100 items-center justify-center hover:bg-gray-50 transition-colors z-10">
-            <span class="material-symbols-outlined text-[18px] text-[#18327A]">chevron_right</span>
-          </button>
+          </template>
         </div>
       </div>
     </section>
@@ -715,17 +692,52 @@ onUnmounted(() => {
         <div class="text-center mb-8 md:mb-12">
           <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary">Kunjungi Kami</h2>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 max-w-4xl mx-auto">
-          <div v-for="loc in locations" :key="loc.id"
-            class="animate-item glass-panel rounded-2xl p-5 md:p-6 glass-card-hover">
-            <h3 class="font-display text-[16px] md:text-[20px] leading-[1.3] font-semibold text-primary mb-2">Cabang {{ loc.name }}</h3>
-            <p class="font-body text-[12px] md:text-[13px] leading-[1.7] text-on-surface-variant mb-1">{{ loc.address }}</p>
-            <p class="font-body text-[10px] md:text-[12px] text-on-surface-variant mb-3">{{ loc.operating_hours }}</p>
-            <a :href="loc.google_maps_url" target="_blank"
-              class="w-full py-2.5 rounded-xl border border-primary text-primary font-display font-semibold text-[12px] text-center hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
-              <span class="material-symbols-outlined text-[14px]">directions</span>
-              Lihat Peta
-            </a>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+          <!-- Padang -->
+          <div class="animate-item glass-panel rounded-2xl overflow-hidden glass-card-hover">
+            <div class="rounded-xl overflow-hidden h-[180px] w-full">
+              <iframe
+                src="https://maps.google.com/maps?q=SEA+dental+Aesthetics+padang&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style="border:0;"
+                allowfullscreen
+                loading="lazy"
+              ></iframe>
+            </div>
+            <div class="p-5 md:p-6">
+              <h3 class="font-display text-[16px] md:text-[20px] leading-[1.3] font-semibold text-primary mb-2">Cabang Simpang Haru</h3>
+              <p class="font-body text-[12px] md:text-[13px] leading-[1.7] text-on-surface-variant mb-1">Jl. DR. Sutomo No. 4, Simpang Haru, Padang, Sumatera Barat</p>
+              <p class="font-body text-[10px] md:text-[12px] text-on-surface-variant mb-3">Senin-Sabtu 11.00-21.00 WIB</p>
+              <a href="https://www.google.com/maps/place/SEA+dental+Aesthetics+padang/@-0.9448393,100.3738481,17z" target="_blank"
+                class="w-full py-2.5 rounded-xl border border-primary text-primary font-display font-semibold text-[12px] text-center hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[14px]">directions</span>
+                Lihat Peta
+              </a>
+            </div>
+          </div>
+          <!-- Pekanbaru -->
+          <div class="animate-item glass-panel rounded-2xl overflow-hidden glass-card-hover">
+            <div class="rounded-xl overflow-hidden h-[180px] w-full">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.3549!2d101.45!3d0.52!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sJl.+Tuanku+Tambusai!5e0!3m2!1sid!2sid!4v1"
+                width="100%"
+                height="100%"
+                style="border:0;"
+                allowfullscreen
+                loading="lazy"
+              ></iframe>
+            </div>
+            <div class="p-5 md:p-6">
+              <h3 class="font-display text-[16px] md:text-[20px] leading-[1.3] font-semibold text-primary mb-2">Cabang Baru</h3>
+              <p class="font-body text-[12px] md:text-[13px] leading-[1.7] text-on-surface-variant mb-1">Jl. Tuanku Tambusai No 124, Labuh Baru Timur, Kota Pekanbaru, Provinsi Riau</p>
+              <p class="font-body text-[10px] md:text-[12px] text-on-surface-variant mb-3">Senin-Minggu 10.00-20.00 WIB</p>
+              <a href="https://www.google.com/maps/search/Jl.+Tuanku+Tambusai+No+124+Labuh+Baru+Timur+Pekanbaru" target="_blank"
+                class="w-full py-2.5 rounded-xl border border-primary text-primary font-display font-semibold text-[12px] text-center hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[14px]">directions</span>
+                Lihat Peta
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -783,6 +795,29 @@ onUnmounted(() => {
 }
 
 @keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Gallery Marquee ── */
+.gallery-marquee {
+  overflow: hidden;
+  width: 100%;
+}
+
+.gallery-track {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: max-content;
+  animation: gallery-scroll 30s linear infinite;
+}
+
+.gallery-marquee:hover .gallery-track {
+  animation-play-state: paused;
+}
+
+@keyframes gallery-scroll {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
@@ -943,20 +978,20 @@ onUnmounted(() => {
 .doc-card {
   background: #fff;
   border: 1px solid #E5E7EB;
-  border-radius: 20px;
+  border-radius: 14px;
   overflow: hidden;
   transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
 }
 
 .doc-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
   border-color: rgba(25, 196, 212, 0.35);
-  box-shadow: 0 16px 40px rgba(20, 80, 120, 0.08);
+  box-shadow: 0 12px 32px rgba(20, 80, 120, 0.08);
 }
 
 .doc-card-photo {
   position: relative;
-  aspect-ratio: 3/4;
+  aspect-ratio: 3/3.5;
   overflow: hidden;
 }
 
@@ -977,7 +1012,7 @@ onUnmounted(() => {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 16px;
+  padding-bottom: 12px;
 }
 
 .doc-card:hover .doc-card-overlay {
@@ -985,8 +1020,8 @@ onUnmounted(() => {
 }
 
 .doc-card-insta {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: rgba(255,255,255,0.9);
   display: flex;
@@ -1007,7 +1042,83 @@ onUnmounted(() => {
 }
 
 .doc-card-info {
-  padding: 16px 20px 20px;
+  padding: 12px 14px 14px;
+}
+
+/* ── Doctor Cards Horizontal (Desktop) ── */
+.doc-card-h {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+}
+
+.doc-card-h:hover {
+  transform: translateY(-4px);
+  border-color: rgba(25, 196, 212, 0.35);
+  box-shadow: 0 12px 32px rgba(20, 80, 120, 0.08);
+}
+
+.doc-card-h-photo {
+  position: relative;
+  width: 100px;
+  min-height: 120px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.doc-card-h-photo img {
+  transition: transform 500ms ease;
+}
+
+.doc-card-h:hover .doc-card-h-photo img {
+  transform: scale(1.05);
+}
+
+.doc-card-h-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(16,36,92,0.6) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 12px;
+}
+
+.doc-card-h:hover .doc-card-h-overlay {
+  opacity: 1;
+}
+
+.doc-card-h-insta {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #18327A;
+  transition: transform 300ms ease, background 300ms ease;
+  transform: translateY(10px);
+}
+
+.doc-card-h:hover .doc-card-h-insta {
+  transform: translateY(0);
+}
+
+.doc-card-h-insta:hover {
+  background: #19C9D3;
+  color: #fff;
+}
+
+.doc-card-h-info {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* ── Scroll Animation for docs ── */
@@ -1063,8 +1174,8 @@ onUnmounted(() => {
   position: relative;
   background: #fff;
   border: 1px solid #E5E7EB;
-  border-radius: 20px;
-  padding: 28px;
+  border-radius: 16px;
+  padding: 20px;
   transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
   overflow: hidden;
 }
