@@ -9,6 +9,7 @@ const isEdit = computed(() => !!route.params.id)
 const loading = ref(false)
 const saving = ref(false)
 const uploading = ref(false)
+const uploadError = ref('')
 
 const form = reactive({
   name: '',
@@ -79,13 +80,18 @@ async function handleImageUpload(event: Event) {
   if (!file) return
 
   uploading.value = true
+  uploadError.value = ''
   const fileName = `doctors/${Date.now()}_${file.name}`
-  const { data } = await supabase.storage.from('doctor-images').upload(fileName, file)
-  if (data) {
+  const { data, error } = await supabase.storage.from('doctor-images').upload(fileName, file)
+  if (error) {
+    uploadError.value = 'Upload gagal: ' + (error.message || 'Unknown error')
+  } else if (data) {
     const { data: urlData } = supabase.storage.from('doctor-images').getPublicUrl(fileName)
     form.photo_url = urlData.publicUrl
   }
   uploading.value = false
+  // reset input to allow re-upload same file
+  input.value = ''
 }
 
 async function handleSave() {
@@ -142,7 +148,7 @@ onMounted(loadDoctor)
             <!-- Photo upload -->
             <div class="flex-shrink-0">
               <div class="w-32 h-32 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-200 overflow-hidden flex items-center justify-center relative group">
-                <img v-if="form.photo_url" :src="form.photo_url" class="w-full h-full object-cover">
+                <img v-if="form.photo_url" :src="form.photo_url" @error="form.photo_url=''" class="w-full h-full object-cover">
                 <div v-else class="text-center">
                   <span class="material-symbols-outlined text-3xl text-gray-300">person</span>
                   <p class="text-[10px] text-gray-400 mt-1">Upload</p>
@@ -153,6 +159,7 @@ onMounted(loadDoctor)
                 </label>
               </div>
               <p v-if="uploading" class="text-[10px] text-primary text-center mt-1 animate-pulse">Uploading...</p>
+              <p v-if="uploadError" class="text-[10px] text-red-500 text-center mt-1">{{ uploadError }}</p>
             </div>
 
             <div class="flex-1 space-y-4">

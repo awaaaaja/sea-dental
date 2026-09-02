@@ -161,6 +161,17 @@ const storageShim = {
       // ponytail: assume uploads are at /cms_api/uploads/<bucket>/<path>
       const url=`https://seadentalaesthetics.id/cms_api/uploads/${bucket}/${path}`;
       return {data: {publicUrl: url}};
+    },
+    remove: async (paths: string[])=>{
+      const token=localStorage.getItem('cms_token');
+      const res=await fetch(`${API_URL}/upload`, {
+        method:'DELETE',
+        headers: { 'Content-Type':'application/json', ...(token?{Authorization:`Bearer ${token}`}:{}) },
+        body: JSON.stringify({bucket, paths})
+      });
+      const j=await res.json().catch(()=>({}));
+      if(!res.ok) return {data:null, error: j.error || j};
+      return {data: j.data || j, error: null};
     }
   })
 };

@@ -9,6 +9,7 @@ const isEdit = computed(() => !!route.params.id)
 const loading = ref(false)
 const saving = ref(false)
 const uploading = ref(false)
+const uploadError = ref('')
 
 const form = reactive({
   title: '',
@@ -66,8 +67,14 @@ async function handleImageUpload(event: Event) {
   const file = input.files?.[0]
   if (!file) return
   uploading.value = true
+  uploadError.value = ''
   const fileName = `promos/${Date.now()}_${file.name}`
-  const { data } = await supabase.storage.from('promo-images').upload(fileName, file)
+  const { data, error } = await supabase.storage.from('promo-images').upload(fileName, file)
+  if (error) {
+    uploadError.value = error.message
+    uploading.value = false
+    return
+  }
   if (data) {
     const { data: urlData } = supabase.storage.from('promo-images').getPublicUrl(fileName)
     form.image_url = urlData.publicUrl
@@ -156,7 +163,7 @@ onMounted(loadPromo)
           <div class="bg-white rounded-2xl border border-gray-100 p-4">
             <h2 class="font-display text-[13px] font-semibold text-gray-900 mb-4">Gambar</h2>
             <div class="aspect-video rounded-xl bg-gray-100 border-2 border-dashed border-gray-200 overflow-hidden relative group">
-              <img v-if="form.image_url" :src="form.image_url" class="w-full h-full object-cover">
+              <img v-if="form.image_url" :src="form.image_url" class="w-full h-full object-cover" @error="(e)=>(e.target as HTMLImageElement).style.display='none'">
               <div v-else class="w-full h-full flex items-center justify-center">
                 <div class="text-center">
                   <span class="material-symbols-outlined text-4xl text-gray-300 block">image</span>
@@ -169,6 +176,7 @@ onMounted(loadPromo)
               </label>
             </div>
             <p v-if="uploading" class="text-[10px] text-primary text-center mt-2 animate-pulse">Uploading...</p>
+            <p v-if="uploadError" class="text-red-500 text-xs mt-2 text-center">{{ uploadError }}</p>
           </div>
 
           <!-- Pricing -->

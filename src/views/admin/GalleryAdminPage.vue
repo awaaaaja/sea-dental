@@ -5,6 +5,7 @@ import { supabase } from '@/utils/supabase'
 const images = ref<any[]>([])
 const loading = ref(true)
 const uploading = ref(false)
+const uploadError = ref('')
 const deleteId = ref<string | null>(null)
 const deleting = ref(false)
 const dragOver = ref(false)
@@ -25,10 +26,15 @@ async function loadImages() {
 async function handleUpload(files: FileList | null) {
   if (!files || files.length === 0) return
   uploading.value = true
+  uploadError.value = ''
   const fileArr = Array.from(files)
   for (const file of fileArr) {
     const fileName = `gallery/${Date.now()}_${file.name}`
-    const { data } = await supabase.storage.from('gallery').upload(fileName, file)
+    const { data, error } = await supabase.storage.from('gallery').upload(fileName, file)
+    if (error) {
+      uploadError.value = error.message
+      continue
+    }
     if (data) {
       const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(fileName)
       await supabase.from('gallery_items').insert({
@@ -90,6 +96,7 @@ onMounted(loadImages)
         {{ uploading ? 'Mengupload...' : 'Drag & drop atau klik untuk upload' }}
       </p>
       <p class="text-[11px] text-gray-400 mt-1">Support: JPG, PNG, WebP</p>
+      <p v-if="uploadError" class="text-red-500 text-xs mt-2">{{ uploadError }}</p>
     </div>
 
     <!-- Category filter -->
@@ -118,7 +125,7 @@ onMounted(loadImages)
 
     <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
       <div v-for="img in images" :key="img.id" class="group relative aspect-square rounded-xl overflow-hidden bg-gray-100">
-        <img :src="img.image_url" :alt="img.title" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+        <img :src="img.image_url" :alt="img.title" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" @error="(e)=>(e.target as HTMLImageElement).style.display='none'">
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
           <div class="absolute bottom-0 left-0 right-0 p-3">
             <p class="text-white text-xs font-display font-medium truncate">{{ img.title }}</p>

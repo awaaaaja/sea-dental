@@ -220,18 +220,21 @@ onMounted(() => {
               <input v-model="form.hero_image"
                 class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
                 placeholder="https://images.unsplash.com/...">
+              <img v-if="form.hero_image" :src="form.hero_image" class="mt-2 w-full h-32 object-cover rounded-xl border border-gray-100" @error="(e)=>(e.target as HTMLImageElement).style.display='none'">
             </div>
             <div>
               <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">Content Image URL (Mid-page)</label>
               <input v-model="form.content_image"
                 class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
                 placeholder="https://images.unsplash.com/...">
+              <img v-if="form.content_image" :src="form.content_image" class="mt-2 w-full h-32 object-cover rounded-xl border border-gray-100" @error="(e)=>(e.target as HTMLImageElement).style.display='none'">
             </div>
             <div>
               <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">Mid-page Image URL</label>
               <input v-model="form.mid_image"
                 class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
                 placeholder="https://images.unsplash.com/...">
+              <img v-if="form.mid_image" :src="form.mid_image" class="mt-2 w-full h-32 object-cover rounded-xl border border-gray-100" @error="(e)=>(e.target as HTMLImageElement).style.display='none'">
             </div>
           </div>
         </div>
