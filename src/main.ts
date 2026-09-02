@@ -5,6 +5,13 @@ import pinia from './stores'
 import { useAuthStore } from './stores/auth'
 import './style.css'
 
+// ponytail: reveal Material Symbols only after font loads (prevent FOUT)
+if ('fonts' in document) {
+  (document as any).fonts.ready.then(() => document.documentElement.classList.add('fonts-loaded'))
+} else {
+  setTimeout(() => document.documentElement.classList.add('fonts-loaded'), 500)
+}
+
 // ponytail: auto-reload on chunk load failure (old cached index after deploy)
 window.addEventListener('error', (e) => {
   const msg = (e as ErrorEvent).message || ''

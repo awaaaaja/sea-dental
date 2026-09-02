@@ -13,7 +13,7 @@ const branches = [
   <Teleport to="body">
     <Transition name="branch-modal">
       <div v-if="isOpen" class="fixed inset-0 z-[200] flex items-center justify-center p-4" @click.self="close">
-        <div class="absolute inset-0 bg-[#10245C]/60 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 bg-[#10245C]/60 backdrop-blur-sm pointer-events-none"></div>
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 z-10">
           <button @click="close" class="absolute top-4 right-4 text-[#64748B] hover:text-[#18327A] transition-colors">
             <span class="material-symbols-outlined text-[20px]">close</span>
@@ -44,6 +44,9 @@ const branches = [
 .branch-modal-enter-active,
 .branch-modal-leave-active {
   transition: opacity 250ms ease;
+}
+.branch-modal-leave-active {
+  pointer-events: none;
 }
 .branch-modal-enter-active .relative,
 .branch-modal-leave-active .relative {

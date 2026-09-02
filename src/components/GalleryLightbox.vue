@@ -81,6 +81,9 @@ watch(() => props.open, (v) => {
 .lightbox-leave-active {
   transition: opacity 0.25s ease;
 }
+.lightbox-leave-active {
+  pointer-events: none;
+}
 .lightbox-enter-from,
 .lightbox-leave-to {
   opacity: 0;

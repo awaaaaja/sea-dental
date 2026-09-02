@@ -127,6 +127,9 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 .slide-leave-active {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
+.slide-leave-active {
+  pointer-events: none;
+}
 .slide-enter-from,
 .slide-leave-to {
   transform: translateY(-10px);
