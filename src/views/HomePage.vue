@@ -486,10 +486,10 @@ onUnmounted(() => {
         <div class="text-center mb-10 md:mb-14">
           <h2 class="why-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A]">Perawatan yang Mengutamakan Anda</h2>
         </div>
-        <div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-4 md:gap-6 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-6 md:gap-8 items-center">
           <!-- Left: Showcase video -->
-          <div class="why-animate flex justify-center lg:justify-start">
-            <div class="w-full max-w-[220px] rounded-2xl overflow-hidden shadow-lg">
+          <div class="why-animate flex justify-center">
+            <div class="w-full max-w-[320px] md:max-w-[360px] rounded-2xl overflow-hidden shadow-xl">
               <video
                 :src="showcaseVideoUrl"
                 autoplay
@@ -526,7 +526,7 @@ onUnmounted(() => {
           <h2 class="doc-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A]">Dokter Berpengalaman Terbaik</h2>
         </div>
         <!-- Desktop: 1 row horizontal cards -->
-        <div class="hidden md:flex gap-4">
+        <div class="hidden md:flex gap-5">
           <router-link v-for="(doc, idx) in doctors" :key="doc.id" to="/doctors"
             class="doc-animate doc-card-h group flex overflow-hidden flex-1 min-w-0"
             :style="{ '--i': idx }">
@@ -540,9 +540,9 @@ onUnmounted(() => {
               </div>
             </div>
             <div class="doc-card-h-info">
-              <h3 class="font-display text-[14px] font-bold text-[#18327A] mb-0.5 truncate">{{ doc.name }}</h3>
-              <p class="font-body text-[10px] text-[#19C9D3] font-medium mb-1 truncate">{{ doc.professional_title }}</p>
-              <p class="font-body text-[11px] leading-[1.5] text-[#64748B] line-clamp-2">{{ doc.bio }}</p>
+              <h3 class="font-display text-[15px] font-bold text-[#18327A] mb-0.5 truncate">{{ doc.name }}</h3>
+              <p class="font-body text-[11px] text-[#19C9D3] font-medium mb-1 truncate">{{ doc.professional_title }}</p>
+              <p class="font-body text-[12px] leading-[1.5] text-[#64748B] line-clamp-2">{{ doc.bio }}</p>
             </div>
           </router-link>
         </div>
@@ -550,7 +550,7 @@ onUnmounted(() => {
         <div class="md:hidden doc-carousel relative">
           <div ref="docCarouselRef" class="flex overflow-x-auto snap-x snap-mandatory gap-3 hide-scrollbar">
             <router-link v-for="doc in doctors" :key="doc.id" to="/doctors"
-              class="doc-card group block snap-center flex-shrink-0 w-[200px]">
+              class="doc-card group block snap-center flex-shrink-0 w-[240px]">
               <div class="doc-card-photo">
                 <img :src="doc.photo_url" :alt="doc.name" class="w-full h-full object-cover" loading="lazy">
                 <div class="doc-card-overlay">
@@ -811,7 +811,8 @@ onUnmounted(() => {
   align-items: center;
   gap: 12px;
   width: max-content;
-  animation: gallery-scroll 30s linear infinite;
+  animation: gallery-scroll 22s linear infinite;
+  will-change: transform;
 }
 
 .gallery-marquee:hover .gallery-track {
@@ -819,8 +820,8 @@ onUnmounted(() => {
 }
 
 @keyframes gallery-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
 }
 
 /* ── Bento Grid ── */
@@ -1063,8 +1064,8 @@ onUnmounted(() => {
 
 .doc-card-h-photo {
   position: relative;
-  width: 100px;
-  min-height: 120px;
+  width: 120px;
+  min-height: 140px;
   flex-shrink: 0;
   overflow: hidden;
 }
