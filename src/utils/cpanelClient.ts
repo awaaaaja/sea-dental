@@ -33,10 +33,16 @@ class QueryBuilder {
   isUpdate: any = null;
   isInsert: any = null;
   isUpsert: any = null;
+  wantCount = false;
+  isHead = false;
 
   constructor(table:string){ this.table=table; }
 
-  select(_cols?:string){ return this; }
+  select(_cols?:string, opts?:{count?:string, head?:boolean}){ 
+    if(opts?.count==='exact') this.wantCount=true;
+    if(opts?.head) this.isHead=true;
+    return this; 
+  }
   eq(col:string, val:any){ this.filters[col]=val; return this; }
   neq(col:string, val:any){ this.filters[col+'_neq']=val; return this; }
   order(col:string, opts?:{ascending?:boolean}){
@@ -136,10 +142,18 @@ class QueryBuilder {
     if(this.isSingle){
       if(Array.isArray(data)) data = data[0] ?? null;
       // supabase single returns object, not array
+      if(this.wantCount){
+        const c = data ? 1 : 0;
+        return {data: data || null, count: c, error: data ? null : {message:'Not found'}} as any;
+      }
       return {data: data || null, error: data ? null : {message:'Not found'}};
     }
     if(!Array.isArray(data) && data) data=[data];
-    return {data: data || [], error: null};
+    const outData = data || [];
+    if(this.wantCount){
+      return {data: this.isHead ? null : outData, count: outData.length, error: null} as any;
+    }
+    return {data: outData, error: null};
   }
 }
 
