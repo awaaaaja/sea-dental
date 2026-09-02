@@ -746,22 +746,28 @@ onUnmounted(() => {
     </section>
 
     <!-- CTA -->
-    <section ref="ctaRef" class="py-10 md:py-14 bg-gradient-to-br from-primary to-deep-navy text-white relative overflow-hidden">
-      <div class="absolute top-[-20%] right-[-10%] w-[40%] h-[40%] rounded-full bg-cyan-tech/10 blur-[120px]"></div>
-      <div class="max-w-[1200px] mx-auto px-4 md:px-6 text-center relative z-10">
-        <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-white mb-3">Siap untuk Senyum Impian Anda?</h2>
-        <p class="animate-item font-body text-[12px] md:text-[14px] leading-[1.7] text-white/80 max-w-2xl mx-auto mb-5">Konsultasikan kebutuhan gigi Anda dengan dokter kami yang berpengalaman. Kami siap membantu Anda mendapatkan senyum terbaik.</p>
-        <div class="animate-item flex flex-wrap justify-center gap-3">
-          <a @click.prevent="openBranchModal()"
-            class="bg-white text-primary font-display font-semibold text-[12px] px-5 py-2.5 rounded-full hover:shadow-lg transition-all duration-300 active:scale-95 flex items-center gap-2">
-            <span class="material-symbols-outlined text-[14px]">calendar_month</span>
-            Buat Janji Sekarang
-          </a>
-          <a href="https://api.whatsapp.com/send/?phone=6281266971089" target="_blank"
-            class="border border-white/30 text-white font-display font-semibold text-[12px] px-5 py-2.5 rounded-full hover:bg-white/10 transition-all duration-300 active:scale-95 flex items-center gap-2">
-            <span class="material-symbols-outlined text-[14px]">chat</span>
-            WhatsApp Kami
-          </a>
+    <section ref="ctaRef" class="py-12 md:py-16 bg-[#F0F4F8] text-primary relative overflow-hidden">
+      <div class="max-w-[1200px] mx-auto px-4 md:px-6 relative z-10">
+        <div class="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+          <div class="flex-1 text-center md:text-left">
+            <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-[#10245C] mb-3">Siap untuk Senyum Impian Anda?</h2>
+            <p class="animate-item font-body text-[12px] md:text-[14px] leading-[1.7] text-[#64748B] max-w-2xl mx-auto md:mx-0 mb-5">Konsultasikan kebutuhan gigi Anda dengan dokter kami yang berpengalaman. Kami siap membantu Anda mendapatkan senyum terbaik.</p>
+            <div class="animate-item flex flex-wrap justify-center md:justify-start gap-3">
+              <a @click.prevent="openBranchModal()"
+                class="bg-primary text-white font-display font-semibold text-[12px] px-5 py-2.5 rounded-full hover:bg-primary/90 shadow-md transition-all duration-300 active:scale-95 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[14px]">calendar_month</span>
+                Buat Janji Sekarang
+              </a>
+              <a href="https://api.whatsapp.com/send/?phone=6281266971089" target="_blank"
+                class="border border-primary/20 bg-white text-primary font-display font-semibold text-[12px] px-5 py-2.5 rounded-full hover:bg-primary/5 transition-all duration-300 active:scale-95 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[14px]">chat</span>
+                WhatsApp Kami
+              </a>
+            </div>
+          </div>
+          <div class="hidden md:block w-40 h-40 lg:w-48 lg:h-48 rounded-2xl overflow-hidden shadow-xl border border-gray-100 flex-shrink-0 rotate-2 hover:rotate-0 transition-transform duration-500">
+            <img src="/cta-clinic.png" alt="Klinik SEA Dental" class="w-full h-full object-cover" loading="lazy">
+          </div>
         </div>
       </div>
     </section>
