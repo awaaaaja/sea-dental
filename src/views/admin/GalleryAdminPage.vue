@@ -42,6 +42,7 @@ async function handleUpload(files: FileList | null) {
         image_url: urlData.publicUrl,
         category: selectedCategory.value || null,
         sort_order: images.value.length,
+        status: 'published',
       })
     }
   }
