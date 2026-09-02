@@ -54,7 +54,6 @@ onMounted(async () => {
     <!-- HERO -->
     <PageHero
       variant="split"
-      eyebrow="About Us"
       title="Tentang Kami"
       subtitle="Mengenal lebih dekat SEA Dental Aesthetics dan komitmen kami terhadap kesehatan gigi Anda."
       :image="'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80'"
@@ -71,7 +70,6 @@ onMounted(async () => {
       <div class="max-w-[1280px] mx-auto px-5 md:px-6">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <span class="label-caps text-cyan-tech mb-3 block">Misi Kami</span>
             <h2 class="font-display text-[20px] md:text-[28px] font-bold text-primary leading-tight mb-6">
               Memberikan Senyum Sempurna untuk Setiap Pasien
             </h2>
@@ -105,10 +103,9 @@ onMounted(async () => {
     </section>
 
     <!-- VALUES -->
-    <section ref="valuesRef" class="pb-16 md:pb-24 bg-medical-bg">
+    <section ref="valuesRef" class="pt-12 md:pt-16 pb-16 md:pb-24 bg-medical-bg">
       <div class="max-w-[1280px] mx-auto px-5 md:px-6">
         <div class="text-center mb-12">
-          <span class="label-caps text-cyan-tech mb-3 block">Nilai Kami</span>
           <h2 class="font-display text-[20px] md:text-[28px] font-bold text-primary">Prinsip yang Kami Junjung</h2>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -123,10 +120,9 @@ onMounted(async () => {
     </section>
 
     <!-- TEAM -->
-    <section ref="teamRef" class="pb-16 md:pb-24 bg-white">
+    <section ref="teamRef" class="pt-12 md:pt-16 pb-16 md:pb-24 bg-white">
       <div class="max-w-[1280px] mx-auto px-5 md:px-6">
         <div class="text-center mb-12">
-          <span class="label-caps text-cyan-tech mb-3 block">Tim Kami</span>
           <h2 class="font-display text-[20px] md:text-[28px] font-bold text-primary">Dokter Spesialis Kami</h2>
           <p class="font-body text-[15px] text-on-surface-variant mt-3 max-w-xl mx-auto">
             Tim dokter berpengalaman yang berkomitmen pada perawatan terbaik untuk Anda.

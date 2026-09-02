@@ -90,10 +90,10 @@ onMounted(loadData)
     <div class="bg-gradient-to-r from-[#112675] to-[#1A265E] rounded-2xl p-4 md:p-6 mb-5 text-white relative overflow-hidden">
       <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-tech/10 rounded-full blur-[80px]"></div>
       <div class="relative z-10">
-        <h1 class="font-display text-[20px] md:text-[24px] font-bold mb-2">
+        <h1 class="font-display text-[20px] md:text-[24px] font-bold mb-2 text-white">
           Selamat datang, {{ auth.profile?.full_name || 'Admin' }} 👋
         </h1>
-        <p class="font-body text-sm md:text-[15px] text-white/70 max-w-lg">
+        <p class="font-body text-sm md:text-[15px] text-white/80 max-w-lg">
           Kelola konten website SEA Dental Aesthetics dari panel admin ini. Semua data diperbarui secara real-time.
         </p>
       </div>

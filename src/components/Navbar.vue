@@ -50,13 +50,12 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   >
     <div class="flex justify-between items-center px-4 py-3 max-w-[1200px] mx-auto md:px-5">
       <!-- Logo -->
-      <router-link to="/" class="flex items-center gap-2" @click="closeMobile">
+      <router-link to="/" class="flex items-center -my-4" @click="closeMobile">
         <img
-          class="h-8 md:h-9 w-auto object-contain"
+          class="h-16 md:h-20 w-auto object-contain"
           alt="SEA Dental Aesthetics Logo"
           src="/references/logo_navbar.png"
         >
-        <span class="hidden md:block font-display font-bold text-primary text-[15px] leading-tight tracking-tight">SEA Dental</span>
       </router-link>
 
       <!-- Desktop Nav -->

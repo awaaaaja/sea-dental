@@ -17,6 +17,7 @@ const settings = ref({
   primary_color: '#112675',
   google_analytics: 'G-TNZMMM7JFT',
   google_ads: 'AW-17374334711',
+  showcase_video_url: '/showcase-video.mp4',
 })
 
 async function loadSettings() {
@@ -113,6 +114,12 @@ onMounted(loadSettings)
             <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">Booking URL</label>
             <input v-model="settings.booking_url"
               class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors">
+          </div>
+          <div>
+            <label class="block text-sm font-display font-medium text-gray-700 mb-1.5">Video Showcase URL</label>
+            <input v-model="settings.showcase_video_url" placeholder="/showcase-video.mp4"
+              class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors">
+            <p class="text-xs text-gray-400 mt-1">URL video yang ditampilkan di section "Kenapa Memilih Kami"</p>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

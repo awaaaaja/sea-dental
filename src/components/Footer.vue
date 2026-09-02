@@ -17,7 +17,8 @@ const services = [
 ]
 
 const contactInfo = [
-  { icon: 'location_on', text: 'Jl. DR. Sutomo No. 4, Simpang Haru, Padang' },
+  { icon: 'location_on', text: 'Padang: Jl. Dr. Sutomo No.4, Simpang Haru, Kota Padang, Sumatera Barat 25123' },
+  { icon: 'location_on', text: 'Pekanbaru: Jl. Tuanku Tambusai Jl. Nangka No.124, Labuh Baru Tim., Kota Pekanbaru, Riau 28123' },
   { icon: 'schedule', text: 'Senin-Sabtu 11.00-21.00 WIB' },
   { icon: 'mail', text: 'seadentalaesthetics@gmail.com', href: 'mailto:seadentalaesthetics@gmail.com' },
   { icon: 'call', text: '+62813 6632 9279', href: 'tel:+6281366329279' },
@@ -25,9 +26,9 @@ const contactInfo = [
 
 const socials = [
   { icon: 'camera', label: 'Instagram', href: 'https://www.instagram.com/seadentalaesthetics_/' },
-  { icon: 'chat_bubble', label: 'WhatsApp', href: 'https://api.whatsapp.com/send/?phone=6281266971089' },
+  { icon: 'chat_bubble', label: 'WhatsApp', href: 'https://api.whatsapp.com/send/?phone=6281366329279' },
   { icon: 'call', label: 'Telepon', href: 'tel:+6281366329279' },
-  { icon: 'map', label: 'Google Maps', href: 'https://goo.gl/maps/LkT48FJyr2uuESkP8' },
+  { icon: 'map', label: 'Google Maps', href: 'https://www.google.com/maps/place/SEA+dental+Aesthetics+padang/@-0.9448393,100.3738481,17z' },
 ]
 </script>
 
@@ -90,25 +91,10 @@ const socials = [
         </div>
       </div>
 
-      <!-- Middle section: Map + Social -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 py-8 border-b border-white/10">
-        <!-- Map -->
-        <div>
-          <h4 class="font-display text-[11px] font-semibold text-white uppercase tracking-wider mb-3">Lokasi Kami</h4>
-          <div class="rounded-xl overflow-hidden h-[160px] w-full max-w-[500px]">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.3549!2d100.39!3d-0.95!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4b0f0!2sSEA+Dental!5e0!3m2!1sid!2sid!4v1"
-              width="100%"
-              height="100%"
-              style="border:0; border-radius: 12px;"
-              allowfullscreen
-              loading="lazy"
-            ></iframe>
-          </div>
-        </div>
-
+      <!-- Middle section: Social -->
+      <div class="py-8 border-b border-white/10">
         <!-- Social + CTA -->
-        <div class="flex flex-col justify-between">
+        <div class="flex flex-col md:flex-row justify-between items-start gap-6">
           <div>
             <h4 class="font-display text-[11px] font-semibold text-white uppercase tracking-wider mb-3">Hubungi Kami</h4>
             <p class="font-body text-[12px] text-white/45 mb-3">Butuh konsultasi? Kami siap membantu Anda.</p>
@@ -118,7 +104,7 @@ const socials = [
               Reservasi Sekarang
             </a>
           </div>
-          <div class="flex gap-2 mt-4">
+          <div class="flex gap-2">
             <a
               v-for="social in socials"
               :key="social.label"

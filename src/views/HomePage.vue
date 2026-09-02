@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, nextTick } from 'vue'
+import { onMounted, onUnmounted, ref, computed, nextTick } from 'vue'
 import GalleryLightbox from '@/components/GalleryLightbox.vue'
 import { useSeo, localBusinessSchema } from '@/composables/useSeo'
 import { usePromos } from '@/composables/usePromos'
@@ -27,11 +27,9 @@ useSeo({
 const heroRef = ref<HTMLElement>()
 const statsRef = ref<HTMLElement>()
 const whyRef = ref<HTMLElement>()
-const servicesRef = ref<HTMLElement>()
 const doctorsRef = ref<HTMLElement>()
 const promosRef = ref<HTMLElement>()
 const galleryRef = ref<HTMLElement>()
-const galleryCarouselRef = ref<HTMLElement>()
 const testimonialsRef = ref<HTMLElement>()
 const testimonialsCarouselRef = ref<HTMLElement>()
 const partnersRef = ref<HTMLElement>()
@@ -48,6 +46,8 @@ const { faqs, loadFaqs } = useFaqs()
 const { testimonials, loadTestimonials } = useTestimonials()
 const { items: galleryImages, loadGallery } = useGallery()
 const { locations, loadLocations } = useLocations()
+
+const showcaseVideoUrl = ref('/showcase-video.mp4')
 
 // Hero slideshow
 const heroSlides = [
@@ -79,6 +79,16 @@ const featuredServices = [
   { num: '03', icon: 'medical_services', title: 'Pembuatan Gigi Tiruan', desc: 'Alat prostetik yang dirancang untuk menggantikan gigi yang hilang yang didukung oleh jaringan keras dan lunak didalam rongga mulut.' },
 ]
 
+const allServices = computed(() => {
+  const dynamicServices = services.value.map((svc, idx) => ({
+    num: String(featuredServices.length + idx + 1).padStart(2, '0'),
+    icon: svc.icon,
+    title: svc.name,
+    desc: svc.short_description,
+  }))
+  return [...featuredServices, ...dynamicServices]
+})
+
 const whyChooseSea = [
   { num: '01', icon: 'emoji_events', title: 'Dokter Berpengalaman', desc: 'Tim dokter berpengalaman dengan keahlian dan sertifikasi profesional.' },
   { num: '02', icon: 'precision_manufacturing', title: 'Teknologi Modern', desc: 'Peralatan diagnostik dan perawatan modern untuk hasil yang presisi.' },
@@ -94,17 +104,6 @@ function openLightbox(index: number) {
   lightboxOpen.value = true
 }
 
-function galleryPrev() {
-  const el = galleryCarouselRef.value
-  if (el) el.scrollBy({ left: -240, behavior: 'smooth' })
-}
-
-function galleryNext() {
-  const el = galleryCarouselRef.value
-  if (el) el.scrollBy({ left: 240, behavior: 'smooth' })
-}
-
-let galleryAutoScroll: ReturnType<typeof setInterval> | null = null
 let testimonialAutoScroll: ReturnType<typeof setInterval> | null = null
 
 const partners = [
@@ -129,6 +128,11 @@ async function loadStats() {
   stats.value[3].value = String(gallery.count || 0)
 }
 
+async function loadShowcaseVideo() {
+  const { data } = await supabase.from('site_settings').select('value').eq('key', 'showcase_video_url').single()
+  if (data?.value) showcaseVideoUrl.value = data.value
+}
+
 onMounted(async () => {
   await Promise.all([
     loadStats(),
@@ -140,6 +144,7 @@ onMounted(async () => {
     loadTestimonials(),
     loadGallery(),
     loadLocations(),
+    loadShowcaseVideo(),
   ])
   startHeroSlideshow()
   await nextTick()
@@ -149,33 +154,6 @@ onMounted(async () => {
   const gsap = gsapModule.default || gsapModule.gsap
   const { ScrollTrigger } = await import('gsap/ScrollTrigger')
   gsap.registerPlugin(ScrollTrigger)
-
-  // Gallery auto-scroll (mobile)
-  if (galleryCarouselRef.value) {
-    galleryAutoScroll = setInterval(() => {
-      const el = galleryCarouselRef.value
-      if (!el) return
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' })
-      } else {
-        el.scrollBy({ left: 200, behavior: 'smooth' })
-      }
-    }, 3000)
-    galleryCarouselRef.value.addEventListener('mouseenter', () => {
-      if (galleryAutoScroll) clearInterval(galleryAutoScroll)
-    })
-    galleryCarouselRef.value.addEventListener('mouseleave', () => {
-      galleryAutoScroll = setInterval(() => {
-        const el = galleryCarouselRef.value
-        if (!el) return
-        if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-          el.scrollTo({ left: 0, behavior: 'smooth' })
-        } else {
-          el.scrollBy({ left: 200, behavior: 'smooth' })
-        }
-      }, 3000)
-    })
-  }
 
   // Testimonials auto-scroll (mobile)
   if (testimonialsCarouselRef.value) {
@@ -245,7 +223,7 @@ onMounted(async () => {
   )
 
   // Section reveals
-  const sectionRefs = [statsRef, whyRef, servicesRef, doctorsRef, promosRef, galleryRef, testimonialsRef, partnersRef, articlesRef, faqRef, locationsRef, ctaRef]
+  const sectionRefs = [statsRef, whyRef, doctorsRef, promosRef, galleryRef, testimonialsRef, partnersRef, articlesRef, faqRef, locationsRef, ctaRef]
   sectionRefs.forEach((sectionRef) => {
     if (!sectionRef.value) return
     const items = sectionRef.value.querySelectorAll('.animate-item')
@@ -271,17 +249,6 @@ onMounted(async () => {
         textContent: target, duration: 1.5, snap: { textContent: 1 }, ease: 'power1.inOut',
       })
     })
-  })
-
-  // Services staggered scale-in
-  mm.add('(min-width: 768px)', () => {
-    const serviceCards = servicesRef.value?.querySelectorAll('.service-card')
-    if (serviceCards) {
-      gsap.fromTo(serviceCards,
-        { y: 30, opacity: 0, scale: 0.96 },
-        { scrollTrigger: { trigger: servicesRef.value, start: 'top 80%' }, y: 0, opacity: 1, scale: 1, duration: 0.5, stagger: 0.07, ease: 'power2.out' }
-      )
-    }
   })
 
   // Gallery mosaic stagger
@@ -332,7 +299,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   clearInterval(heroInterval)
-  if (galleryAutoScroll) clearInterval(galleryAutoScroll)
+  if (testimonialAutoScroll) clearInterval(testimonialAutoScroll)
 })
 </script>
 
@@ -374,7 +341,7 @@ onUnmounted(() => {
               <span class="material-symbols-outlined text-[16px]">calendar_month</span>
               Buat Janji Temu
             </a>
-            <a href="https://www.instagram.com/stories/highlights/17978707913891105/" target="_blank"
+            <a href="/promos"
               class="bg-white/10 backdrop-blur-sm text-white font-display font-semibold text-[13px] px-6 py-3 rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 active:scale-95 flex items-center gap-2">
               <span class="material-symbols-outlined text-[16px]">local_offer</span>
               Promo Kami
@@ -396,7 +363,7 @@ onUnmounted(() => {
     </header>
 
     <!-- STATS -->
-    <section ref="statsRef" class="py-4 md:py-5 bg-white border-y border-gray-100">
+    <section ref="statsRef" class="py-4 md:py-5 bg-white">
       <div class="max-w-[1200px] mx-auto px-5 md:px-6">
         <div class="grid grid-cols-4 gap-4">
           <div v-for="(stat, idx) in stats" :key="stat.label"
@@ -414,149 +381,12 @@ onUnmounted(() => {
       </div>
     </section>
 
-    <!-- LAYANAN UNGGULAN — Bento Grid -->
-    <section ref="whyRef" class="py-14 md:py-20 bg-white">
-      <div class="max-w-[1200px] mx-auto px-5 md:px-6">
-        <div class="text-center mb-10 md:mb-14">
-          <span class="why-animate font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.15em] text-[#19C9D3] uppercase">Layanan Kami</span>
-          <h2 class="why-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A] mt-3">Perawatan Gigi untuk Senyum yang Lebih Sehat</h2>
-        </div>
-        <div class="bento-grid">
-          <!-- Featured — Large card left -->
-          <router-link to="/services"
-            class="bento-card bento-featured group block">
-            <span class="bento-num">01</span>
-            <span class="bento-icon"><span class="material-symbols-outlined">{{ featuredServices[0].icon }}</span></span>
-            <div class="bento-content">
-              <h3 class="font-display text-[20px] md:text-[24px] lg:text-[28px] leading-[1.2] font-bold text-[#18327A] mb-3">{{ featuredServices[0].title }}</h3>
-              <p class="font-body text-[14px] md:text-[15px] leading-[1.7] text-[#64748B] mb-6">{{ featuredServices[0].desc }}</p>
-              <span class="bento-link">Pelajari layanan <span class="bento-arrow">→</span></span>
-            </div>
-          </router-link>
-          <!-- Stacked — Right column -->
-          <div class="bento-stack">
-            <router-link v-for="svc in featuredServices.slice(1)" :key="svc.num" to="/services"
-              class="bento-card bento-small group block">
-              <span class="bento-num">{{ svc.num }}</span>
-              <span class="bento-icon"><span class="material-symbols-outlined">{{ svc.icon }}</span></span>
-              <div class="bento-content">
-                <h3 class="font-display text-[16px] md:text-[18px] leading-[1.3] font-semibold text-[#18327A] mb-2">{{ svc.title }}</h3>
-                <p class="font-body text-[13px] leading-[1.7] text-[#64748B]">{{ svc.desc }}</p>
-                <span class="bento-link mt-4">Lihat detail <span class="bento-arrow">→</span></span>
-              </div>
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- KENAPA MEMILIH SEA -->
-    <section class="py-14 md:py-20 bg-white">
-      <div class="max-w-[1200px] mx-auto px-5 md:px-6">
-        <div class="text-center mb-10 md:mb-14">
-          <span class="why-animate font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.15em] text-[#19C9D3] uppercase">Kenapa Memilih Kami</span>
-          <h2 class="why-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A] mt-3">Perawatan yang Mengutamakan Anda</h2>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
-          <div v-for="(item, idx) in whyChooseSea" :key="item.num"
-            class="why-animate why-card group"
-            :class="{ 'why-card-accent': idx === 0 }"
-            :data-num="item.num">
-            <div class="flex items-center justify-between mb-4">
-              <span class="why-num">{{ item.num }}</span>
-              <span class="why-card-icon"><span class="material-symbols-outlined">{{ item.icon }}</span></span>
-            </div>
-            <h3 class="font-display text-[16px] md:text-[18px] leading-[1.3] font-bold text-[#18327A] mb-2">{{ item.title }}</h3>
-            <p class="font-body text-[13px] leading-[1.7] text-[#64748B] mb-5">{{ item.desc }}</p>
-            <span class="why-link">Pelajari <span class="why-arrow">→</span></span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SERVICES -->
-    <section ref="servicesRef" class="py-10 md:py-14 bg-medical-bg" id="layanan">
-      <div class="max-w-[1200px] mx-auto px-4 md:px-6">
-        <div class="text-center mb-8 md:mb-12">
-          <span class="animate-item font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-cyan-tech uppercase">Layanan Kami</span>
-          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary mt-3">Layanan kami didukung oleh dokter yang terlatih</h2>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5">
-          <router-link v-for="svc in services" :key="svc.id" to="/services"
-            class="service-card animate-item glass-panel rounded-2xl p-5 md:p-6 glass-card-hover block">
-            <div class="service-icon mb-3">
-              <span class="material-symbols-outlined text-[20px]">{{ svc.icon }}</span>
-            </div>
-            <h3 class="font-display text-[15px] md:text-[17px] font-semibold text-primary mb-1.5">{{ svc.name }}</h3>
-            <p class="font-body text-[12px] md:text-[13px] text-on-surface-variant leading-[1.7]">{{ svc.short_description }}</p>
-          </router-link>
-        </div>
-      </div>
-    </section>
-
-    <!-- TIM DOKTER KAMI -->
-    <section ref="doctorsRef" class="py-14 md:py-20 bg-[#F6F8FB]" id="dokter">
-      <div class="max-w-[1200px] mx-auto px-5 md:px-6">
-        <div class="text-center mb-10 md:mb-14">
-          <span class="doc-animate font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.15em] text-[#19C9D3] uppercase">Tim Dokter Kami</span>
-          <h2 class="doc-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A] mt-3">Dokter Berpengalaman Terbaik</h2>
-        </div>
-        <!-- Desktop: 3-col grid -->
-        <div class="hidden sm:grid grid-cols-3 gap-5 md:gap-6">
-          <router-link v-for="(doc, idx) in doctors" :key="doc.id" to="/doctors"
-            class="doc-animate doc-card group block"
-            :style="{ '--i': idx }">
-            <div class="doc-card-photo">
-              <img :src="doc.photo_url" :alt="doc.name" class="w-full h-full object-cover" loading="lazy">
-              <div class="doc-card-overlay">
-                <a v-if="doc.instagram_url" :href="doc.instagram_url" target="_blank"
-                  class="doc-card-insta" @click.stop>
-                  <span class="material-symbols-outlined text-[18px]">camera</span>
-                </a>
-              </div>
-            </div>
-            <div class="doc-card-info">
-              <h3 class="font-display text-[17px] md:text-[19px] font-bold text-[#18327A] mb-0.5">{{ doc.name }}</h3>
-              <p class="font-body text-[12px] text-[#19C9D3] font-medium mb-2">{{ doc.professional_title }}</p>
-              <p class="font-body text-[12px] md:text-[13px] leading-[1.6] text-[#64748B] line-clamp-2">{{ doc.bio }}</p>
-            </div>
-          </router-link>
-        </div>
-        <!-- Mobile: auto-scroll carousel -->
-        <div class="sm:hidden doc-carousel relative">
-          <div ref="docCarouselRef" class="flex overflow-x-auto snap-x snap-mandatory gap-4 hide-scrollbar">
-            <router-link v-for="doc in doctors" :key="doc.id" to="/doctors"
-              class="doc-card group block snap-center flex-shrink-0 w-[260px]">
-              <div class="doc-card-photo">
-                <img :src="doc.photo_url" :alt="doc.name" class="w-full h-full object-cover" loading="lazy">
-                <div class="doc-card-overlay">
-                  <a v-if="doc.instagram_url" :href="doc.instagram_url" target="_blank"
-                    class="doc-card-insta" @click.stop>
-                    <span class="material-symbols-outlined text-[18px]">camera</span>
-                  </a>
-                </div>
-              </div>
-              <div class="doc-card-info">
-                <h3 class="font-display text-[17px] font-bold text-[#18327A] mb-0.5">{{ doc.name }}</h3>
-                <p class="font-body text-[12px] text-[#19C9D3] font-medium mb-2">{{ doc.professional_title }}</p>
-                <p class="font-body text-[12px] leading-[1.6] text-[#64748B] line-clamp-2">{{ doc.bio }}</p>
-              </div>
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- PROMOS -->
     <section ref="promosRef" class="py-10 md:py-14 bg-gradient-to-br from-primary to-deep-navy relative overflow-hidden" id="promo">
       <div class="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-tech/10 blur-[100px]"></div>
       <div class="max-w-[1200px] mx-auto px-4 md:px-6 relative z-10">
         <div class="text-center mb-8 md:mb-12">
-          <router-link to="/promos" class="inline-flex items-center gap-2">
-            <span class="material-symbols-outlined text-cyan-tech text-lg">local_offer</span>
-            <span class="animate-item font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-cyan-tech uppercase">Promo Spesial</span>
-          </router-link>
-          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-white mt-3">Penawaran Terbaik untuk Senyum Anda</h2>
+          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-white">Penawaran Terbaik untuk Senyum Anda</h2>
           <p class="animate-item font-body text-[13px] md:text-[14px] text-white/60 mt-2 max-w-lg mx-auto">Jangan lewatkan promo menarik dari SEA Dental Aesthetics</p>
         </div>
 
@@ -598,31 +428,166 @@ onUnmounted(() => {
       </div>
     </section>
 
+    <!-- LAYANAN KAMI — Bento Grid -->
+    <section ref="whyRef" class="py-14 md:py-20 bg-white" id="layanan">
+      <div class="max-w-[1200px] mx-auto px-5 md:px-6">
+        <div class="text-center mb-10 md:mb-14">
+          <h2 class="why-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A]">Perawatan Gigi untuk Senyum yang Lebih Sehat</h2>
+        </div>
+        <!-- Top: Featured bento (1 large + 2 small) -->
+        <div class="bento-grid mb-5">
+          <router-link to="/services"
+            class="bento-card bento-featured group block">
+            <span class="bento-num">{{ allServices[0].num }}</span>
+            <span class="bento-icon"><span class="material-symbols-outlined">{{ allServices[0].icon }}</span></span>
+            <div class="bento-content">
+              <h3 class="font-display text-[20px] md:text-[24px] lg:text-[28px] leading-[1.2] font-bold text-[#18327A] mb-3">{{ allServices[0].title }}</h3>
+              <p class="font-body text-[14px] md:text-[15px] leading-[1.7] text-[#64748B] mb-6">{{ allServices[0].desc }}</p>
+              <span class="bento-link">Pelajari layanan <span class="bento-arrow">→</span></span>
+            </div>
+          </router-link>
+          <div class="bento-stack">
+            <router-link v-for="svc in allServices.slice(1, 3)" :key="svc.num" to="/services"
+              class="bento-card bento-small group block">
+              <span class="bento-num">{{ svc.num }}</span>
+              <span class="bento-icon"><span class="material-symbols-outlined">{{ svc.icon }}</span></span>
+              <div class="bento-content">
+                <h3 class="font-display text-[16px] md:text-[18px] leading-[1.3] font-semibold text-[#18327A] mb-2">{{ svc.title }}</h3>
+                <p class="font-body text-[13px] leading-[1.7] text-[#64748B]">{{ svc.desc }}</p>
+                <span class="bento-link mt-4">Lihat detail <span class="bento-arrow">→</span></span>
+              </div>
+            </router-link>
+          </div>
+        </div>
+        <!-- Bottom: 2 services + Lihat Semua -->
+        <div class="bento-grid-bottom">
+          <router-link v-for="svc in allServices.slice(3, 5)" :key="svc.num" to="/services"
+            class="bento-card bento-bottom group block">
+            <span class="bento-num">{{ svc.num }}</span>
+            <span class="bento-icon"><span class="material-symbols-outlined">{{ svc.icon }}</span></span>
+            <div class="bento-content">
+              <h3 class="font-display text-[15px] md:text-[17px] leading-[1.3] font-semibold text-[#18327A] mb-1.5">{{ svc.title }}</h3>
+              <p class="font-body text-[12px] leading-[1.7] text-[#64748B]">{{ svc.desc }}</p>
+            </div>
+          </router-link>
+          <router-link to="/services"
+            class="bento-card bento-see-all group block">
+            <span class="material-symbols-outlined bento-see-all-icon">arrow_forward</span>
+            <h3 class="font-display text-[15px] md:text-[17px] leading-[1.3] font-semibold text-[#18327A]">Lihat Semua</h3>
+            <p class="font-body text-[12px] leading-[1.7] text-[#64748B]">Layanan Kami</p>
+          </router-link>
+        </div>
+      </div>
+    </section>
+
+    <!-- KENAPA MEMILIH SEA -->
+    <section class="py-14 md:py-20 bg-white border-b border-gray-100">
+      <div class="max-w-[1200px] mx-auto px-5 md:px-6">
+        <div class="text-center mb-10 md:mb-14">
+          <h2 class="why-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A]">Perawatan yang Mengutamakan Anda</h2>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-4 md:gap-6 items-start">
+          <!-- Left: Showcase video -->
+          <div class="why-animate flex justify-center lg:justify-start">
+            <div class="w-full max-w-[220px] rounded-2xl overflow-hidden shadow-lg">
+              <video
+                :src="showcaseVideoUrl"
+                autoplay
+                muted
+                loop
+                playsinline
+                class="w-full aspect-[9/16] object-cover"
+              ></video>
+            </div>
+          </div>
+          <!-- Right: Why choose cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div v-for="(item, idx) in whyChooseSea" :key="item.num"
+              class="why-animate why-card group"
+              :class="{ 'why-card-accent': idx === 0 }"
+              :data-num="item.num">
+              <div class="flex items-center justify-between mb-3">
+                <span class="why-num">{{ item.num }}</span>
+                <span class="why-card-icon"><span class="material-symbols-outlined">{{ item.icon }}</span></span>
+              </div>
+              <h3 class="font-display text-[15px] md:text-[16px] leading-[1.3] font-bold text-[#18327A] mb-1.5">{{ item.title }}</h3>
+              <p class="font-body text-[12px] leading-[1.6] text-[#64748B] mb-4">{{ item.desc }}</p>
+              <span class="why-link">Pelajari <span class="why-arrow">→</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIM DOKTER KAMI -->
+    <section ref="doctorsRef" class="py-14 md:py-20 bg-medical-bg" id="dokter">
+      <div class="max-w-[1200px] mx-auto px-5 md:px-6">
+        <div class="text-center mb-10 md:mb-14">
+          <h2 class="doc-animate font-display text-[22px] md:text-[28px] lg:text-[32px] leading-[1.15] font-bold text-[#18327A]">Dokter Berpengalaman Terbaik</h2>
+        </div>
+        <!-- Desktop: 1 row horizontal cards -->
+        <div class="hidden md:flex gap-4">
+          <router-link v-for="(doc, idx) in doctors" :key="doc.id" to="/doctors"
+            class="doc-animate doc-card-h group flex overflow-hidden flex-1 min-w-0"
+            :style="{ '--i': idx }">
+            <div class="doc-card-h-photo">
+              <img :src="doc.photo_url" :alt="doc.name" class="w-full h-full object-cover" loading="lazy">
+              <div class="doc-card-h-overlay">
+                <a v-if="doc.instagram_url" :href="doc.instagram_url" target="_blank"
+                  class="doc-card-h-insta" @click.stop>
+                  <span class="material-symbols-outlined text-[16px]">camera</span>
+                </a>
+              </div>
+            </div>
+            <div class="doc-card-h-info">
+              <h3 class="font-display text-[14px] font-bold text-[#18327A] mb-0.5 truncate">{{ doc.name }}</h3>
+              <p class="font-body text-[10px] text-[#19C9D3] font-medium mb-1 truncate">{{ doc.professional_title }}</p>
+              <p class="font-body text-[11px] leading-[1.5] text-[#64748B] line-clamp-2">{{ doc.bio }}</p>
+            </div>
+          </router-link>
+        </div>
+        <!-- Mobile: auto-scroll carousel -->
+        <div class="md:hidden doc-carousel relative">
+          <div ref="docCarouselRef" class="flex overflow-x-auto snap-x snap-mandatory gap-3 hide-scrollbar">
+            <router-link v-for="doc in doctors" :key="doc.id" to="/doctors"
+              class="doc-card group block snap-center flex-shrink-0 w-[200px]">
+              <div class="doc-card-photo">
+                <img :src="doc.photo_url" :alt="doc.name" class="w-full h-full object-cover" loading="lazy">
+                <div class="doc-card-overlay">
+                  <a v-if="doc.instagram_url" :href="doc.instagram_url" target="_blank"
+                    class="doc-card-insta" @click.stop>
+                    <span class="material-symbols-outlined text-[18px]">camera</span>
+                  </a>
+                </div>
+              </div>
+              <div class="doc-card-info">
+                <h3 class="font-display text-[13px] font-bold text-[#18327A] mb-0.5">{{ doc.name }}</h3>
+                <p class="font-body text-[10px] text-[#19C9D3] font-medium mb-1">{{ doc.professional_title }}</p>
+                <p class="font-body text-[10px] leading-[1.5] text-[#64748B] line-clamp-2">{{ doc.bio }}</p>
+              </div>
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- GALLERY -->
-    <section ref="galleryRef" class="py-10 md:py-14 bg-medical-bg" id="galeri">
+    <section ref="galleryRef" class="py-10 md:py-14 bg-medical-bg overflow-hidden" id="galeri">
       <div class="max-w-[1200px] mx-auto px-4 md:px-6">
         <div class="text-center mb-8 md:mb-12">
-          <span class="animate-item font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-cyan-tech uppercase">Galeri Kami</span>
-          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary mt-3">Hasil Perawatan Kami</h2>
+          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary">Hasil Perawatan Kami</h2>
         </div>
-        <div class="relative">
-          <div ref="galleryCarouselRef" class="flex overflow-x-auto snap-x snap-mandatory gap-3 hide-scrollbar scroll-smooth">
-            <button v-for="(img, i) in galleryImages" :key="img.id" @click="openLightbox(i)"
-              class="gallery-item flex-shrink-0 snap-center rounded-2xl overflow-hidden glass-panel p-1 group cursor-pointer">
+      </div>
+      <div class="gallery-marquee">
+        <div class="gallery-track">
+          <template v-for="n in 2" :key="n">
+            <button v-for="(img, i) in galleryImages" :key="`${n}-${img.id}`" @click="openLightbox(i)"
+              class="gallery-item flex-shrink-0 rounded-2xl overflow-hidden glass-panel p-1 group cursor-pointer">
               <img :src="img.image_url" :alt="img.title"
                 class="w-[160px] md:w-[220px] h-[110px] md:h-[160px] object-cover rounded-xl transition-transform duration-300 group-hover:scale-110"
                 loading="lazy">
             </button>
-          </div>
-          <!-- Nav buttons -->
-          <button @click="galleryPrev"
-            class="hidden md:flex absolute left-[-16px] top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-100 items-center justify-center hover:bg-gray-50 transition-colors z-10">
-            <span class="material-symbols-outlined text-[18px] text-[#18327A]">chevron_left</span>
-          </button>
-          <button @click="galleryNext"
-            class="hidden md:flex absolute right-[-16px] top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-100 items-center justify-center hover:bg-gray-50 transition-colors z-10">
-            <span class="material-symbols-outlined text-[18px] text-[#18327A]">chevron_right</span>
-          </button>
+          </template>
         </div>
       </div>
     </section>
@@ -632,8 +597,7 @@ onUnmounted(() => {
       <div class="absolute top-0 right-0 w-[40%] h-[40%] rounded-full bg-cyan-tech/5 blur-[100px]"></div>
       <div class="max-w-[1200px] mx-auto px-4 md:px-6 relative z-10">
         <div class="text-center mb-8 md:mb-12">
-          <span class="animate-item font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-cyan-tech uppercase">Testimoni Pasien</span>
-          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary mt-3">Apa Kata Mereka?</h2>
+          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary">Apa Kata Mereka?</h2>
         </div>
         <div class="animate-item flex overflow-x-auto snap-x snap-mandatory gap-3 px-2 pb-3 hide-scrollbar w-full relative z-10">
           <div v-for="t in testimonials" :key="t.id"
@@ -651,7 +615,7 @@ onUnmounted(() => {
     </section>
 
     <!-- PARTNERS -->
-    <section ref="partnersRef" class="py-6 md:py-10 bg-medical-bg border-y border-glass-border overflow-hidden">
+    <section ref="partnersRef" class="py-6 md:py-10 bg-medical-bg overflow-hidden">
       <p class="animate-item text-center font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-on-surface-variant uppercase mb-5 md:mb-6">Dipercaya oleh Brand Medis Global</p>
       <div class="partners-marquee">
         <div class="partners-track">
@@ -727,20 +691,54 @@ onUnmounted(() => {
     <section ref="locationsRef" class="py-10 md:py-14 bg-medical-bg" id="kontak">
       <div class="max-w-[1200px] mx-auto px-4 md:px-6">
         <div class="text-center mb-8 md:mb-12">
-          <span class="animate-item font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-cyan-tech uppercase">Lokasi Kami</span>
-          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary mt-3">Kunjungi Kami</h2>
+          <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary">Kunjungi Kami</h2>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 max-w-4xl mx-auto">
-          <div v-for="loc in locations" :key="loc.id"
-            class="animate-item glass-panel rounded-2xl p-5 md:p-6 glass-card-hover">
-            <h3 class="font-display text-[16px] md:text-[20px] leading-[1.3] font-semibold text-primary mb-2">Cabang {{ loc.name }}</h3>
-            <p class="font-body text-[12px] md:text-[13px] leading-[1.7] text-on-surface-variant mb-1">{{ loc.address }}</p>
-            <p class="font-body text-[10px] md:text-[12px] text-on-surface-variant mb-3">{{ loc.operating_hours }}</p>
-            <a :href="loc.google_maps_url" target="_blank"
-              class="w-full py-2.5 rounded-xl border border-primary text-primary font-display font-semibold text-[12px] text-center hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
-              <span class="material-symbols-outlined text-[14px]">directions</span>
-              Lihat Peta
-            </a>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+          <!-- Padang -->
+          <div class="animate-item glass-panel rounded-2xl overflow-hidden glass-card-hover">
+            <div class="rounded-xl overflow-hidden h-[180px] w-full">
+              <iframe
+                src="https://maps.google.com/maps?q=SEA+dental+Aesthetics+padang&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style="border:0;"
+                allowfullscreen
+                loading="lazy"
+              ></iframe>
+            </div>
+            <div class="p-5 md:p-6">
+              <h3 class="font-display text-[16px] md:text-[20px] leading-[1.3] font-semibold text-primary mb-2">Cabang Simpang Haru</h3>
+              <p class="font-body text-[12px] md:text-[13px] leading-[1.7] text-on-surface-variant mb-1">Jl. DR. Sutomo No. 4, Simpang Haru, Padang, Sumatera Barat</p>
+              <p class="font-body text-[10px] md:text-[12px] text-on-surface-variant mb-3">Senin-Sabtu 11.00-21.00 WIB</p>
+              <a href="https://www.google.com/maps/place/SEA+dental+Aesthetics+padang/@-0.9448393,100.3738481,17z" target="_blank"
+                class="w-full py-2.5 rounded-xl border border-primary text-primary font-display font-semibold text-[12px] text-center hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[14px]">directions</span>
+                Lihat Peta
+              </a>
+            </div>
+          </div>
+          <!-- Pekanbaru -->
+          <div class="animate-item glass-panel rounded-2xl overflow-hidden glass-card-hover">
+            <div class="rounded-xl overflow-hidden h-[180px] w-full">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.3549!2d101.45!3d0.52!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sJl.+Tuanku+Tambusai!5e0!3m2!1sid!2sid!4v1"
+                width="100%"
+                height="100%"
+                style="border:0;"
+                allowfullscreen
+                loading="lazy"
+              ></iframe>
+            </div>
+            <div class="p-5 md:p-6">
+              <h3 class="font-display text-[16px] md:text-[20px] leading-[1.3] font-semibold text-primary mb-2">Cabang Baru</h3>
+              <p class="font-body text-[12px] md:text-[13px] leading-[1.7] text-on-surface-variant mb-1">Jl. Tuanku Tambusai No 124, Labuh Baru Timur, Kota Pekanbaru, Provinsi Riau</p>
+              <p class="font-body text-[10px] md:text-[12px] text-on-surface-variant mb-3">Senin-Minggu 10.00-20.00 WIB</p>
+              <a href="https://www.google.com/maps/search/Jl.+Tuanku+Tambusai+No+124+Labuh+Baru+Timur+Pekanbaru" target="_blank"
+                class="w-full py-2.5 rounded-xl border border-primary text-primary font-display font-semibold text-[12px] text-center hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[14px]">directions</span>
+                Lihat Peta
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -802,6 +800,29 @@ onUnmounted(() => {
   100% { transform: translateX(-50%); }
 }
 
+/* ── Gallery Marquee ── */
+.gallery-marquee {
+  overflow: hidden;
+  width: 100%;
+}
+
+.gallery-track {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: max-content;
+  animation: gallery-scroll 30s linear infinite;
+}
+
+.gallery-marquee:hover .gallery-track {
+  animation-play-state: paused;
+}
+
+@keyframes gallery-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 /* ── Bento Grid ── */
 .bento-grid {
   display: grid;
@@ -813,6 +834,60 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.bento-grid-bottom {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .bento-grid-bottom {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .bento-grid-bottom {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.bento-bottom {
+  min-height: 160px;
+}
+
+.bento-see-all {
+  border: 2px dashed rgba(25, 196, 212, 0.4);
+  background: linear-gradient(135deg, #F0FBFD 0%, #fff 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  min-height: 160px;
+  transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease, background 300ms ease;
+}
+
+.bento-see-all:hover {
+  transform: translateY(-6px);
+  border-color: #18327A;
+  border-style: solid;
+  background: linear-gradient(135deg, #E6F9FB 0%, #F0FBFD 100%);
+  box-shadow: 0 16px 40px rgba(20, 80, 120, 0.08);
+}
+
+.bento-see-all-icon {
+  font-size: 28px;
+  color: #19C9D3;
+  transition: transform 300ms ease, color 300ms ease;
+}
+
+.bento-see-all:hover .bento-see-all-icon {
+  transform: translateX(5px);
+  color: #18327A;
 }
 
 .bento-card {
@@ -904,20 +979,20 @@ onUnmounted(() => {
 .doc-card {
   background: #fff;
   border: 1px solid #E5E7EB;
-  border-radius: 20px;
+  border-radius: 14px;
   overflow: hidden;
   transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
 }
 
 .doc-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
   border-color: rgba(25, 196, 212, 0.35);
-  box-shadow: 0 16px 40px rgba(20, 80, 120, 0.08);
+  box-shadow: 0 12px 32px rgba(20, 80, 120, 0.08);
 }
 
 .doc-card-photo {
   position: relative;
-  aspect-ratio: 3/4;
+  aspect-ratio: 3/3.5;
   overflow: hidden;
 }
 
@@ -938,7 +1013,7 @@ onUnmounted(() => {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 16px;
+  padding-bottom: 12px;
 }
 
 .doc-card:hover .doc-card-overlay {
@@ -946,8 +1021,8 @@ onUnmounted(() => {
 }
 
 .doc-card-insta {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: rgba(255,255,255,0.9);
   display: flex;
@@ -968,7 +1043,83 @@ onUnmounted(() => {
 }
 
 .doc-card-info {
-  padding: 16px 20px 20px;
+  padding: 12px 14px 14px;
+}
+
+/* ── Doctor Cards Horizontal (Desktop) ── */
+.doc-card-h {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+}
+
+.doc-card-h:hover {
+  transform: translateY(-4px);
+  border-color: rgba(25, 196, 212, 0.35);
+  box-shadow: 0 12px 32px rgba(20, 80, 120, 0.08);
+}
+
+.doc-card-h-photo {
+  position: relative;
+  width: 100px;
+  min-height: 120px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.doc-card-h-photo img {
+  transition: transform 500ms ease;
+}
+
+.doc-card-h:hover .doc-card-h-photo img {
+  transform: scale(1.05);
+}
+
+.doc-card-h-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(16,36,92,0.6) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 12px;
+}
+
+.doc-card-h:hover .doc-card-h-overlay {
+  opacity: 1;
+}
+
+.doc-card-h-insta {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #18327A;
+  transition: transform 300ms ease, background 300ms ease;
+  transform: translateY(10px);
+}
+
+.doc-card-h:hover .doc-card-h-insta {
+  transform: translateY(0);
+}
+
+.doc-card-h-insta:hover {
+  background: #19C9D3;
+  color: #fff;
+}
+
+.doc-card-h-info {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* ── Scroll Animation for docs ── */
@@ -1024,8 +1175,8 @@ onUnmounted(() => {
   position: relative;
   background: #fff;
   border: 1px solid #E5E7EB;
-  border-radius: 20px;
-  padding: 28px;
+  border-radius: 16px;
+  padding: 20px;
   transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
   overflow: hidden;
 }
