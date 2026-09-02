@@ -765,8 +765,11 @@ onUnmounted(() => {
               </a>
             </div>
           </div>
-          <div class="hidden md:block w-40 h-40 lg:w-48 lg:h-48 rounded-2xl overflow-hidden shadow-xl border border-gray-100 flex-shrink-0 rotate-2 hover:rotate-0 transition-transform duration-500">
-            <img src="/cta-clinic.png" alt="Klinik SEA Dental" class="w-full h-full object-cover" loading="lazy">
+          <div class="hidden md:flex items-end gap-3 flex-shrink-0">
+            <img src="/mascot-doctor.png" alt="" class="w-28 lg:w-32 h-auto object-contain pointer-events-none select-none" loading="lazy">
+            <div class="w-36 h-36 lg:w-44 lg:h-44 rounded-2xl overflow-hidden shadow-xl border border-gray-100 flex-shrink-0 rotate-2 hover:rotate-0 transition-transform duration-500">
+              <img src="/cta-clinic.png" alt="Klinik SEA Dental" class="w-full h-full object-cover" loading="lazy">
+            </div>
           </div>
         </div>
       </div>
