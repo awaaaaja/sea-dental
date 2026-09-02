@@ -8,51 +8,72 @@ const uploading = ref(false)
 const uploadError = ref('')
 const deleteId = ref<string | null>(null)
 const deleting = ref(false)
-const dragOver = ref(false)
+const showAddModal = ref(false)
 const fileInput = ref<HTMLInputElement>()
 
 const categories = ['Klinik', 'Perawatan', 'Hasil']
+const categoryMap: Record<string,string> = { Klinik: 'klinik', Perawatan: 'perawatan', Hasil: 'hasil' }
 const selectedCategory = ref('')
+
+// Add form
+const addForm = ref({ title: '', category: 'Klinik', file: null as File | null, preview: '' })
+
+function openAddModal() {
+  addForm.value = { title: '', category: 'Klinik', file: null, preview: '' }
+  uploadError.value = ''
+  showAddModal.value = true
+}
+function onFileChange(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0] || null
+  addForm.value.file = file
+  if (file) {
+    addForm.value.preview = URL.createObjectURL(file)
+    if (!addForm.value.title) addForm.value.title = file.name.replace(/\.[^.]+$/, '')
+  } else {
+    addForm.value.preview = ''
+  }
+}
+function closeAddModal() {
+  if (addForm.value.preview) URL.revokeObjectURL(addForm.value.preview)
+  showAddModal.value = false
+}
 
 async function loadImages() {
   loading.value = true
   let query = supabase.from('gallery_items').select('*').order('sort_order')
-  if (selectedCategory.value) query = query.eq('category', selectedCategory.value)
+  if (selectedCategory.value) query = query.eq('category', categoryMap[selectedCategory.value] || selectedCategory.value.toLowerCase())
   const { data } = await query
   images.value = data || []
   loading.value = false
 }
 
-async function handleUpload(files: FileList | null) {
-  if (!files || files.length === 0) return
+async function handleAddSubmit() {
+  if (!addForm.value.file) { uploadError.value = 'Pilih foto terlebih dahulu'; return }
+  if (!addForm.value.title.trim()) { uploadError.value = 'Judul wajib diisi'; return }
   uploading.value = true
   uploadError.value = ''
-  const fileArr = Array.from(files)
-  for (const file of fileArr) {
-    const fileName = `gallery/${Date.now()}_${file.name}`
-    const { data, error } = await supabase.storage.from('gallery').upload(fileName, file)
-    if (error) {
-      uploadError.value = error.message
-      continue
-    }
-    if (data) {
-      const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(fileName)
-      await supabase.from('gallery_items').insert({
-        title: file.name.replace(/\.[^.]+$/, ''),
-        image_url: urlData.publicUrl,
-        category: selectedCategory.value || null,
-        sort_order: images.value.length,
-        status: 'published',
-      })
-    }
+  const file = addForm.value.file!
+  const fileName = `gallery/${Date.now()}_${file.name.replace(/\s+/g, '_')}`
+  const { data, error } = await supabase.storage.from('gallery').upload(fileName, file)
+  if (error) {
+    uploadError.value = error.message
+    uploading.value = false
+    return
+  }
+  if (data) {
+    const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(fileName)
+    await supabase.from('gallery_items').insert({
+      title: addForm.value.title.trim(),
+      image_url: urlData.publicUrl,
+      category: categoryMap[addForm.value.category] || addForm.value.category.toLowerCase(),
+      sort_order: images.value.length,
+      status: 'published',
+    })
   }
   uploading.value = false
+  closeAddModal()
   await loadImages()
-}
-
-function onDrop(e: DragEvent) {
-  dragOver.value = false
-  handleUpload(e.dataTransfer?.files || null)
 }
 
 async function handleDelete() {
@@ -79,26 +100,58 @@ onMounted(loadImages)
         <h1 class="font-display text-[20px] md:text-[24px] font-bold text-gray-900">Galeri</h1>
         <p class="font-body text-sm text-gray-500 mt-1">Kelola foto galeri klinik</p>
       </div>
+      <button @click="openAddModal"
+        class="px-4 py-2 rounded-xl bg-primary text-white font-display text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2">
+        <span class="material-symbols-outlined text-base">add_a_photo</span>
+        Tambah Foto
+      </button>
     </div>
 
-    <!-- Upload zone -->
-    <div
-      class="mb-6 border-2 border-dashed rounded-2xl p-8 text-center transition-colors cursor-pointer"
-      :class="dragOver ? 'border-primary bg-primary/5' : 'border-gray-200 bg-white hover:border-primary/40'"
-      @dragover.prevent="dragOver = true"
-      @dragleave="dragOver = false"
-      @drop.prevent="onDrop"
-      @click="fileInput?.click()"
-    >
-      <input ref="fileInput" type="file" accept="image/*" multiple class="hidden" @change="handleUpload(($event.target as HTMLInputElement).files)">
-      <span v-if="uploading" class="material-symbols-outlined text-4xl text-primary animate-spin block mb-2">refresh</span>
-      <span v-else class="material-symbols-outlined text-4xl text-gray-300 block mb-2">cloud_upload</span>
-      <p class="text-sm font-display font-medium text-gray-600">
-        {{ uploading ? 'Mengupload...' : 'Drag & drop atau klik untuk upload' }}
-      </p>
-      <p class="text-[11px] text-gray-400 mt-1">Support: JPG, PNG, WebP</p>
-      <p v-if="uploadError" class="text-red-500 text-xs mt-2">{{ uploadError }}</p>
-    </div>
+    <!-- Add Modal -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="showAddModal" class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" @click.self="closeAddModal">
+          <div class="bg-white rounded-2xl p-5 w-full max-w-md shadow-xl">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-display text-base font-semibold text-gray-900">Tambah Foto Galeri</h3>
+              <button @click="closeAddModal" class="p-1 text-gray-400 hover:text-gray-600"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <div class="space-y-4">
+              <!-- Preview -->
+              <div class="w-full aspect-[4/3] rounded-xl bg-gray-100 border-2 border-dashed border-gray-200 overflow-hidden flex items-center justify-center relative">
+                <img v-if="addForm.preview" :src="addForm.preview" class="w-full h-full object-cover">
+                <div v-else class="text-center">
+                  <span class="material-symbols-outlined text-4xl text-gray-300">image</span>
+                  <p class="text-xs text-gray-400 mt-1">Preview foto</p>
+                </div>
+              </div>
+              <label class="block w-full py-2.5 rounded-xl border border-gray-200 text-center text-sm font-display font-medium text-gray-600 hover:bg-gray-50 cursor-pointer">
+                Pilih Foto
+                <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="onFileChange">
+              </label>
+              <div>
+                <label class="block text-xs font-display font-medium text-gray-700 mb-1">Judul *</label>
+                <input v-model="addForm.title" placeholder="Judul foto" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-primary">
+              </div>
+              <div>
+                <label class="block text-xs font-display font-medium text-gray-700 mb-1">Kategori *</label>
+                <select v-model="addForm.category" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-primary">
+                  <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+                </select>
+                <p class="text-[11px] text-gray-400 mt-1">Klinik / Perawatan / Hasil — akan tampil di filter galeri public</p>
+              </div>
+              <p v-if="uploadError" class="text-red-500 text-xs">{{ uploadError }}</p>
+              <div class="flex gap-3 pt-2">
+                <button @click="closeAddModal" class="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-display text-sm font-semibold hover:bg-gray-50">Batal</button>
+                <button @click="handleAddSubmit" :disabled="uploading" class="flex-1 py-2.5 rounded-xl bg-primary text-white font-display text-sm font-semibold hover:bg-primary/90 disabled:opacity-50">
+                  {{ uploading ? 'Mengupload...' : 'Posting' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
 
     <!-- Category filter -->
     <div class="flex items-center gap-2 mb-6 overflow-x-auto pb-1">
