@@ -45,7 +45,7 @@ const { articles, loadArticles } = useArticles()
 const { faqs, loadFaqs } = useFaqs()
 const { testimonials, loadTestimonials } = useTestimonials()
 const { items: galleryImages, loadGallery } = useGallery()
-const { locations, loadLocations } = useLocations()
+const { loadLocations } = useLocations()
 
 const showcaseVideoUrl = ref('/showcase-video.mp4')
 
