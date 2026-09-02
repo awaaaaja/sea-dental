@@ -360,6 +360,8 @@ onUnmounted(() => {
           />
         </div>
       </div>
+      <!-- HERO → STATS subtle transition -->
+      <div class="absolute bottom-0 left-0 right-0 h-[60px] md:h-[80px] bg-gradient-to-t from-white via-white/60 to-transparent pointer-events-none z-[5]"></div>
     </header>
 
     <!-- STATS -->
@@ -383,6 +385,8 @@ onUnmounted(() => {
 
     <!-- PROMOS -->
     <section ref="promosRef" class="py-10 md:py-14 bg-gradient-to-br from-primary to-deep-navy relative overflow-hidden" id="promo">
+      <!-- STATS → PROMO subtle transition (decorative, no pointer) -->
+      <div class="absolute top-0 left-0 right-0 h-[100px] md:h-[140px] bg-gradient-to-b from-white via-[#EAF2F8] to-transparent pointer-events-none z-0"></div>
       <div class="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-tech/10 blur-[100px]"></div>
       <div class="max-w-[1200px] mx-auto px-4 md:px-6 relative z-10">
         <div class="text-center mb-8 md:mb-12">
