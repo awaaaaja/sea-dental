@@ -25,6 +25,19 @@
       }
     </style>
     <title>SEA Dental Aesthetics - Klinik Gigi Estetik Padang</title>
+    <script>
+      // ponytail: reload on chunk load error (old cached index.html after deploy)
+      window.addEventListener('error', function(e) {
+        var t = e.target;
+        if (t && (t.tagName === 'SCRIPT' || t.tagName === 'LINK') && t.src && t.src.includes('/assets/')) {
+          var key = 'chunk-reload-' + t.src;
+          if (!sessionStorage.getItem(key)) {
+            sessionStorage.setItem(key, '1');
+            location.reload();
+          }
+        }
+      }, true);
+    </script>
   </head>
   <body>
     <div id="app"></div>
