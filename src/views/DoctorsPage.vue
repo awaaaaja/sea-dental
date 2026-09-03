@@ -30,15 +30,16 @@ onMounted(async () => {
   gsap.registerPlugin(ScrollTrigger)
   await loadDoctors()
   await nextTick()
-  if (gridRef.value) {
-    gsap.fromTo(gridRef.value.querySelectorAll('.doctor-card'),
-      { y: 40, opacity: 0 },
-      {
-        scrollTrigger: { trigger: gridRef.value, start: 'top 85%' },
-        y: 0, opacity: 1, duration: 0.7, stagger: 0.15, ease: 'power2.out',
-      }
-    )
-  }
+  if (!gridRef.value) return
+  const docCards = gridRef.value.querySelectorAll('.doctor-card')
+  if (!docCards || docCards.length === 0) return
+  gsap.fromTo(docCards,
+    { y: 40, opacity: 0 },
+    {
+      scrollTrigger: { trigger: gridRef.value, start: 'top 85%' },
+      y: 0, opacity: 1, duration: 0.7, stagger: 0.15, ease: 'power2.out',
+    }
+  )
 })
 </script>
 
@@ -82,7 +83,7 @@ onMounted(async () => {
               </span>
             </div>
             <div class="flex items-center justify-center gap-2 text-primary group-hover:text-cyan-tech transition-colors">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+              <FontAwesomeIcon :icon="['fab', 'square-instagram']" />
               <span class="font-body text-sm font-medium">Instagram</span>
             </div>
           </router-link>

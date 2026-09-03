@@ -4,6 +4,11 @@ import router from './router'
 import pinia from './stores'
 import { useAuthStore } from './stores/auth'
 import './style.css'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faSquareInstagram } from '@fortawesome/free-brands-svg-icons'
+
+library.add(faSquareInstagram)
 
 // ponytail: suppress harmless ad-blocker block for Google Maps CSP test (gen_204)
 const _origConsoleError = console.error
@@ -49,6 +54,7 @@ window.addEventListener('unhandledrejection', (e: PromiseRejectionEvent) => {
 const app = createApp(App)
 app.use(router)
 app.use(pinia)
+app.component('FontAwesomeIcon', FontAwesomeIcon)
 
 const auth = useAuthStore()
 auth.init()

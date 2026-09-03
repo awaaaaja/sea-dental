@@ -223,7 +223,9 @@ onMounted(async () => {
   const mm = gsap.matchMedia()
 
   // Hero animation
-  const heroItems = heroRef.value?.querySelectorAll('.hero-animate') || []
+  if (!heroRef.value) return
+  const heroItems = heroRef.value.querySelectorAll('.hero-animate')
+  if (!heroItems || heroItems.length === 0) return
   gsap.fromTo(heroItems,
     { y: 30, opacity: 0 },
     { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out', delay: 0.3 }
@@ -247,7 +249,8 @@ onMounted(async () => {
   // Stats counter only (CSS handles reveal)
   mm.add('(min-width: 768px)', () => {
     const statNumbers = statsRef.value?.querySelectorAll('.stat-number')
-    statNumbers?.forEach((el) => {
+    if (!statNumbers || statNumbers.length === 0) return
+    statNumbers.forEach((el) => {
       const target = parseInt(el.textContent || '0', 10)
       if (target === 0) return
       el.textContent = '0'
@@ -261,23 +264,21 @@ onMounted(async () => {
   // Gallery mosaic stagger
   mm.add('(min-width: 768px)', () => {
     const galleryItems = galleryRef.value?.querySelectorAll('.gallery-item')
-    if (galleryItems) {
-      gsap.fromTo(galleryItems,
+    if (!galleryItems || galleryItems.length === 0) return
+    gsap.fromTo(galleryItems,
         { y: 25, opacity: 0, scale: 0.92 },
         { scrollTrigger: { trigger: galleryRef.value, start: 'top 80%' }, y: 0, opacity: 1, scale: 1, duration: 0.45, stagger: { amount: 0.5, from: 'random' }, ease: 'power2.out' }
       )
-    }
   })
 
   // Testimonials perspective flip
   mm.add('(min-width: 768px)', () => {
     const testimonialCards = testimonialsRef.value?.querySelectorAll('.testimonial-card')
-    if (testimonialCards) {
-      gsap.fromTo(testimonialCards,
+    if (!testimonialCards || testimonialCards.length === 0) return
+    gsap.fromTo(testimonialCards,
         { rotateY: 12, opacity: 0, transformPerspective: 600 },
         { scrollTrigger: { trigger: testimonialsRef.value, start: 'top 80%' }, rotateY: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power2.out' }
       )
-    }
   })
 
   // Partners scrub
@@ -294,12 +295,11 @@ onMounted(async () => {
   // FAQ slide
   mm.add('(min-width: 768px)', () => {
     const faqItems = faqRef.value?.querySelectorAll('.faq-item')
-    if (faqItems) {
-      gsap.fromTo(faqItems,
+    if (!faqItems || faqItems.length === 0) return
+    gsap.fromTo(faqItems,
         { x: -15, opacity: 0 },
         { scrollTrigger: { trigger: faqRef.value, start: 'top 80%' }, x: 0, opacity: 1, duration: 0.45, stagger: 0.07, ease: 'power2.out' }
       )
-    }
   })
 
 })
@@ -545,7 +545,7 @@ onUnmounted(() => {
               <div class="doc-card-h-overlay">
                 <a v-if="doc.instagram_url" :href="doc.instagram_url" target="_blank"
                   class="doc-card-h-insta" @click.stop>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+                  <FontAwesomeIcon :icon="['fab', 'square-instagram']" class="text-[16px]" />
                 </a>
               </div>
             </div>
@@ -566,7 +566,7 @@ onUnmounted(() => {
                 <div class="doc-card-overlay">
                   <a v-if="doc.instagram_url" :href="doc.instagram_url" target="_blank"
                     class="doc-card-insta" @click.stop>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+                    <FontAwesomeIcon :icon="['fab', 'square-instagram']" class="text-[18px]" />
                   </a>
                 </div>
               </div>
