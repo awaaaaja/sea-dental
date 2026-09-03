@@ -5,7 +5,8 @@ import { useDoctors } from '@/composables/useDoctors'
 import PageHero from '@/components/PageHero.vue'
 import { useSeo } from '@/composables/useSeo'
 import { useBranchModal } from '@/composables/useBranchModal'
-import { byPrefixAndName } from '@fortawesome/free-brands-svg-icons'
+import { faSquareInstagram } from '@fortawesome/free-brands-svg-icons'
+const byPrefixAndName = { fab: { 'square-instagram': faSquareInstagram } } as const
 
 const { open: openBranchModal } = useBranchModal()
 
