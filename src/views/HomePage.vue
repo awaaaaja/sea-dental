@@ -8,6 +8,7 @@ import { useDoctors } from '@/composables/useDoctors'
 import { useArticles } from '@/composables/useArticles'
 import { useFaqs } from '@/composables/useFaqs'
 import { useTestimonials } from '@/composables/useTestimonials'
+import { byPrefixAndName } from '@fortawesome/free-brands-svg-icons'
 import { useGallery } from '@/composables/useGallery'
 import { useLocations } from '@/composables/useLocations'
 import { useBranchModal } from '@/composables/useBranchModal'
@@ -545,7 +546,7 @@ onUnmounted(() => {
               <div class="doc-card-h-overlay">
                 <a v-if="doc.instagram_url" :href="doc.instagram_url" target="_blank"
                   class="doc-card-h-insta" @click.stop>
-                  <FontAwesomeIcon :icon="['fab', 'square-instagram']" class="text-[16px]" />
+                  <FontAwesomeIcon :icon="byPrefixAndName.fab['square-instagram']" />
                 </a>
               </div>
             </div>
@@ -566,7 +567,7 @@ onUnmounted(() => {
                 <div class="doc-card-overlay">
                   <a v-if="doc.instagram_url" :href="doc.instagram_url" target="_blank"
                     class="doc-card-insta" @click.stop>
-                    <FontAwesomeIcon :icon="['fab', 'square-instagram']" class="text-[18px]" />
+                    <FontAwesomeIcon :icon="byPrefixAndName.fab['square-instagram']" />
                   </a>
                 </div>
               </div>

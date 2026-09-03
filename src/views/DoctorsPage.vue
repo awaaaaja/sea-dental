@@ -5,6 +5,7 @@ import { useDoctors } from '@/composables/useDoctors'
 import PageHero from '@/components/PageHero.vue'
 import { useSeo } from '@/composables/useSeo'
 import { useBranchModal } from '@/composables/useBranchModal'
+import { byPrefixAndName } from '@fortawesome/free-brands-svg-icons'
 
 const { open: openBranchModal } = useBranchModal()
 
@@ -83,7 +84,7 @@ onMounted(async () => {
               </span>
             </div>
             <div class="flex items-center justify-center gap-2 text-primary group-hover:text-cyan-tech transition-colors">
-              <FontAwesomeIcon :icon="['fab', 'square-instagram']" />
+              <FontAwesomeIcon :icon="byPrefixAndName.fab['square-instagram']" />
               <span class="font-body text-sm font-medium">Instagram</span>
             </div>
           </router-link>
