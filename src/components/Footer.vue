@@ -25,10 +25,10 @@ const contactInfo = [
 ]
 
 const socials = [
-  { icon: 'photo_camera', label: 'Instagram', href: 'https://www.instagram.com/seadentalaesthetics_/' },
-  { icon: 'chat', label: 'WhatsApp', href: 'https://api.whatsapp.com/send/?phone=6281366329279' },
+  { label: 'Instagram', href: 'https://www.instagram.com/seadentalaesthetics_/', svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-[18px] h-[18px]"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>` },
+  { label: 'WhatsApp', href: 'https://api.whatsapp.com/send/?phone=6281366329279', svg: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-[18px] h-[18px]"><path d="M12 2a9.8 9.8 0 0 0-8.4 14.8L2 22l5.4-1.4A9.8 9.8 0 1 0 12 2zm0 17.8a7.8 7.8 0 0 1-4-1.1l-.3-.2-2.4.6.6-2.3-.2-.3A7.8 7.8 0 1 1 12 19.8zm4.2-5.9c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1s-.6.7-.7.8-.3.2-.5.1a6.3 6.3 0 0 1-1.9-1.2 7 7 0 0 1-1.3-1.6c-.1-.2 0-.4.1-.5l.6-.7c.1-.1.1-.2.1-.4s0-.3 0-.4c0-.1-.5-1.2-.7-1.6-.2-.4-.4-.3-.5-.3h-.4c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.4c.1.2 1.6 2.5 3.9 3.5.5.2 1 .4 1.3.5.5.2 1 .2 1.4.1.4-.1 1.2-.5 1.4-1 .2-.5.2-.9.1-1 0-.1-.2-.2-.4-.3z"/></svg>` },
   { icon: 'call', label: 'Telepon', href: 'tel:+6281366329279' },
-  { icon: 'map', label: 'Google Maps', href: 'https://www.google.com/maps/place/SEA+dental+Aesthetics+padang/@-0.9448393,100.3738481,17z' },
+  { icon: 'location_on', label: 'Google Maps', href: 'https://www.google.com/maps/place/SEA+dental+Aesthetics+padang/@-0.9448393,100.3738481,17z' },
 ]
 </script>
 
@@ -123,7 +123,8 @@ const socials = [
               :aria-label="social.label"
               class="w-10 h-10 rounded-full flex items-center justify-center bg-white/[0.06] border border-white/[0.08] text-white/60 hover:bg-cyan-tech hover:text-[#0E1F4B] hover:border-cyan-tech transition-all duration-200"
             >
-              <span class="material-symbols-outlined text-[18px]">{{ social.icon }}</span>
+              <span v-if="social.svg" v-html="social.svg"></span>
+              <span v-else class="material-symbols-outlined text-[18px]">{{ social.icon }}</span>
             </a>
           </div>
         </div>
