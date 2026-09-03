@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue'
+import { supabase } from '@/utils/supabase'
 import { useGallery } from '@/composables/useGallery'
 import GalleryLightbox from '@/components/GalleryLightbox.vue'
 import PageHero from '@/components/PageHero.vue'
@@ -18,6 +19,12 @@ const gridRef = ref<HTMLElement>()
 const lightboxOpen = ref(false)
 const lightboxIndex = ref(0)
 const activeCategory = ref('all')
+
+const hero = ref<any>(null)
+async function loadHero() {
+  const { data } = await supabase.from('page_heroes').select('*').eq('page_key', 'gallery').single()
+  if (data) hero.value = data
+}
 
 const { items: galleryImages, loadGallery } = useGallery()
 
@@ -38,6 +45,7 @@ function openLightbox(index: number) {
 }
 
 onMounted(async () => {
+  await loadHero()
   const { gsap } = await import('gsap')
   const { ScrollTrigger } = await import('gsap/ScrollTrigger')
   gsap.registerPlugin(ScrollTrigger)
@@ -59,13 +67,13 @@ onMounted(async () => {
   <div>
     <!-- HERO -->
     <PageHero
-      variant="mosaic"
-      eyebrow="Hasil & Dokumentasi"
-      title="Galeri Kami"
-      subtitle="Dokumentasi perawatan dan hasil klinis SEA Dental Aesthetics."
-      :image="'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80'"
-      :imageAlt="'Galeri klinik gigi'"
-      :badge="'Precision You Can See'"
+      :variant="hero?.variant || 'mosaic'"
+      :eyebrow="hero?.eyebrow || '06 / Gallery'"
+      :title="hero?.title || 'Galeri Kami'"
+      :subtitle="hero?.subtitle || 'Dokumentasi perawatan...'"
+      :image="hero?.image || 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80'"
+      :imageAlt="hero?.image_alt || 'Galeri'"
+      :badge="hero?.badge || 'Precision You Can See'"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
         { label: 'Galeri' },

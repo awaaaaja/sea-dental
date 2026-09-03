@@ -104,6 +104,7 @@ Before any UI work:
 - Timestamps: created_at, updated_at on all tables
 
 ## 12. Auth Rules
+- Supabase Access Token : sbp_v0_703027e9d7a59a999b83807ba8809da4bfa006ca
 - Supabase Auth only — no custom password auth
 - Login/logout/session via composables
 - Session persistence: Supabase handles

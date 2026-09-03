@@ -139,7 +139,8 @@ async function loadShowcaseVideo() {
 }
 
 onMounted(async () => {
-  await Promise.all([
+  // ponytail: don't block initial render on API - load in background
+  Promise.all([
     loadStats(),
     loadPromos(),
     loadServices(),
@@ -503,6 +504,8 @@ onUnmounted(() => {
                 muted
                 loop
                 playsinline
+                preload="none"
+                poster="/cta-clinic.png"
                 class="w-full aspect-[9/16] object-cover"
               ></video>
             </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { supabase } from '@/utils/supabase'
 import { useSeo, localBusinessSchema } from '@/composables/useSeo'
 import PageHero from '@/components/PageHero.vue'
 import { useBranchModal } from '@/composables/useBranchModal'
@@ -13,6 +14,13 @@ useSeo({
   structuredData: localBusinessSchema,
 })
 
+const hero = ref<any>(null)
+
+async function loadHero() {
+  const { data } = await supabase.from('page_heroes').select('*').eq('page_key', 'about').single()
+  if (data) hero.value = data
+}
+
 const missionRef = ref<HTMLElement>()
 const teamRef = ref<HTMLElement>()
 const valuesRef = ref<HTMLElement>()
@@ -25,6 +33,7 @@ const values = [
 ]
 
 onMounted(async () => {
+  await loadHero()
   const { gsap } = await import('gsap')
   const { ScrollTrigger } = await import('gsap/ScrollTrigger')
   gsap.registerPlugin(ScrollTrigger)
@@ -53,12 +62,13 @@ onMounted(async () => {
   <div>
     <!-- HERO -->
     <PageHero
-      variant="split"
-      title="Tentang Kami"
-      subtitle="Mengenal lebih dekat SEA Dental Aesthetics dan komitmen kami terhadap kesehatan gigi Anda."
-      :image="'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80'"
-      :imageAlt="'Interior klinik SEA Dental Aesthetics'"
-      :badge="'Modern Dental Aesthetics'"
+      :variant="hero?.variant || 'split'"
+      :eyebrow="hero?.eyebrow || '02 / About Us'"
+      :title="hero?.title || 'Tentang SEA Dental'"
+      :subtitle="hero?.subtitle || 'Perjalanan kami membangun klinik...'"
+      :image="hero?.image || 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80'"
+      :imageAlt="hero?.image_alt || 'Tentang Kami'"
+      :badge="hero?.badge || 'Trusted Care'"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
         { label: 'Tentang Kami' },

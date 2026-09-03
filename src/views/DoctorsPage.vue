@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, nextTick } from 'vue'
+import { supabase } from '@/utils/supabase'
 import { useDoctors } from '@/composables/useDoctors'
 import PageHero from '@/components/PageHero.vue'
 import { useSeo } from '@/composables/useSeo'
@@ -16,7 +17,14 @@ useSeo({
 const gridRef = ref<HTMLElement>()
 const { doctors, loadDoctors } = useDoctors()
 
+const hero = ref<any>(null)
+async function loadHero() {
+  const { data } = await supabase.from('page_heroes').select('*').eq('page_key', 'doctors').single()
+  if (data) hero.value = data
+}
+
 onMounted(async () => {
+  await loadHero()
   const { gsap } = await import('gsap')
   const { ScrollTrigger } = await import('gsap/ScrollTrigger')
   gsap.registerPlugin(ScrollTrigger)
@@ -38,13 +46,13 @@ onMounted(async () => {
   <div>
     <!-- HERO -->
     <PageHero
-      variant="split"
-      eyebrow="02 / Expert Team"
-      title="Tim Dokter"
-      subtitle="Didukung tenaga profesional yang mengutamakan ketelitian dan kenyamanan pasien."
-      :image="'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&q=80'"
-      :imageAlt="'Dokter gigi profesional'"
-      :badge="'Expert Dental Team'"
+      :variant="hero?.variant || 'split'"
+      :eyebrow="hero?.eyebrow || '04 / Doctors'"
+      :title="hero?.title || 'Tim Dokter Kami'"
+      :subtitle="hero?.subtitle || 'Dokter berpengalaman...'"
+      :image="hero?.image || 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&q=80'"
+      :imageAlt="hero?.image_alt || 'Dokter'"
+      :badge="hero?.badge || 'Expert Team'"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
         { label: 'Dokter' },

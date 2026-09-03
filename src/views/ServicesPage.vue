@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, nextTick } from 'vue'
+import { supabase } from '@/utils/supabase'
 import { useServices } from '@/composables/useServices'
 import { useSeo } from '@/composables/useSeo'
 import PageHero from '@/components/PageHero.vue'
@@ -16,7 +17,14 @@ useSeo({
 const gridRef = ref<HTMLElement>()
 const { services, loadServices } = useServices()
 
+const hero = ref<any>(null)
+async function loadHero() {
+  const { data } = await supabase.from('page_heroes').select('*').eq('page_key', 'services').single()
+  if (data) hero.value = data
+}
+
 onMounted(async () => {
+  await loadHero()
   const { gsap } = await import('gsap')
   const { ScrollTrigger } = await import('gsap/ScrollTrigger')
   gsap.registerPlugin(ScrollTrigger)
@@ -36,13 +44,13 @@ onMounted(async () => {
   <div>
     <!-- HERO — Editorial -->
     <PageHero
-      variant="split"
-      eyebrow="01 / Dental Care"
-      title="Layanan Kami"
-      subtitle="Perawatan gigi yang dirancang untuk menjaga kesehatan, fungsi, dan kepercayaan diri Anda."
-      :image="'https://images.unsplash.com/photo-1629909615184-74f495363b67?w=800&q=80'"
-      :imageAlt="'Dokter gigi sedang melakukan pemeriksaan'"
-      :badge="'High-Precision Dental Care'"
+      :variant="hero?.variant || 'split'"
+      :eyebrow="hero?.eyebrow || '03 / Services'"
+      :title="hero?.title || 'Layanan Kami'"
+      :subtitle="hero?.subtitle || 'Perawatan gigi untuk senyum...'"
+      :image="hero?.image || 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=800&q=80'"
+      :imageAlt="hero?.image_alt || 'Layanan'"
+      :badge="hero?.badge || 'Complete Care'"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
         { label: 'Layanan' },

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, nextTick } from 'vue'
+import { supabase } from '@/utils/supabase'
 import { useSeo } from '@/composables/useSeo'
 import { usePromos } from '@/composables/usePromos'
 import PageHero from '@/components/PageHero.vue'
@@ -16,7 +17,14 @@ useSeo({
 const gridRef = ref<HTMLElement>()
 const { promos, loading, loadPromos } = usePromos()
 
+const hero = ref<any>(null)
+async function loadHero() {
+  const { data } = await supabase.from('page_heroes').select('*').eq('page_key', 'promos').single()
+  if (data) hero.value = data
+}
+
 onMounted(async () => {
+  await loadHero()
   const { gsap } = await import('gsap')
   const { ScrollTrigger } = await import('gsap/ScrollTrigger')
   gsap.registerPlugin(ScrollTrigger)
@@ -35,11 +43,14 @@ onMounted(async () => {
   <div>
     <!-- HERO — Full Image -->
     <PageHero
-      variant="full-image"
-      eyebrow="Special Offer"
-      title="Promo Spesial"
-      subtitle="Dapatkan perawatan terbaik dengan penawaran khusus dari SEA Dental Aesthetics."
-      bg-image="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=1920&q=80"
+      :variant="hero?.variant || 'split'"
+      :eyebrow="hero?.eyebrow || '05 / Promos'"
+      :title="hero?.title || 'Promo Spesial'"
+      :subtitle="hero?.subtitle || 'Penawaran terbaik...'"
+      :image="hero?.image || 'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=800&q=80'"
+      :imageAlt="hero?.image_alt || 'Promo'"
+      :badge="hero?.badge || 'Limited Offer'"
+      :bgImage="hero?.image || 'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=800&q=80'"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
         { label: 'Promo' },
