@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import { supabase } from '@/utils/supabase'
 import { useArticles } from '@/composables/useArticles'
 import PageHero from '@/components/PageHero.vue'
 import { useSeo } from '@/composables/useSeo'
@@ -16,6 +17,12 @@ useSeo({
 const gridRef = ref<HTMLElement>()
 const activeCategory = ref('all')
 const showCount = ref(6)
+const hero = ref<any>(null)
+
+async function loadHero() {
+  const { data } = await supabase.from('page_heroes').select('*').eq('page_key', 'articles').single()
+  if (data) hero.value = data
+}
 
 const { articles, categories, loadArticles, getCategoryName } = useArticles()
 
@@ -43,7 +50,7 @@ function loadMore() {
 }
 
 onMounted(async () => {
-  await loadArticles()
+  await Promise.all([loadArticles(), loadHero()])
 })
 
 watch(displayedArticles, async () => {
@@ -69,13 +76,13 @@ watch(displayedArticles, async () => {
   <div>
     <!-- HERO -->
     <PageHero
-      variant="split"
-      eyebrow="03 / Knowledge Hub"
-      title="Dental Knowledge"
-      subtitle="Informasi terpercaya untuk membantu Anda memahami dan menjaga kesehatan gigi."
-      :image="'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=800&q=80'"
-      :imageAlt="'Artikel kesehatan gigi'"
-      :badge="'Know Your Smile Better'"
+      :variant="hero?.variant || 'split'"
+      :eyebrow="hero?.eyebrow || '03 / Knowledge Hub'"
+      :title="hero?.title || 'Dental Knowledge'"
+      :subtitle="hero?.subtitle || 'Informasi terpercaya untuk membantu Anda memahami dan menjaga kesehatan gigi.'"
+      :image="hero?.image || 'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=800&q=80'"
+      :imageAlt="hero?.image_alt || 'Artikel kesehatan gigi'"
+      :badge="hero?.badge || 'Know Your Smile Better'"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
         { label: 'Artikel' },

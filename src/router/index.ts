@@ -35,6 +35,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
       children: [
         { path: '', name: 'admin-dashboard', component: () => import('@/views/admin/DashboardPage.vue') },
+        { path: 'heroes', name: 'admin-heroes', component: () => import('@/views/admin/HeroesAdminPage.vue') },
         { path: 'services', name: 'admin-services', component: () => import('@/views/admin/ServicesAdminPage.vue') },
         { path: 'services/new', name: 'admin-service-new', component: () => import('@/views/admin/ServiceFormPage.vue') },
         { path: 'services/:id/edit', name: 'admin-service-edit', component: () => import('@/views/admin/ServiceFormPage.vue') },

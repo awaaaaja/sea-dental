@@ -12,6 +12,7 @@ const profileOpen = ref(false)
 
 const navItems = [
   { to: '/admin', icon: 'dashboard', label: 'Dashboard', exact: true },
+  { to: '/admin/heroes', icon: 'view_carousel', label: 'Hero Section' },
   { to: '/admin/services', icon: 'medical_services', label: 'Layanan' },
   { to: '/admin/doctors', icon: 'people', label: 'Dokter' },
   { to: '/admin/articles', icon: 'article', label: 'Artikel' },

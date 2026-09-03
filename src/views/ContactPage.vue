@@ -12,6 +12,12 @@ useSeo({
 
 const formRef = ref<HTMLElement>()
 const infoRef = ref<HTMLElement>()
+const hero = ref<any>(null)
+
+async function loadHero() {
+  const { data } = await supabase.from('page_heroes').select('*').eq('page_key', 'contact').single()
+  if (data) hero.value = data
+}
 
 const form = reactive({
   name: '',
@@ -76,6 +82,7 @@ async function handleSubmit() {
 }
 
 onMounted(async () => {
+  await loadHero()
   const { gsap } = await import('gsap')
   const { ScrollTrigger } = await import('gsap/ScrollTrigger')
   gsap.registerPlugin(ScrollTrigger)
@@ -98,13 +105,13 @@ onMounted(async () => {
   <div>
     <!-- HERO -->
     <PageHero
-      variant="split"
-      eyebrow="05 / Get in Touch"
-      title="Hubungi Kami"
-      subtitle="Konsultasikan kebutuhan perawatan gigi Anda bersama tim SEA Dental."
-      :image="'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80'"
-      :imageAlt="'Klinik SEA Dental Aesthetics'"
-      :badge="'Your Smile Starts Here'"
+      :variant="hero?.variant || 'split'"
+      :eyebrow="hero?.eyebrow || '05 / Get in Touch'"
+      :title="hero?.title || 'Hubungi Kami'"
+      :subtitle="hero?.subtitle || 'Konsultasikan kebutuhan perawatan gigi Anda bersama tim SEA Dental.'"
+      :image="hero?.image || 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80'"
+      :imageAlt="hero?.image_alt || 'Klinik SEA Dental Aesthetics'"
+      :badge="hero?.badge || 'Your Smile Starts Here'"
       :breadcrumbs="[
         { label: 'Beranda', to: '/' },
         { label: 'Kontak' },
@@ -185,7 +192,9 @@ onMounted(async () => {
 
           <!-- Contact Info -->
           <div ref="infoRef" class="lg:col-span-5">
-            <div class="lg:sticky lg:top-24 space-y-5">
+            <div class="lg:sticky lg:top-24 space-y-5 relative">
+              <!-- Mascot decoration - small without frame -->
+              <img src="/mascot-doctor.png" alt="" class="hidden lg:block absolute -top-4 -right-2 w-20 h-auto object-contain pointer-events-none select-none opacity-90" loading="lazy">
               <h3 class="font-display text-[18px] md:text-[22px] font-semibold text-primary mb-5">Informasi Kontak</h3>
 
               <div class="glass-panel rounded-xl p-5 flex items-start gap-4">

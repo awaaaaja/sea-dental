@@ -48,6 +48,11 @@ const { items: galleryImages, loadGallery } = useGallery()
 const { loadLocations } = useLocations()
 
 const showcaseVideoUrl = ref('/showcase-video.mp4')
+const hero = ref<any>(null)
+async function loadHero() {
+  const { data } = await supabase.from('page_heroes').select('*').eq('page_key', 'beranda').single()
+  if (data) hero.value = data
+}
 
 // Hero slideshow
 const heroSlides = [
@@ -145,6 +150,7 @@ onMounted(async () => {
     loadGallery(),
     loadLocations(),
     loadShowcaseVideo(),
+    loadHero(),
   ])
   startHeroSlideshow()
   await nextTick()
@@ -326,14 +332,14 @@ onUnmounted(() => {
         <div class="max-w-xl">
           <div class="hero-animate inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 w-fit mb-5">
             <span class="material-symbols-outlined text-cyan-tech text-xs icon-fill">verified</span>
-            <span class="font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-white/90 uppercase">Klinik Gigi Estetik Padang</span>
+            <span class="font-display text-[10px] md:text-[11px] leading-[1.0] font-semibold tracking-[0.1em] text-white/90 uppercase">{{ hero?.eyebrow || 'Klinik Gigi Estetik Padang' }}</span>
           </div>
           <h1 class="hero-animate font-display text-[32px] leading-[1.1] font-bold sm:text-[42px] md:text-[56px] md:leading-[1.05] text-white mb-5">
-            Selamat Datang di<br>
+            {{ hero?.title || 'Selamat Datang di' }}<br>
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-cyan-tech">SEA Dental Aesthetics</span>
           </h1>
           <p class="hero-animate font-body text-[15px] md:text-[17px] leading-[1.7] text-white/70 max-w-lg mb-7">
-            Klinik gigi estetik di kota Padang yang berorientasi pada tindakan estetik kedokteran gigi. Mengutamakan pelayanan interaktif dan komunikatif antara dokter dan pasien.
+            {{ hero?.subtitle || 'Klinik gigi estetik di kota Padang yang berorientasi pada tindakan estetik kedokteran gigi. Mengutamakan pelayanan interaktif dan komunikatif antara dokter dan pasien.' }}
           </p>
           <div class="hero-animate flex flex-wrap gap-3">
             <a @click.prevent="openBranchModal()"
@@ -765,11 +771,8 @@ onUnmounted(() => {
               </a>
             </div>
           </div>
-          <div class="hidden md:flex items-end gap-3 flex-shrink-0">
-            <img src="/mascot-doctor.png" alt="" class="w-28 lg:w-32 h-auto object-contain pointer-events-none select-none" loading="lazy">
-            <div class="w-36 h-36 lg:w-44 lg:h-44 rounded-2xl overflow-hidden shadow-xl border border-gray-100 flex-shrink-0 rotate-2 hover:rotate-0 transition-transform duration-500">
-              <img src="/cta-clinic.png" alt="Klinik SEA Dental" class="w-full h-full object-cover" loading="lazy">
-            </div>
+          <div class="hidden md:block w-40 h-40 lg:w-48 lg:h-48 rounded-2xl overflow-hidden shadow-xl border border-gray-100 flex-shrink-0 rotate-2 hover:rotate-0 transition-transform duration-500">
+            <img src="/cta-clinic.png" alt="Klinik SEA Dental" class="w-full h-full object-cover" loading="lazy">
           </div>
         </div>
       </div>
