@@ -19,6 +19,7 @@ onMounted(async () => {
   if (!heroRef.value) return
   const { default: gsap } = await import('gsap')
   const els = heroRef.value.querySelectorAll('.hero-animate')
+  if (!els || els.length === 0) return
   gsap.fromTo(els,
     { y: 16, opacity: 0 },
     { y: 0, opacity: 1, duration: 0.5, stagger: 0.08, ease: 'power2.out', delay: 0.1 }

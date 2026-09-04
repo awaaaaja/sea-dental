@@ -44,15 +44,16 @@ onMounted(async () => {
     .limit(3)
   relatedArticles.value = rels || []
 
-  if (contentRef.value) {
-    gsap.fromTo(contentRef.value.querySelectorAll('.animate-item'),
-      { y: 30, opacity: 0 },
-      {
-        scrollTrigger: { trigger: contentRef.value, start: 'top 85%' },
-        y: 0, opacity: 1, duration: 0.7, stagger: 0.1, ease: 'power2.out',
-      }
-    )
-  }
+  if (!contentRef.value) return
+  const animateItems = contentRef.value.querySelectorAll('.animate-item')
+  if (!animateItems || animateItems.length === 0) return
+  gsap.fromTo(animateItems,
+    { y: 30, opacity: 0 },
+    {
+      scrollTrigger: { trigger: contentRef.value, start: 'top 85%' },
+      y: 0, opacity: 1, duration: 0.7, stagger: 0.1, ease: 'power2.out',
+    }
+  )
 })
 </script>
 

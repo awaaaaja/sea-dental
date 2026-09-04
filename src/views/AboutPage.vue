@@ -44,7 +44,9 @@ onMounted(async () => {
     )
   }
   if (valuesRef.value) {
-    gsap.fromTo(valuesRef.value?.querySelectorAll('.value-card') || [],
+    const valueCards = valuesRef.value.querySelectorAll('.value-card')
+    if (!valueCards || valueCards.length === 0) return
+    gsap.fromTo(valueCards,
       { y: 30, opacity: 0 },
       { scrollTrigger: { trigger: valuesRef.value, start: 'top 85%' }, y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power2.out' }
     )

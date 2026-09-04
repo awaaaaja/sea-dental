@@ -19,15 +19,16 @@ onMounted(async () => {
   gsap.registerPlugin(ScrollTrigger)
   await loadLocations()
   await nextTick()
-  if (gridRef.value) {
-    gsap.fromTo(gridRef.value.querySelectorAll('.loc-card'),
-      { y: 40, opacity: 0 },
-      {
-        scrollTrigger: { trigger: gridRef.value, start: 'top 85%' },
-        y: 0, opacity: 1, duration: 0.7, stagger: 0.15, ease: 'power2.out',
-      }
-    )
-  }
+  if (!gridRef.value) return
+  const locCards = gridRef.value.querySelectorAll('.loc-card')
+  if (!locCards || locCards.length === 0) return
+  gsap.fromTo(locCards,
+    { y: 40, opacity: 0 },
+    {
+      scrollTrigger: { trigger: gridRef.value, start: 'top 85%' },
+      y: 0, opacity: 1, duration: 0.7, stagger: 0.15, ease: 'power2.out',
+    }
+  )
 })
 </script>
 

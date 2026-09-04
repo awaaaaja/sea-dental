@@ -30,12 +30,13 @@ onMounted(async () => {
   gsap.registerPlugin(ScrollTrigger)
   await loadPromos()
   await nextTick()
-  if (gridRef.value) {
-    gsap.fromTo(gridRef.value?.querySelectorAll('.animate-item') || [],
-      { y: 30, opacity: 0 },
-      { scrollTrigger: { trigger: gridRef.value, start: 'top 85%' }, y: 0, opacity: 1, duration: 0.6, stagger: 0.08, ease: 'power2.out' }
-    )
-  }
+  if (!gridRef.value) return
+  const promoItems = gridRef.value.querySelectorAll('.animate-item')
+  if (!promoItems || promoItems.length === 0) return
+  gsap.fromTo(promoItems,
+    { y: 30, opacity: 0 },
+    { scrollTrigger: { trigger: gridRef.value, start: 'top 85%' }, y: 0, opacity: 1, duration: 0.6, stagger: 0.08, ease: 'power2.out' }
+  )
 })
 </script>
 

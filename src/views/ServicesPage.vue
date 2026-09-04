@@ -30,7 +30,9 @@ onMounted(async () => {
   gsap.registerPlugin(ScrollTrigger)
   await loadServices()
   await nextTick()
-  gsap.fromTo(gridRef.value?.querySelectorAll('.service-card') || [],
+  const svcCards = gridRef.value?.querySelectorAll('.service-card')
+  if (!svcCards || svcCards.length === 0) return
+  gsap.fromTo(svcCards,
     { y: 30, opacity: 0 },
     {
       scrollTrigger: { trigger: gridRef.value, start: 'top 85%' },
