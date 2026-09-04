@@ -92,7 +92,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
     <Transition name="slide">
       <div
         v-if="mobileOpen"
-        class="fixed inset-0 top-[52px] z-40 md:hidden"
+        class="fixed inset-0 top-[52px] z-[60] md:hidden"
         @click.self="closeMobile"
       >
         <div class="absolute inset-0 bg-white border-t border-gray-100 shadow-[0_8px_30px_rgba(16,36,92,0.12)]">
