@@ -47,7 +47,7 @@ const { articles, loadArticles } = useArticles()
 const { faqs, loadFaqs } = useFaqs()
 const { testimonials, loadTestimonials } = useTestimonials()
 const { items: galleryImages, loadGallery } = useGallery()
-const { loadLocations } = useLocations()
+const { locations, loadLocations } = useLocations()
 
 const showcaseVideoUrl = ref('/showcase-video.mp4')
 const hero = ref<any>(null)
@@ -706,46 +706,26 @@ onUnmounted(() => {
           <h2 class="animate-item font-display text-[18px] md:text-[24px] lg:text-[28px] leading-[1.2] font-semibold text-primary">Kunjungi Kami</h2>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
-          <!-- Padang -->
-          <div class="animate-item glass-panel rounded-2xl overflow-hidden glass-card-hover">
+          <div v-for="loc in locations" :key="loc.id" class="animate-item glass-panel rounded-2xl overflow-hidden glass-card-hover">
             <div class="rounded-xl overflow-hidden h-[180px] w-full">
               <iframe
-                src="https://maps.google.com/maps?q=SEA+dental+Aesthetics+padang&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                v-if="loc.google_maps_url && loc.google_maps_url !== '#'"
+                :src="loc.google_maps_url.replace('https://www.google.com/maps/embed', 'https://www.google.com/maps/embed').includes('output=embed') ? loc.google_maps_url : `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.2!2d${loc.longitude || 100.4}!3d${loc.latitude || -0.9}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s${encodeURIComponent(loc.address)}!5e0!3m2!1sid!2sid!4v1`"
                 width="100%"
                 height="100%"
                 style="border:0;"
                 allowfullscreen
                 loading="lazy"
               ></iframe>
+              <div v-else class="w-full h-full flex items-center justify-center bg-primary/5">
+                <span class="material-symbols-outlined text-5xl text-primary/30">location_on</span>
+              </div>
             </div>
             <div class="p-5 md:p-6">
-              <h3 class="font-display text-[16px] md:text-[20px] leading-[1.3] font-semibold text-primary mb-2">Cabang Simpang Haru</h3>
-              <p class="font-body text-[12px] md:text-[13px] leading-[1.7] text-on-surface-variant mb-1">Jl. DR. Sutomo No. 4, Simpang Haru, Padang, Sumatera Barat</p>
-              <p class="font-body text-[10px] md:text-[12px] text-on-surface-variant mb-3">Senin-Sabtu 11.00-21.00 WIB</p>
-              <a href="https://www.google.com/maps/place/SEA+dental+Aesthetics+padang/@-0.9448393,100.3738481,17z" target="_blank"
-                class="w-full py-2.5 rounded-xl border border-primary text-primary font-display font-semibold text-[12px] text-center hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-[14px]">directions</span>
-                Lihat Peta
-              </a>
-            </div>
-          </div>
-          <!-- Pekanbaru -->
-          <div class="animate-item glass-panel rounded-2xl overflow-hidden glass-card-hover">
-            <div class="rounded-xl overflow-hidden h-[180px] w-full">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.3549!2d101.45!3d0.52!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sJl.+Tuanku+Tambusai!5e0!3m2!1sid!2sid!4v1"
-                width="100%"
-                height="100%"
-                style="border:0;"
-                allowfullscreen
-                loading="lazy"
-              ></iframe>
-            </div>
-            <div class="p-5 md:p-6">
-              <h3 class="font-display text-[16px] md:text-[20px] leading-[1.3] font-semibold text-primary mb-2">Cabang Baru</h3>
-              <p class="font-body text-[12px] md:text-[13px] leading-[1.7] text-on-surface-variant mb-1">Jl. Tuanku Tambusai No 124, Labuh Baru Timur, Kota Pekanbaru, Provinsi Riau</p>
-              <p class="font-body text-[10px] md:text-[12px] text-on-surface-variant mb-3">Senin-Minggu 10.00-20.00 WIB</p>
-              <a href="https://www.google.com/maps/search/Jl.+Tuanku+Tambusai+No+124+Labuh+Baru+Timur+Pekanbaru" target="_blank"
+              <h3 class="font-display text-[16px] md:text-[20px] leading-[1.3] font-semibold text-primary mb-2">Cabang {{ loc.name }}</h3>
+              <p class="font-body text-[12px] md:text-[13px] leading-[1.7] text-on-surface-variant mb-1">{{ loc.address }}</p>
+              <p class="font-body text-[10px] md:text-[12px] text-on-surface-variant mb-3">{{ loc.operating_hours }}</p>
+              <a :href="loc.google_maps_url" target="_blank"
                 class="w-full py-2.5 rounded-xl border border-primary text-primary font-display font-semibold text-[12px] text-center hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined text-[14px]">directions</span>
                 Lihat Peta
