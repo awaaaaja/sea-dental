@@ -42,7 +42,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
   <nav
     :class="[
-      'fixed top-0 left-0 w-full z-50 transition-all duration-300',
+      'fixed top-0 left-0 w-full z-50 transition-all duration-300 max-md:!bg-white max-md:!backdrop-blur-none max-md:!shadow-[0_2px_12px_rgba(16,36,92,0.08)]',
       scrolled
         ? 'glass-nav scrolled'
         : 'glass-nav',
